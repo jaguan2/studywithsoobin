@@ -1,0 +1,47 @@
+Study w/ Soobin — Requirements
+==============================
+
+This is a plain-language requirements spec, not a Python pip file (this
+project has no Python dependencies; JS/TS dependencies are pinned in
+package.json).
+
+Functional requirements
+------------------------
+1. Play a looping, fullscreen video background sourced from the "Study w/
+   Soobin" YouTube playlist (TXT Soobin's vlogs/VLIVEs).
+2. Let the user pick which playlist video plays, via a thumbnail grid, paged
+   4x2 at a time.
+3. Auto-advance to another (random) playlist video when the current one ends.
+4. Provide a Pomodoro timer with three modes: Pomodoro (25 min), Short Break
+   (5 min), Long Break (15 min); start/pause and reset controls.
+5. Provide a volume control for the background video (starts muted per
+   browser autoplay policy; unmutes on user interaction).
+6. Let the user collapse/expand the sidebar to see the video full-screen.
+7. Link out to "Watch on YouTube" (current video) and "Full playlist".
+8. Work with no login, no account, no paid tier, no backend server.
+
+Non-functional requirements
+-----------------------------
+- No YouTube Data API key required for the app to run.
+- No tracking/analytics beyond what YouTube's embedded player itself does.
+- Playlist data (titles/thumbnails/durations) is a static, checked-in
+  snapshot refreshed by a manual script (`npm run fetch-playlist`), not
+  fetched live on every page load.
+- Visual design follows the reference LifeAt-style screenshot: translucent
+  cream sidebar over a fullscreen video, warm clay/orange accent color,
+  rounded pill buttons, minimal chrome.
+- Must run as a static, client-side-only web app so it can later be packaged
+  as a desktop app (e.g. Electron/Tauri) without server changes.
+
+Explicitly out of scope (for now)
+------------------------------------
+- YouTube Data API integration / live playlist sync.
+- User accounts, saved sessions, or synced settings across devices.
+- Desktop app packaging (Electron/Tauri wrapper).
+- Ambient sound mixing, notes/journal panel, music integration — present in
+  the LifeAt reference design's bottom-right buttons but not requested here.
+- Automated test suite (type-checking + manual verification only, so far).
+
+Source playlist
+-----------------
+https://www.youtube.com/playlist?list=PLwzQP2wCE5w4hRj01BS0zxO2Bu8eaBDWt
