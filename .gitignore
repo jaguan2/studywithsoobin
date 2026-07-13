@@ -1,8 +1,14 @@
 node_modules/
 dist/
 *.tsbuildinfo
-dist-electron/
-release/
+
+# PyInstaller (desktop .exe packaging) — build artifacts only;
+# StudyWithSoobin.exe at the repo root IS tracked on purpose, so
+# GitHub visitors can download and run it directly.
+build/
+*.spec
+__pycache__/
+
 .env
 .env.local
 *.log

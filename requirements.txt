@@ -33,13 +33,22 @@ Non-functional requirements
 - Must run as a static, client-side-only web app so it can later be packaged
   as a desktop app (e.g. Electron/Tauri) without server changes.
 
+Desktop app (implemented)
+---------------------------
+- `desktop.py` + `build-exe.bat` package the app as a single Windows
+  executable (`StudyWithSoobin.exe`, kept at the repo root so users can
+  download it straight from GitHub) via pywebview + PyInstaller, following
+  the same pattern as the TaskNook project. Favorites and theme persist
+  across launches in %LOCALAPPDATA%\StudyWithSoobin\.
+
 Explicitly out of scope (for now)
 ------------------------------------
 - YouTube Data API integration / live playlist sync.
 - User accounts, saved sessions, or synced settings across devices.
-- Desktop app packaging (Electron/Tauri wrapper).
 - Ambient sound mixing, notes/journal panel, music integration — present in
   the LifeAt reference design's bottom-right buttons but not requested here.
+- Multi-idol support (multiple playlists, like lifeat.io/category/k-pop) —
+  a natural future direction; the playlist data layer already isolates this.
 - Automated test suite (type-checking + manual verification only, so far).
 
 Source playlist

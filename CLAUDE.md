@@ -13,14 +13,19 @@ A LifeAt-style Pomodoro study app whose video background is drawn from the
 ```
 npm install            # install deps
 npm run dev             # start Vite dev server (http://localhost:5173, or next free port)
-npm run build            # tsc -b type-check, then vite build to dist/
+npm run build            # tsc --noEmit type-check, then vite build to dist/
 npm run preview           # serve the production build locally
 npm run lint             # eslint .
 npm run fetch-playlist    # refresh src/data/playlist.json from the live YouTube playlist
+
+python desktop.py        # run as a native desktop window (needs dist/ built +
+                         #   pip install -r requirements-desktop.txt)
+build-exe.bat            # package into StudyWithSoobin.exe at the repo root (PyInstaller)
 ```
 
-There is no test suite yet. Type-checking (`tsc -b`, run as part of `npm run build`) is the
-main correctness gate.
+There is no test suite yet. Type-checking (`tsc --noEmit`, run as part of `npm run build`)
+is the main correctness gate. A single `tsconfig.json` covers both `src/` and
+`vite.config.ts` — there is deliberately no tsconfig.app/node split.
 
 ## Architecture
 
@@ -58,6 +63,24 @@ main correctness gate.
 **Styling:** Tailwind with a small custom palette (`cream` / `clay` / `ink`) defined in
 `tailwind.config.js`, chosen to match the reference LifeAt-style design (warm, translucent
 cream sidebar over a fullscreen video, clay/orange accent for primary actions).
+
+**Desktop app:** `desktop.py` (repo root) serves the built `dist/` with a stdlib
+`http.server` on a stable local port and opens it in a native window with `pywebview`
+(WebView2 on Windows). There's no backend — the "server" is only a static file host,
+so unlike TaskNook there's no Flask/waitress and no `--hidden-import` flags needed.
+Two persistence rules carried over from TaskNook (both are localStorage-related —
+favorites and theme live there):
+1. `webview.start()` must get `private_mode=False` + an explicit `storage_path`
+   (under `%LOCALAPPDATA%\StudyWithSoobin\`) or all localStorage is wiped on close.
+2. The port must be stable across launches (`DEFAULT_PORT = 39218`; random fallback
+   only if taken) because localStorage is scoped by origin = host **and** port.
+PyInstaller packaging (`build-exe.bat`) outputs **`StudyWithSoobin.exe` to the repo
+root** (`--distpath .`) — the exe is deliberately committed so GitHub visitors can
+download and run it without building anything; rebuild and re-commit it when the app
+changes. `dist/` is the Vite build that gets bundled *into* the exe via `--add-data`,
+not the exe output dir.
+`SWS_SELFTEST=1` makes the exe/script boot the server, print a diagnostic line, and
+exit without opening a window — use it to verify a build headlessly.
 
 ## Known constraints
 

@@ -5,6 +5,13 @@ background is TXT Soobin's vlogs and VLIVEs — company for a study session, the
 same way the [original "Study w/ Soobin" playlist](https://www.youtube.com/playlist?list=PLwzQP2wCE5w4hRj01BS0zxO2Bu8eaBDWt)
 gets used.
 
+## ⚡ Just want the app?
+
+Download **[`StudyWithSoobin.exe`](StudyWithSoobin.exe)** from the repo root
+and double-click it — no install, no setup. It opens in its own window; your
+favorites and theme are remembered between launches. (Windows only; it needs
+an internet connection since the videos stream from YouTube.)
+
 ## Features
 
 - Fullscreen, looping YouTube video background (autoplay, muted until you turn
@@ -52,10 +59,56 @@ point it at a different playlist, edit `PLAYLIST_ID` in
 
 ## Desktop app
 
-This is a plain web app today (Vite + React + TypeScript + Tailwind). It runs
-fine in any browser, and because it's a static client-side build, it can be
-wrapped as a desktop app later (e.g. with Electron or Tauri) with no changes
-to the app code — that hasn't been set up yet.
+Study w/ Soobin can also run as a **native desktop application** — its own
+window, no browser tab. `desktop.py` serves the built app on a local port and
+opens it in an OS window via [pywebview](https://pywebview.flowrl.com/)
+(WebView2 on Windows, WebKit on macOS).
+
+```bash
+# one-time setup (requires Python 3.10+)
+npm install && npm run build
+pip install -r requirements-desktop.txt
+
+# launch the native window
+python desktop.py
+```
+
+**To rebuild `StudyWithSoobin.exe` (Windows):** run `build-exe.bat` from the
+repo root. It builds the frontend, installs the desktop deps + PyInstaller,
+and packages everything into **`StudyWithSoobin.exe`** at the repo root — one
+double-clickable file, no console window, nothing else to install. Your
+favorites/theme persist in `%LOCALAPPDATA%\StudyWithSoobin\`.
+
+> Note: the exe still needs an internet connection — the videos stream from
+> YouTube; only the app shell is bundled.
+
+## Project structure
+
+```
+studywithsoobin/
+├── StudyWithSoobin.exe       # ⭐ ready-to-run Windows app (rebuild: build-exe.bat)
+├── desktop.py                # native-window launcher (pywebview + local server)
+├── build-exe.bat             # one-command exe rebuild (PyInstaller)
+├── requirements-desktop.txt  # Python deps for desktop.py (pip)
+├── requirements.txt          # product requirements spec (plain language)
+├── scripts/
+│   └── fetch-playlist.mjs    # refresh src/data/playlist.json from YouTube
+├── src/
+│   ├── App.tsx               # top-level state: current video, volume, favorites
+│   ├── components/
+│   │   ├── VideoBackground.tsx   # fullscreen YouTube IFrame player
+│   │   ├── Sidebar.tsx           # LifeAt-style control panel + dark mode
+│   │   ├── TimerPanel.tsx        # Pomodoro / Short Break / Long Break
+│   │   ├── VideoPicker.tsx       # paged 4x2 thumbnail grid
+│   │   └── VolumeControl.tsx     # ambience slider
+│   ├── hooks/
+│   │   ├── usePomodoro.ts        # countdown state machine
+│   │   └── useYouTubeIframeApi.ts # one-time YT API script loader
+│   ├── data/playlist.json    # checked-in snapshot of the playlist
+│   └── types/                # playlist types + minimal YT ambient types
+├── index.html                # Vite entry point
+└── *.config.js / tsconfig.json  # Vite / Tailwind / ESLint / TypeScript config
+```
 
 ## Tech stack
 

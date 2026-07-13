@@ -1,8 +1,27 @@
+import { useEffect, useState } from 'react'
 import type { TimerMode } from '../hooks/usePomodoro'
 import type { Video } from '../types/playlist'
 import { TimerPanel } from './TimerPanel'
 import { VideoPicker } from './VideoPicker'
 import { VolumeControl } from './VolumeControl'
+
+const SOCIALS = [
+  {
+    label: 'TXT on YouTube',
+    href: 'https://www.youtube.com/@TOMORROWXTOGETHER',
+    icon: <YouTubeIcon />,
+  },
+  {
+    label: 'TXT on Instagram',
+    href: 'https://www.instagram.com/txt.bighitent',
+    icon: <InstagramIcon />,
+  },
+  {
+    label: 'TXT on X',
+    href: 'https://x.com/TXT_members',
+    icon: <XIcon />,
+  },
+]
 
 interface SidebarProps {
   collapsed: boolean
@@ -19,6 +38,8 @@ interface SidebarProps {
   volume: number
   onVolumeChange: (volume: number) => void
   playlistUrl: string
+  favorites: string[]
+  onToggleFavorite: (id: string) => void
 }
 
 export function Sidebar({
@@ -36,18 +57,45 @@ export function Sidebar({
   volume,
   onVolumeChange,
   playlistUrl,
+  favorites,
+  onToggleFavorite,
 }: SidebarProps) {
+  const [dark, setDark] = useState(() => localStorage.getItem('sws.theme') === 'dark')
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark)
+    localStorage.setItem('sws.theme', dark ? 'dark' : 'light')
+  }, [dark])
+
+  const isFavorite = favorites.includes(currentVideo.id)
+
   return (
     <div className="relative h-full w-fit">
       <aside
         className={
-          'h-full overflow-y-auto bg-cream-50/90 shadow-panel backdrop-blur-md transition-all duration-300 ' +
-          (collapsed ? 'w-0 opacity-0' : 'w-[260px] opacity-100')
+          'h-full overflow-y-auto bg-cream-50/95 shadow-panel backdrop-blur-md transition-all duration-300 dark:bg-ink-800/90 ' +
+          (collapsed ? 'w-0 opacity-0' : 'w-[264px] opacity-100')
         }
       >
-        <div className="flex h-full w-[260px] flex-col gap-6 p-5">
+        <div className="flex h-full w-[264px] flex-col gap-5 p-5">
           <header className="flex items-center justify-between">
-            <span className="text-lg font-semibold text-ink-900">Study w/ Soobin 🐰</span>
+            <span className="text-lg font-semibold text-ink-900 dark:text-cream-100">
+              Study w/ Soobin
+            </span>
+            <div className="flex items-center gap-2 text-ink-700 dark:text-cream-300">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={s.label}
+                  className="transition hover:text-clay-500"
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
           </header>
 
           <TimerPanel
@@ -59,20 +107,49 @@ export function Sidebar({
             onReset={onResetTimer}
           />
 
-          <VideoPicker videos={videos} selectedId={currentVideo.id} onSelect={onSelectVideo} />
+          <VideoPicker
+            videos={videos}
+            selectedId={currentVideo.id}
+            onSelect={onSelectVideo}
+            favorites={favorites}
+          />
 
-          <div className="flex items-center gap-2 rounded-xl2 bg-cream-100 px-3 py-2">
-            <span className="truncate text-sm text-ink-800" title={currentVideo.title}>
+          <div className="flex items-center justify-between gap-2 rounded-xl2 bg-cream-100 px-3 py-2.5 dark:bg-ink-700">
+            <span
+              className="truncate text-sm text-ink-800 dark:text-cream-200"
+              title={currentVideo.title}
+            >
               {currentVideo.title}
             </span>
+            <div className="flex shrink-0 items-center gap-1.5">
+              <button
+                onClick={() => onToggleFavorite(currentVideo.id)}
+                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                className={
+                  'transition hover:scale-110 ' +
+                  (isFavorite ? 'text-clay-500' : 'text-ink-700/50 dark:text-cream-300/50')
+                }
+              >
+                <HeartIcon filled={isFavorite} />
+              </button>
+              <a
+                href={playlistUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Open the full playlist on YouTube"
+                className="text-ink-700/50 transition hover:text-clay-500 dark:text-cream-300/50"
+              >
+                <ListIcon />
+              </a>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4 text-xs text-ink-700">
+          <div className="flex items-center justify-between text-xs">
             <a
               href={`https://www.youtube.com/watch?v=${currentVideo.id}`}
               target="_blank"
               rel="noreferrer"
-              className="underline decoration-clay-400 underline-offset-2 hover:text-ink-900"
+              className="text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
             >
               Watch on YouTube
             </a>
@@ -80,7 +157,7 @@ export function Sidebar({
               href={playlistUrl}
               target="_blank"
               rel="noreferrer"
-              className="underline decoration-clay-400 underline-offset-2 hover:text-ink-900"
+              className="text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
             >
               Full playlist
             </a>
@@ -88,17 +165,29 @@ export function Sidebar({
 
           <VolumeControl volume={volume} onChange={onVolumeChange} />
 
-          <footer className="mt-auto pt-4 text-xs text-ink-700/70">
-            made for study sessions with{' '}
-            <a
-              href="https://www.youtube.com/playlist?list=PLwzQP2wCE5w4hRj01BS0zxO2Bu8eaBDWt"
-              target="_blank"
-              rel="noreferrer"
-              className="underline decoration-clay-400 underline-offset-2"
+          <footer className="mt-auto flex items-center justify-between pt-4 text-xs text-ink-700/70 dark:text-cream-300/60">
+            <span>made for MOA 🐰</span>
+            <button
+              onClick={() => setDark((d) => !d)}
+              aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="flex items-center gap-1.5"
             >
-              @TXT
-            </a>
-            's vlogs
+              <SunIcon dimmed={dark} />
+              <span
+                className={
+                  'relative h-4 w-8 rounded-full transition ' +
+                  (dark ? 'bg-clay-500' : 'bg-cream-300 dark:bg-ink-700')
+                }
+              >
+                <span
+                  className={
+                    'absolute top-0.5 h-3 w-3 rounded-full bg-white shadow transition-all ' +
+                    (dark ? 'left-[18px]' : 'left-0.5')
+                  }
+                />
+              </span>
+              <MoonIcon dimmed={!dark} />
+            </button>
           </footer>
         </div>
       </aside>
@@ -106,20 +195,106 @@ export function Sidebar({
       <button
         onClick={onToggleCollapsed}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        className="absolute top-6 -right-4 grid h-8 w-8 place-items-center rounded-full bg-cream-50/90 text-ink-700 shadow-panel backdrop-blur-md transition hover:bg-cream-100"
+        className="absolute top-1/2 -right-4 flex h-14 w-4 -translate-y-1/2 items-center justify-center rounded-r-lg bg-cream-50/95 text-ink-700 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/90 dark:text-cream-200 dark:hover:bg-ink-700"
       >
         <svg
-          width="14"
-          height="14"
+          width="10"
+          height="10"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.5"
+          strokeWidth="3"
           style={{ transform: collapsed ? 'scaleX(-1)' : undefined }}
         >
           <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
     </div>
+  )
+}
+
+function YouTubeIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23 7.5s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.3-1C16.6 4 12 4 12 4s-4.6 0-7.8.2c-.4.1-1.4.1-2.3 1-.7.7-.9 2.3-.9 2.3S.8 9.4.8 11.3v1.4c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2 .9 2.5 1 1.8.2 7.6.2 7.6.2s4.6 0 7.8-.2c.4-.1 1.4-.1 2.3-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-1.4c0-1.9-.2-3.8-.2-3.8zM9.7 15.2V8.7l6.1 3.3-6.1 3.2z" />
+    </svg>
+  )
+}
+
+function InstagramIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="17.8" cy="6.2" r="1.2" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function XIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.3L1.2 2h6.4l4.5 5.9L18.9 2zm-1.1 18.1h1.7L7.7 3.8H5.9l11.9 16.3z" />
+    </svg>
+  )
+}
+
+function HeartIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path
+        d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function ListIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function SunIcon({ dimmed }: { dimmed: boolean }) {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={dimmed ? 'opacity-40' : ''}
+    >
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function MoonIcon({ dimmed }: { dimmed: boolean }) {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={dimmed ? 'opacity-40' : ''}
+    >
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 }

@@ -1,0 +1,12 @@
+# Python deps for the desktop (native-window) launcher, desktop.py.
+#   pip install -r requirements-desktop.txt
+#
+# (Not to be confused with requirements.txt, which is this project's
+# plain-language product spec — the app itself is JS/TS and has no
+# Python runtime dependencies at all.)
+#
+# Windows: works out of the box (uses the built-in WebView2 runtime).
+# macOS:   works out of the box (uses the system WebKit).
+# Linux:   ALSO needs system packages pip can't install, e.g.
+#            sudo apt install python3-gi gir1.2-webkit2-4.1
+pywebview>=5.0,<7     # native OS window (WebView2 on Windows, WebKit on macOS)
