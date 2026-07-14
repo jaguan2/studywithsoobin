@@ -33,6 +33,14 @@ function loadTheme(): Theme {
   return stored === 'dark' || stored === 'coffee' ? stored : 'light'
 }
 
+function RestoreChevron() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="opacity-60">
+      <path d="M6 15l6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function toggleFullscreen() {
   if (document.fullscreenElement) {
     void document.exitFullscreen()
@@ -53,6 +61,7 @@ export default function App() {
   const [blockedIds, setBlockedIds] = useState<string[]>([])
   const [notice, setNotice] = useState<string | null>(null)
   const [videoPlaying, setVideoPlaying] = useState(true)
+  const [timerCollapsed, setTimerCollapsed] = useState(false)
   const [topPanel, setTopPanel] = useState<'timer' | 'sidebar'>('sidebar')
   const videoRef = useRef<VideoBackgroundHandle>(null)
   const timer = useTimer(25)
@@ -116,6 +125,8 @@ export default function App() {
         timer={timer}
         zIndex={topPanel === 'timer' ? 40 : 30}
         onFocus={() => setTopPanel('timer')}
+        collapsed={timerCollapsed}
+        onToggleCollapsed={() => setTimerCollapsed((c) => !c)}
       />
 
       <Sidebar
@@ -199,6 +210,32 @@ export default function App() {
         {notice && (
           <div className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm text-cream-100 shadow-panel backdrop-blur-md">
             {notice}
+          </div>
+        )}
+
+        {/* minimized panels dock here as restore pills */}
+        {(timerCollapsed || collapsed) && (
+          <div className="pointer-events-auto absolute bottom-4 left-4 z-10 flex items-center gap-2">
+            {timerCollapsed && (
+              <button
+                onClick={() => setTimerCollapsed(false)}
+                aria-label="Restore timer"
+                className="flex items-center gap-2 rounded-full bg-cream-50/90 px-4 py-2 text-sm font-medium tabular-nums text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
+              >
+                ⏱ {timer.label}
+                <RestoreChevron />
+              </button>
+            )}
+            {collapsed && (
+              <button
+                onClick={() => setCollapsed(false)}
+                aria-label="Restore panel"
+                className="flex items-center gap-2 rounded-full bg-cream-50/90 px-4 py-2 text-sm font-medium text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
+              >
+                🐰 study with soobin
+                <RestoreChevron />
+              </button>
+            )}
           </div>
         )}
       </div>

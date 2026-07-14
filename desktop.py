@@ -130,7 +130,7 @@ def main():
 
     try:
         webview.create_window(
-            "Study w/ Soobin",
+            "study with soobin",
             url,
             width=1280,
             height=800,

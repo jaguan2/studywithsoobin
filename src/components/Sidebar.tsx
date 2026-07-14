@@ -69,10 +69,12 @@ export function Sidebar({
   onFocus,
 }: SidebarProps) {
   const dragControls = useDragControls()
+  // min width chosen so the "Paste a YouTube or Spotify link…" placeholder
+  // renders in full
   const { width, height, startResize } = usePanelSize({
-    width: 300,
-    minWidth: 280,
-    maxWidth: 520,
+    width: 340,
+    minWidth: 340,
+    maxWidth: 560,
     height: Math.min(560, window.innerHeight - 240),
     minHeight: 320,
   })
@@ -87,7 +89,16 @@ export function Sidebar({
       dragMomentum={false}
       dragElastic={0}
       onPointerDownCapture={onFocus}
-      style={{ width, height: collapsed ? 'auto' : height, left: 16, top: 232, zIndex }}
+      // visibility (not unmount) so music keeps playing and the dragged
+      // position survives a minimize/restore cycle
+      style={{
+        width,
+        height,
+        left: 16,
+        top: 232,
+        zIndex,
+        visibility: collapsed ? 'hidden' : 'visible',
+      }}
       className="absolute flex select-none flex-col overflow-hidden rounded-2xl bg-cream-50/95 shadow-panel backdrop-blur-md dark:bg-ink-800/90"
     >
       <header
@@ -96,7 +107,7 @@ export function Sidebar({
         className="flex shrink-0 cursor-grab items-center justify-between px-4 py-3 active:cursor-grabbing"
       >
         <span className="text-lg font-semibold text-ink-900 dark:text-cream-100">
-          Study w/ Soobin
+          study with soobin
         </span>
         <div className="flex items-center gap-2 text-ink-700 dark:text-cream-300">
           {SOCIALS.map((s) => (
@@ -113,27 +124,18 @@ export function Sidebar({
           ))}
           <button
             onClick={onToggleCollapsed}
-            aria-label={collapsed ? 'Expand panel' : 'Minimize panel'}
+            aria-label="Minimize panel"
+            title="Minimize"
             className="ml-1 grid h-6 w-6 place-items-center rounded-full transition hover:bg-cream-200 dark:hover:bg-ink-700"
           >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              style={{ transform: collapsed ? 'rotate(180deg)' : undefined }}
-            >
-              <path d="M6 15l6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M5 12h14" strokeLinecap="round" />
             </svg>
           </button>
         </div>
       </header>
 
-      {!collapsed && (
-        <>
-          <div className="scrollbar-thin flex flex-1 flex-col gap-5 overflow-y-auto px-4 pb-4">
+      <div className="scrollbar-thin flex flex-1 flex-col gap-5 overflow-y-auto px-4 pb-4">
             <VideoPicker
               videos={videos}
               selectedId={currentVideo.id}
@@ -219,10 +221,8 @@ export function Sidebar({
                 ))}
               </div>
             </footer>
-          </div>
-          <ResizeGrip onStart={startResize} />
-        </>
-      )}
+      </div>
+      <ResizeGrip onStart={startResize} />
     </motion.aside>
   )
 }

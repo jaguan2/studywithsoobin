@@ -13,7 +13,7 @@ export function WelcomeScreen({ videos, favorites, onSelect, onSurprise }: Welco
       <div className="mx-auto max-w-5xl px-6 py-10">
         <header className="text-center">
           <h1 className="text-3xl font-semibold text-ink-900 dark:text-cream-100">
-            Study w/ Soobin 🐰
+            study with soobin 🐰
           </h1>
           <p className="mt-2 text-sm text-ink-700 dark:text-cream-300">
             Pick a video to study with today

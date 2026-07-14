@@ -61,8 +61,8 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
   - `TimerCard` — a floating, draggable, width-resizable card wrapping `TimerPanel`
     (15/30/60-min presets, click-the-time-to-type custom durations, and a 🍅
     Pomodoro mode with configurable focus/break/rounds cycles — all from `useTimer`).
-  - `Sidebar` — a floating, draggable, width+height-resizable panel (min 280px wide,
-    scrollable body, minimize chevron in the header), composed of `VideoPicker`
+  - `Sidebar` — a floating, draggable, width+height-resizable panel (min 340px wide
+    so the music-link placeholder fits, scrollable body), composed of `VideoPicker`
     (paged 4x2 thumbnail grid), `VolumeControl` (video volume), `MusicPanel`
     (built-in lofi stations + paste-your-own YouTube/Spotify links), and
     `AmbiencePanel` (procedural rain/snow/storm sound via Web Audio).
@@ -73,6 +73,10 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
     because framer-motion owns the inline `transform`. Resizing is a plain
     pointer-event corner grip (`usePanelSize` + `ResizeGrip`) — TaskNook has no
     resize; that part is ours. Last-touched panel gets the higher z-index.
+    Minimizing hides a panel with `visibility: hidden` (NOT unmount — unmounting
+    would stop `MusicPanel`'s audio and lose the framer-motion drag transform)
+    and shows a restore pill docked at the bottom-left; the timer's pill shows
+    the live countdown.
 - `useTimer` is a self-contained countdown state machine; it does not know about
   video state. Its pomodoro extension auto-advances focus → break → focus… and
   stops after the configured number of rounds. Setting any preset/custom duration

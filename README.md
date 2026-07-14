@@ -1,4 +1,4 @@
-# Study w/ Soobin 🐰
+# study with soobin 🐰
 
 A LifeAt-style Pomodoro study app. Instead of generic cafe/nature scenery, the
 background is TXT Soobin's vlogs and VLIVEs — company for a study session, the
@@ -18,8 +18,9 @@ an internet connection since the videos stream from YouTube.)
 - Looping YouTube video that always stays fully in frame (autoplay, muted
   until you turn up the volume slider)
 - The timer and the control panel are separate floating cards — drag them
-  anywhere, resize them from the corner, minimize the panel to just its
-  header
+  anywhere, resize them from the corner, or minimize either one down to a
+  small pill docked at the bottom of the screen (the timer pill keeps
+  showing the countdown)
 - Floating video controls: pause/play and skip back/forward 10 seconds; the
   music player has its own play/pause/seek/volume controls too
 - Focus timer: 15 min / 30 min / 1 hour presets, or click the time and type

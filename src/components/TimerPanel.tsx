@@ -145,7 +145,7 @@ export function TimerPanel({ timer }: TimerPanelProps) {
             </button>
           </div>
 
-          {showPomodoroForm ? (
+          {showPomodoroForm && (
             <div className="mt-3 space-y-2">
               <div className="flex items-center gap-2 text-xs text-ink-700 dark:text-cream-300">
                 <NumberField label="Focus" value={focusMin} min={1} max={180} onChange={setFocusMin} suffix="min" />
@@ -162,10 +162,6 @@ export function TimerPanel({ timer }: TimerPanelProps) {
                 Start {rounds} × {focusMin} min with {breakMin} min breaks
               </button>
             </div>
-          ) : (
-            <p className="mt-2 text-[10px] text-ink-700/60 dark:text-cream-300/50">
-              or click the time above to type your own
-            </p>
           )}
         </>
       )}
