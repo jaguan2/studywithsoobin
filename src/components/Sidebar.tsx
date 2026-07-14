@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import type { TimerMode } from '../hooks/usePomodoro'
 import type { Video } from '../types/playlist'
 import { TimerPanel } from './TimerPanel'
@@ -40,6 +39,8 @@ interface SidebarProps {
   playlistUrl: string
   favorites: string[]
   onToggleFavorite: (id: string) => void
+  dark: boolean
+  onToggleDark: () => void
 }
 
 export function Sidebar({
@@ -59,14 +60,9 @@ export function Sidebar({
   playlistUrl,
   favorites,
   onToggleFavorite,
+  dark,
+  onToggleDark,
 }: SidebarProps) {
-  const [dark, setDark] = useState(() => localStorage.getItem('sws.theme') === 'dark')
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark)
-    localStorage.setItem('sws.theme', dark ? 'dark' : 'light')
-  }, [dark])
-
   const isFavorite = favorites.includes(currentVideo.id)
 
   return (
@@ -168,7 +164,7 @@ export function Sidebar({
           <footer className="mt-auto flex items-center justify-between pt-4 text-xs text-ink-700/70 dark:text-cream-300/60">
             <span>made for MOA 🐰</span>
             <button
-              onClick={() => setDark((d) => !d)}
+              onClick={onToggleDark}
               aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
               className="flex items-center gap-1.5"
             >

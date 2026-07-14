@@ -78,8 +78,10 @@ export function VideoBackground({ videoId, volume, isPlaying, onEnded }: VideoBa
   }, [isPlaying])
 
   return (
-    <div className="yt-bg-cover" aria-hidden="true">
-      <div ref={containerRef} />
+    <div className="yt-bg" aria-hidden="true">
+      <div className="yt-frame-box">
+        <div ref={containerRef} />
+      </div>
     </div>
   )
 }

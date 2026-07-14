@@ -42,13 +42,17 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
   `metadata.title` / thumbnail overlay badge out of YouTube's `LockupView` item shape)
   is brittle by nature — YouTube's internal page schema can change and break the
   field lookups without notice.
-- `App.tsx` loads `playlist.json`, owns the top-level state (current `videoId`,
-  `volume`, sidebar `collapsed`), and wires it into two independent halves:
-  - `VideoBackground` — a fullscreen, muted-autoplay YouTube IFrame Player used purely
-    as a looping background (`controls: 0`, `pointer-events: none` via the `.yt-bg-cover`
-    CSS class in `index.css`, which also does the 16:9 "cover crop" so the iframe fills
-    the viewport regardless of aspect ratio). It creates the `YT.Player` once on mount;
-    subsequent video swaps go through `loadVideoById` rather than remounting.
+- `App.tsx` loads `playlist.json` and owns all top-level state: current `videoId`
+  (**starts `null`** — a `WelcomeScreen` video-selection grid renders until the user
+  picks one; only then does the main UI mount), `volume`, sidebar `collapsed`,
+  `favorites` and `dark` theme (both persisted to localStorage). The main UI is a
+  side-by-side flex layout — sidebar in normal flow, video area taking `flex-1`:
+  - `VideoBackground` — a muted-autoplay YouTube IFrame Player (`controls: 0`,
+    `pointer-events: none`). The `.yt-bg` / `.yt-frame-box` CSS in `index.css`
+    **letterboxes** the 16:9 iframe inside the area next to the sidebar (contain,
+    not cover — the whole frame stays visible and re-fits when the sidebar
+    collapses). It creates the `YT.Player` once on mount; subsequent video swaps
+    go through `loadVideoById` rather than remounting.
   - `Sidebar` — the translucent LifeAt-style control panel, composed of `TimerPanel`
     (Pomodoro/Short Break/Long Break, from `usePomodoro`), `VideoPicker` (paged 4x2
     thumbnail grid), and `VolumeControl`.

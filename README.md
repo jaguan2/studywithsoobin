@@ -14,12 +14,14 @@ an internet connection since the videos stream from YouTube.)
 
 ## Features
 
-- Fullscreen, looping YouTube video background (autoplay, muted until you turn
-  up the volume slider)
+- Start screen to pick your study-companion video (or hit 🎲 Surprise me)
+- Looping YouTube video that always stays fully in frame — it resizes to fit
+  beside the sidebar, and expands when you collapse it (autoplay, muted until
+  you turn up the volume slider)
 - Pomodoro timer with Pomodoro / Short Break / Long Break modes
-- Paged thumbnail grid to pick which video plays behind you
+- Paged thumbnail grid to switch videos mid-session
+- Favorites (❤) and a light/dark theme, both remembered between visits
 - Auto-advances to a random video when the current one ends
-- Collapsible sidebar so the video can take over the full screen
 - No backend, no API key, no login — everything runs client-side
 
 ## Getting started
@@ -96,7 +98,8 @@ studywithsoobin/
 ├── src/
 │   ├── App.tsx               # top-level state: current video, volume, favorites
 │   ├── components/
-│   │   ├── VideoBackground.tsx   # fullscreen YouTube IFrame player
+│   │   ├── WelcomeScreen.tsx     # start screen: pick a video (or 🎲 random)
+│   │   ├── VideoBackground.tsx   # letterboxed YouTube IFrame player
 │   │   ├── Sidebar.tsx           # LifeAt-style control panel + dark mode
 │   │   ├── TimerPanel.tsx        # Pomodoro / Short Break / Long Break
 │   │   ├── VideoPicker.tsx       # paged 4x2 thumbnail grid
