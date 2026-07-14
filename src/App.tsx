@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import playlistData from './data/playlist.json'
-import type { Playlist } from './types/playlist'
-import { usePomodoro } from './hooks/usePomodoro'
+import type { Playlist, Video } from './types/playlist'
+import { useTimer } from './hooks/useTimer'
 import { VideoBackground } from './components/VideoBackground'
 import { Sidebar } from './components/Sidebar'
 import { WelcomeScreen } from './components/WelcomeScreen'
@@ -10,11 +10,12 @@ const playlist = playlistData as Playlist
 
 const TXT_CHANNEL_URL = 'https://www.youtube.com/@TOMORROWXTOGETHER?sub_confirmation=1'
 
-function randomVideoId(excludeId?: string) {
-  const pool = excludeId
-    ? playlist.videos.filter((v) => v.id !== excludeId)
-    : playlist.videos
-  return pool[Math.floor(Math.random() * pool.length)].id
+export type Theme = 'light' | 'coffee' | 'dark'
+
+function pickRandom(pool: Video[], excludeId?: string): string | null {
+  const candidates = excludeId ? pool.filter((v) => v.id !== excludeId) : pool
+  if (candidates.length === 0) return pool[0]?.id ?? null
+  return candidates[Math.floor(Math.random() * candidates.length)].id
 }
 
 function loadFavorites(): string[] {
@@ -24,6 +25,11 @@ function loadFavorites(): string[] {
   } catch {
     return []
   }
+}
+
+function loadTheme(): Theme {
+  const stored = localStorage.getItem('sws.theme')
+  return stored === 'dark' || stored === 'coffee' ? stored : 'light'
 }
 
 function toggleFullscreen() {
@@ -40,13 +46,23 @@ export default function App() {
   const [volume, setVolume] = useState(40)
   const [collapsed, setCollapsed] = useState(false)
   const [favorites, setFavorites] = useState<string[]>(loadFavorites)
-  const [dark, setDark] = useState(() => localStorage.getItem('sws.theme') === 'dark')
-  const { mode, switchMode, isRunning, toggleRunning, reset, label } = usePomodoro()
+  const [theme, setTheme] = useState<Theme>(loadTheme)
+  // videos YouTube refused to play embedded this session (copyright/embed
+  // restrictions surface only at playback time, not in playlist metadata)
+  const [blockedIds, setBlockedIds] = useState<string[]>([])
+  const [notice, setNotice] = useState<string | null>(null)
+  const timer = useTimer(25)
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark)
-    localStorage.setItem('sws.theme', dark ? 'dark' : 'light')
-  }, [dark])
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+    document.documentElement.classList.toggle('coffee', theme === 'coffee')
+    localStorage.setItem('sws.theme', theme)
+  }, [theme])
+
+  const playable = useMemo(
+    () => playlist.videos.filter((v) => !blockedIds.includes(v.id)),
+    [blockedIds],
+  )
 
   const currentVideo = useMemo(
     () => playlist.videos.find((v) => v.id === videoId) ?? playlist.videos[0],
@@ -61,13 +77,21 @@ export default function App() {
     })
   }
 
+  const handleUnplayable = () => {
+    if (!videoId || blockedIds.includes(videoId)) return
+    setBlockedIds((prev) => [...prev, videoId])
+    setNotice("That video won't play embedded — skipped to another one")
+    window.setTimeout(() => setNotice(null), 5000)
+    setVideoId(pickRandom(playable.filter((v) => v.id !== videoId)))
+  }
+
   if (videoId === null) {
     return (
       <WelcomeScreen
-        videos={playlist.videos}
+        videos={playable}
         favorites={favorites}
         onSelect={setVideoId}
-        onSurprise={() => setVideoId(randomVideoId())}
+        onSurprise={() => setVideoId(pickRandom(playable))}
       />
     )
   }
@@ -78,13 +102,8 @@ export default function App() {
         <Sidebar
           collapsed={collapsed}
           onToggleCollapsed={() => setCollapsed((c) => !c)}
-          timerLabel={label}
-          mode={mode}
-          isRunning={isRunning}
-          onSwitchMode={switchMode}
-          onToggleRunning={toggleRunning}
-          onResetTimer={reset}
-          videos={playlist.videos}
+          timer={timer}
+          videos={playable}
           currentVideo={currentVideo}
           onSelectVideo={setVideoId}
           volume={volume}
@@ -92,8 +111,8 @@ export default function App() {
           playlistUrl={playlist.sourceUrl}
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
-          dark={dark}
-          onToggleDark={() => setDark((d) => !d)}
+          theme={theme}
+          onSetTheme={setTheme}
         />
       </div>
 
@@ -102,7 +121,8 @@ export default function App() {
           videoId={videoId}
           volume={volume}
           isPlaying
-          onEnded={() => setVideoId(randomVideoId(videoId))}
+          onEnded={() => setVideoId(pickRandom(playable, videoId))}
+          onUnplayable={handleUnplayable}
         />
 
         <div className="absolute right-4 top-4 z-10 flex items-center gap-2">
@@ -124,6 +144,12 @@ export default function App() {
             </svg>
           </button>
         </div>
+
+        {notice && (
+          <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm text-cream-100 shadow-panel backdrop-blur-md">
+            {notice}
+          </div>
+        )}
       </div>
     </div>
   )

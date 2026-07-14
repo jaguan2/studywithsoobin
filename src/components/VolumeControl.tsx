@@ -6,7 +6,7 @@ interface VolumeControlProps {
 export function VolumeControl({ volume, onChange }: VolumeControlProps) {
   return (
     <div>
-      <p className="text-sm font-semibold text-ink-800 dark:text-cream-200">Ambience control:</p>
+      <p className="text-sm font-semibold text-ink-800 dark:text-cream-200">Video volume</p>
       <div className="mt-2.5 flex items-center gap-3">
         <SpeakerIcon muted={volume === 0} />
         <input

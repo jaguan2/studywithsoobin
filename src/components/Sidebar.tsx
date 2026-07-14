@@ -1,8 +1,11 @@
-import type { TimerMode } from '../hooks/usePomodoro'
+import type { TimerApi } from '../hooks/useTimer'
+import type { Theme } from '../App'
 import type { Video } from '../types/playlist'
 import { TimerPanel } from './TimerPanel'
 import { VideoPicker } from './VideoPicker'
 import { VolumeControl } from './VolumeControl'
+import { MusicPanel } from './MusicPanel'
+import { AmbiencePanel } from './AmbiencePanel'
 
 const SOCIALS = [
   {
@@ -22,15 +25,16 @@ const SOCIALS = [
   },
 ]
 
+const THEMES: { value: Theme; label: string; icon: string }[] = [
+  { value: 'light', label: 'Light theme', icon: '☀️' },
+  { value: 'coffee', label: 'Coffee theme', icon: '☕' },
+  { value: 'dark', label: 'Dark theme', icon: '🌙' },
+]
+
 interface SidebarProps {
   collapsed: boolean
   onToggleCollapsed: () => void
-  timerLabel: string
-  mode: TimerMode
-  isRunning: boolean
-  onSwitchMode: (mode: TimerMode) => void
-  onToggleRunning: () => void
-  onResetTimer: () => void
+  timer: TimerApi
   videos: Video[]
   currentVideo: Video
   onSelectVideo: (id: string) => void
@@ -39,19 +43,14 @@ interface SidebarProps {
   playlistUrl: string
   favorites: string[]
   onToggleFavorite: (id: string) => void
-  dark: boolean
-  onToggleDark: () => void
+  theme: Theme
+  onSetTheme: (theme: Theme) => void
 }
 
 export function Sidebar({
   collapsed,
   onToggleCollapsed,
-  timerLabel,
-  mode,
-  isRunning,
-  onSwitchMode,
-  onToggleRunning,
-  onResetTimer,
+  timer,
   videos,
   currentVideo,
   onSelectVideo,
@@ -60,8 +59,8 @@ export function Sidebar({
   playlistUrl,
   favorites,
   onToggleFavorite,
-  dark,
-  onToggleDark,
+  theme,
+  onSetTheme,
 }: SidebarProps) {
   const isFavorite = favorites.includes(currentVideo.id)
 
@@ -94,14 +93,7 @@ export function Sidebar({
             </div>
           </header>
 
-          <TimerPanel
-            label={timerLabel}
-            mode={mode}
-            isRunning={isRunning}
-            onSwitchMode={onSwitchMode}
-            onToggleRunning={onToggleRunning}
-            onReset={onResetTimer}
-          />
+          <TimerPanel timer={timer} />
 
           <VideoPicker
             videos={videos}
@@ -161,29 +153,32 @@ export function Sidebar({
 
           <VolumeControl volume={volume} onChange={onVolumeChange} />
 
+          <hr className="border-cream-300/60 dark:border-ink-700" />
+
+          <MusicPanel />
+
+          <AmbiencePanel />
+
           <footer className="mt-auto flex items-center justify-between pt-4 text-xs text-ink-700/70 dark:text-cream-300/60">
             <span>made for MOA 🐰</span>
-            <button
-              onClick={onToggleDark}
-              aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-              className="flex items-center gap-1.5"
-            >
-              <SunIcon dimmed={dark} />
-              <span
-                className={
-                  'relative h-4 w-8 rounded-full transition ' +
-                  (dark ? 'bg-clay-500' : 'bg-cream-300 dark:bg-ink-700')
-                }
-              >
-                <span
+            <div className="flex items-center gap-0.5 rounded-full bg-cream-200/70 p-0.5 dark:bg-ink-700">
+              {THEMES.map((t) => (
+                <button
+                  key={t.value}
+                  onClick={() => onSetTheme(t.value)}
+                  aria-label={t.label}
+                  title={t.label}
                   className={
-                    'absolute top-0.5 h-3 w-3 rounded-full bg-white shadow transition-all ' +
-                    (dark ? 'left-[18px]' : 'left-0.5')
+                    'grid h-6 w-7 place-items-center rounded-full text-[12px] leading-none transition ' +
+                    (theme === t.value
+                      ? 'bg-white shadow dark:bg-ink-900'
+                      : 'opacity-45 hover:opacity-100')
                   }
-                />
-              </span>
-              <MoonIcon dimmed={!dark} />
-            </button>
+                >
+                  {t.icon}
+                </button>
+              ))}
+            </div>
           </footer>
         </div>
       </aside>
@@ -262,35 +257,3 @@ function ListIcon() {
   )
 }
 
-function SunIcon({ dimmed }: { dimmed: boolean }) {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      className={dimmed ? 'opacity-40' : ''}
-    >
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function MoonIcon({ dimmed }: { dimmed: boolean }) {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      className={dimmed ? 'opacity-40' : ''}
-    >
-      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}

@@ -6,13 +6,24 @@ interface VideoBackgroundProps {
   volume: number
   isPlaying: boolean
   onEnded: () => void
+  /** Fired when YouTube refuses to play the video in an embed (copyright /
+   *  embed restrictions — error codes 2, 5, 100, 101, 150). */
+  onUnplayable: () => void
 }
 
-export function VideoBackground({ videoId, volume, isPlaying, onEnded }: VideoBackgroundProps) {
+export function VideoBackground({
+  videoId,
+  volume,
+  isPlaying,
+  onEnded,
+  onUnplayable,
+}: VideoBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<YT.Player | null>(null)
   const onEndedRef = useRef(onEnded)
   onEndedRef.current = onEnded
+  const onUnplayableRef = useRef(onUnplayable)
+  onUnplayableRef.current = onUnplayable
 
   // Create the player once.
   useEffect(() => {
@@ -40,6 +51,9 @@ export function VideoBackground({ videoId, volume, isPlaying, onEnded }: VideoBa
           },
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.ENDED) onEndedRef.current()
+          },
+          onError: () => {
+            onUnplayableRef.current()
           },
         },
       })

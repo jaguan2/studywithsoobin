@@ -12,12 +12,14 @@ interface VideoPickerProps {
 
 export function VideoPicker({ videos, selectedId, onSelect, favorites }: VideoPickerProps) {
   const [page, setPage] = useState(0)
-  const pageCount = Math.ceil(videos.length / PAGE_SIZE)
-  const start = page * PAGE_SIZE
+  const pageCount = Math.max(1, Math.ceil(videos.length / PAGE_SIZE))
+  // the list can shrink at runtime (embed-blocked videos get filtered out)
+  const safePage = Math.min(page, pageCount - 1)
+  const start = safePage * PAGE_SIZE
   const visible = videos.slice(start, start + PAGE_SIZE)
 
-  const goPrev = () => setPage((p) => (p - 1 + pageCount) % pageCount)
-  const goNext = () => setPage((p) => (p + 1) % pageCount)
+  const goPrev = () => setPage((safePage - 1 + pageCount) % pageCount)
+  const goNext = () => setPage((safePage + 1) % pageCount)
 
   return (
     <div>

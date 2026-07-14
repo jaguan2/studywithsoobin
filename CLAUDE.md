@@ -54,19 +54,32 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
     collapses). It creates the `YT.Player` once on mount; subsequent video swaps
     go through `loadVideoById` rather than remounting.
   - `Sidebar` — the translucent LifeAt-style control panel, composed of `TimerPanel`
-    (Pomodoro/Short Break/Long Break, from `usePomodoro`), `VideoPicker` (paged 4x2
-    thumbnail grid), and `VolumeControl`.
-- `usePomodoro` is a self-contained countdown state machine (mode → duration lookup,
-  start/pause/reset); it does not know about video state.
+    (15/30/60-min presets, click-the-time-to-type custom durations, and a 🍅 Pomodoro
+    mode with configurable focus/break/rounds cycles — all from `useTimer`),
+    `VideoPicker` (paged 4x2 thumbnail grid), `VolumeControl` (video volume),
+    `MusicPanel` (built-in lofi stations + paste-your-own YouTube/Spotify links,
+    rendered as iframe embeds), and `AmbiencePanel` (procedural rain/snow/storm
+    sound via Web Audio).
+- `useTimer` is a self-contained countdown state machine; it does not know about
+  video state. Its pomodoro extension auto-advances focus → break → focus… and
+  stops after the configured number of rounds. Setting any preset/custom duration
+  exits pomodoro mode.
+- `lib/musicLink.ts` (YouTube/Spotify URL → station descriptor) and
+  `lib/ambience.ts` (filtered-noise rain/snow/storm engine, no audio files) are
+  ports of TaskNook's `frontend/src/lib/{musicLink,youtube,spotify,audio}.js` —
+  if a parsing/audio bug is fixed in one repo, mirror it in the other.
 - The YouTube IFrame API's `window.YT` global is loaded lazily and once via
   `loadYouTubeIframeApi()` in `hooks/useYouTubeIframeApi.ts` — safe to call from
   multiple components, guards against injecting the `<script>` tag twice.
 - `src/types/youtube.d.ts` hand-rolls minimal ambient types for the `YT` namespace
   (just the members this app uses) instead of pulling in `@types/youtube`.
 
-**Styling:** Tailwind with a small custom palette (`cream` / `clay` / `ink`) defined in
-`tailwind.config.js`, chosen to match the reference LifeAt-style design (warm, translucent
-cream sidebar over a fullscreen video, clay/orange accent for primary actions).
+**Styling:** Tailwind with a small custom palette (`cream` / `clay` / `ink`). The palette
+values are CSS variables (`src/index.css`), not hex literals in `tailwind.config.js` —
+that's what makes the **coffee theme** work: `:root.coffee` swaps the variable values
+(palette borrowed from the personal-portfolio repo) without any per-component classes.
+Dark mode is separate and class-based (`dark:` variants, `.dark` on `<html>`). Theme
+selection (`light`/`coffee`/`dark`) lives in `App.tsx` and persists to localStorage.
 
 **Desktop app:** `desktop.py` (repo root) serves the built `dist/` with a stdlib
 `http.server` on a stable local port and opens it in a native window with `pywebview`
@@ -91,6 +104,13 @@ exit without opening a window — use it to verify a build headlessly.
 - Browser autoplay policy requires the background video to start muted; volume is
   applied after the player is ready, and unmuting only happens on explicit user
   interaction with the volume slider.
+- Some playlist videos report `embeddable=true` in metadata but still refuse to play
+  in an embed at runtime ("Watch on YouTube" — copyright-restricted VLIVE re-uploads).
+  This is unknowable ahead of time, so `App.tsx` handles the IFrame player's `onError`:
+  the video is added to a session-scoped `blockedIds` list, removed from the grids,
+  and playback skips to another video with a toast notice.
+- Spotify embeds never autoplay (user must click play inside the widget); YouTube
+  music embeds autoplay muted-or-with-sound at the browser's discretion.
 - `scripts/fetch-playlist.mjs` runs against YouTube's internal (undocumented) page
   data via `youtubei.js`. It is not the official Data API — expect it to need field-path
   fixes if YouTube changes its page structure.

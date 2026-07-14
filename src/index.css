@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Default (light) palette — warm cream / clay / ink, as RGB triplets so
+   Tailwind can apply opacity modifiers. */
+:root {
+  --cream-50: 253 251 247;
+  --cream-100: 248 242 233;
+  --cream-200: 241 231 214;
+  --cream-300: 232 217 190;
+  --clay-400: 227 168 107;
+  --clay-500: 217 146 79;
+  --clay-600: 199 125 60;
+  --ink-700: 74 64 56;
+  --ink-800: 51 43 37;
+  --ink-900: 34 28 23;
+}
+
+/* Coffee theme — the airy cream cafe palette from the personal-portfolio
+   project (buttery cream bg, near-white cards, espresso text, caramel
+   accents). Swapping the variables re-skins every component. */
+:root.coffee {
+  --cream-50: 254 236 193;   /* buttery cream (panel bg) */
+  --cream-100: 255 253 248;  /* near-white card */
+  --cream-200: 245 221 168;  /* deeper cream (hover) */
+  --cream-300: 229 201 143;  /* borders / slider track */
+  --clay-400: 209 171 127;   /* light caramel */
+  --clay-500: 186 143 104;   /* caramel mid (primary actions) */
+  --clay-600: 124 99 74;     /* mid-brown hover */
+  --ink-700: 85 72 60;       /* warm muted text */
+  --ink-800: 63 53 44;
+  --ink-900: 46 39 33;       /* espresso */
+}
+
 html,
 body,
 #root {

@@ -18,10 +18,19 @@ an internet connection since the videos stream from YouTube.)
 - Looping YouTube video that always stays fully in frame — it resizes to fit
   beside the sidebar, and expands when you collapse it (autoplay, muted until
   you turn up the volume slider)
-- Pomodoro timer with Pomodoro / Short Break / Long Break modes
+- Focus timer: 15 min / 30 min / 1 hour presets, or click the time and type
+  any duration ("45", "25:30", "1:30:00")
+- 🍅 Pomodoro mode: set your focus length, break length, and number of
+  rounds — the timer cycles through them automatically
+- 🎵 Music player: built-in lofi stations, or paste any YouTube or Spotify
+  link (playlist/album/track/show/episode) to add your own
+- 🌦️ Ambience: procedurally generated rain, snow, or storm (with thunder) —
+  no audio files, works offline
 - Paged thumbnail grid to switch videos mid-session
-- Favorites (❤) and a light/dark theme, both remembered between visits
-- Auto-advances to a random video when the current one ends
+- Favorites (❤) and three themes — light, ☕ coffee, dark — all remembered
+  between visits
+- Auto-advances to a random video when the current one ends; videos that
+  refuse to play embedded are skipped automatically
 - No backend, no API key, no login — everything runs client-side
 
 ## Getting started
@@ -100,13 +109,18 @@ studywithsoobin/
 │   ├── components/
 │   │   ├── WelcomeScreen.tsx     # start screen: pick a video (or 🎲 random)
 │   │   ├── VideoBackground.tsx   # letterboxed YouTube IFrame player
-│   │   ├── Sidebar.tsx           # LifeAt-style control panel + dark mode
-│   │   ├── TimerPanel.tsx        # Pomodoro / Short Break / Long Break
+│   │   ├── Sidebar.tsx           # LifeAt-style control panel + theme switcher
+│   │   ├── TimerPanel.tsx        # presets, custom time, 🍅 pomodoro cycles
 │   │   ├── VideoPicker.tsx       # paged 4x2 thumbnail grid
-│   │   └── VolumeControl.tsx     # ambience slider
+│   │   ├── MusicPanel.tsx        # lofi stations + custom YouTube/Spotify links
+│   │   ├── AmbiencePanel.tsx     # rain / snow / storm sound controls
+│   │   └── VolumeControl.tsx     # video volume slider
 │   ├── hooks/
-│   │   ├── usePomodoro.ts        # countdown state machine
+│   │   ├── useTimer.ts           # countdown + pomodoro state machine
 │   │   └── useYouTubeIframeApi.ts # one-time YT API script loader
+│   ├── lib/
+│   │   ├── musicLink.ts          # YouTube/Spotify URL → playable station
+│   │   └── ambience.ts           # Web Audio rain/snow/storm engine
 │   ├── data/playlist.json    # checked-in snapshot of the playlist
 │   └── types/                # playlist types + minimal YT ambient types
 ├── index.html                # Vite entry point

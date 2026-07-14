@@ -12,13 +12,23 @@ Functional requirements
 2. Let the user pick which playlist video plays, via a thumbnail grid, paged
    4x2 at a time.
 3. Auto-advance to another (random) playlist video when the current one ends.
-4. Provide a Pomodoro timer with three modes: Pomodoro (25 min), Short Break
-   (5 min), Long Break (15 min); start/pause and reset controls.
+4. Provide a focus timer with 15/30/60-minute presets, a click-to-type custom
+   duration, and a Pomodoro mode (user-configurable focus length, break
+   length, and number of rounds; auto-advances through the cycle).
 5. Provide a volume control for the background video (starts muted per
    browser autoplay policy; unmutes on user interaction).
 6. Let the user collapse/expand the sidebar to see the video full-screen.
 7. Link out to "Watch on YouTube" (current video) and "Full playlist".
 8. Work with no login, no account, no paid tier, no backend server.
+9. Show a start screen for picking the first video (no auto-random on load).
+10. Auto-skip videos that refuse embedded playback (runtime onError), with a
+    session-scoped blocklist and a notice.
+11. Music player: built-in lofi stations plus user-pasted YouTube/Spotify
+    links (persisted), rendered as iframe embeds.
+12. Weather ambience: procedurally generated rain/snow/storm audio (Web
+    Audio API, offline-capable) with its own volume control.
+13. Three visual themes: light, coffee (from the personal-portfolio palette),
+    and dark — persisted across sessions.
 
 Non-functional requirements
 -----------------------------
