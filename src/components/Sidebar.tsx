@@ -1,7 +1,8 @@
-import type { TimerApi } from '../hooks/useTimer'
+import { motion, useDragControls } from 'framer-motion'
 import type { Theme } from '../App'
 import type { Video } from '../types/playlist'
-import { TimerPanel } from './TimerPanel'
+import { usePanelSize } from '../hooks/usePanelSize'
+import { ResizeGrip } from './ResizeGrip'
 import { VideoPicker } from './VideoPicker'
 import { VolumeControl } from './VolumeControl'
 import { MusicPanel } from './MusicPanel'
@@ -34,7 +35,6 @@ const THEMES: { value: Theme; label: string; icon: string }[] = [
 interface SidebarProps {
   collapsed: boolean
   onToggleCollapsed: () => void
-  timer: TimerApi
   videos: Video[]
   currentVideo: Video
   onSelectVideo: (id: string) => void
@@ -45,12 +45,16 @@ interface SidebarProps {
   onToggleFavorite: (id: string) => void
   theme: Theme
   onSetTheme: (theme: Theme) => void
+  zIndex: number
+  onFocus: () => void
 }
 
+// A floating, draggable control panel — same framer-motion pattern as
+// TaskNook's Drawer: the header is the drag handle, positioned with explicit
+// left/top because framer-motion owns the inline transform.
 export function Sidebar({
   collapsed,
   onToggleCollapsed,
-  timer,
   videos,
   currentVideo,
   onSelectVideo,
@@ -61,146 +65,165 @@ export function Sidebar({
   onToggleFavorite,
   theme,
   onSetTheme,
+  zIndex,
+  onFocus,
 }: SidebarProps) {
+  const dragControls = useDragControls()
+  const { width, height, startResize } = usePanelSize({
+    width: 300,
+    minWidth: 280,
+    maxWidth: 520,
+    height: Math.min(560, window.innerHeight - 240),
+    minHeight: 320,
+  })
+
   const isFavorite = favorites.includes(currentVideo.id)
 
   return (
-    <div className="relative h-full w-fit">
-      <aside
-        className={
-          'h-full overflow-y-auto bg-cream-50/95 shadow-panel backdrop-blur-md transition-all duration-300 dark:bg-ink-800/90 ' +
-          (collapsed ? 'w-0 opacity-0' : 'w-[264px] opacity-100')
-        }
+    <motion.aside
+      drag
+      dragListener={false}
+      dragControls={dragControls}
+      dragMomentum={false}
+      dragElastic={0}
+      onPointerDownCapture={onFocus}
+      style={{ width, height: collapsed ? 'auto' : height, left: 16, top: 232, zIndex }}
+      className="absolute flex select-none flex-col overflow-hidden rounded-2xl bg-cream-50/95 shadow-panel backdrop-blur-md dark:bg-ink-800/90"
+    >
+      <header
+        onPointerDown={(e) => dragControls.start(e)}
+        title="Drag to move"
+        className="flex shrink-0 cursor-grab items-center justify-between px-4 py-3 active:cursor-grabbing"
       >
-        <div className="flex h-full w-[264px] flex-col gap-5 p-5">
-          <header className="flex items-center justify-between">
-            <span className="text-lg font-semibold text-ink-900 dark:text-cream-100">
-              Study w/ Soobin
-            </span>
-            <div className="flex items-center gap-2 text-ink-700 dark:text-cream-300">
-              {SOCIALS.map((s) => (
+        <span className="text-lg font-semibold text-ink-900 dark:text-cream-100">
+          Study w/ Soobin
+        </span>
+        <div className="flex items-center gap-2 text-ink-700 dark:text-cream-300">
+          {SOCIALS.map((s) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={s.label}
+              className="transition hover:text-clay-500"
+            >
+              {s.icon}
+            </a>
+          ))}
+          <button
+            onClick={onToggleCollapsed}
+            aria-label={collapsed ? 'Expand panel' : 'Minimize panel'}
+            className="ml-1 grid h-6 w-6 place-items-center rounded-full transition hover:bg-cream-200 dark:hover:bg-ink-700"
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              style={{ transform: collapsed ? 'rotate(180deg)' : undefined }}
+            >
+              <path d="M6 15l6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      {!collapsed && (
+        <>
+          <div className="scrollbar-thin flex flex-1 flex-col gap-5 overflow-y-auto px-4 pb-4">
+            <VideoPicker
+              videos={videos}
+              selectedId={currentVideo.id}
+              onSelect={onSelectVideo}
+              favorites={favorites}
+            />
+
+            <div className="flex items-center justify-between gap-2 rounded-xl2 bg-cream-100 px-3 py-2.5 dark:bg-ink-700">
+              <span
+                className="truncate text-sm text-ink-800 dark:text-cream-200"
+                title={currentVideo.title}
+              >
+                {currentVideo.title}
+              </span>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <button
+                  onClick={() => onToggleFavorite(currentVideo.id)}
+                  aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                  className={
+                    'transition hover:scale-110 ' +
+                    (isFavorite ? 'text-clay-500' : 'text-ink-700/50 dark:text-cream-300/50')
+                  }
+                >
+                  <HeartIcon filled={isFavorite} />
+                </button>
                 <a
-                  key={s.label}
-                  href={s.href}
+                  href={playlistUrl}
                   target="_blank"
                   rel="noreferrer"
-                  aria-label={s.label}
-                  className="transition hover:text-clay-500"
+                  aria-label="Open the full playlist on YouTube"
+                  className="text-ink-700/50 transition hover:text-clay-500 dark:text-cream-300/50"
                 >
-                  {s.icon}
+                  <ListIcon />
                 </a>
-              ))}
+              </div>
             </div>
-          </header>
 
-          <TimerPanel timer={timer} />
-
-          <VideoPicker
-            videos={videos}
-            selectedId={currentVideo.id}
-            onSelect={onSelectVideo}
-            favorites={favorites}
-          />
-
-          <div className="flex items-center justify-between gap-2 rounded-xl2 bg-cream-100 px-3 py-2.5 dark:bg-ink-700">
-            <span
-              className="truncate text-sm text-ink-800 dark:text-cream-200"
-              title={currentVideo.title}
-            >
-              {currentVideo.title}
-            </span>
-            <div className="flex shrink-0 items-center gap-1.5">
-              <button
-                onClick={() => onToggleFavorite(currentVideo.id)}
-                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                className={
-                  'transition hover:scale-110 ' +
-                  (isFavorite ? 'text-clay-500' : 'text-ink-700/50 dark:text-cream-300/50')
-                }
+            <div className="flex items-center justify-between text-xs">
+              <a
+                href={`https://www.youtube.com/watch?v=${currentVideo.id}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
               >
-                <HeartIcon filled={isFavorite} />
-              </button>
+                Watch on YouTube
+              </a>
               <a
                 href={playlistUrl}
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Open the full playlist on YouTube"
-                className="text-ink-700/50 transition hover:text-clay-500 dark:text-cream-300/50"
+                className="text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
               >
-                <ListIcon />
+                Full playlist
               </a>
             </div>
+
+            <VolumeControl volume={volume} onChange={onVolumeChange} />
+
+            <hr className="border-cream-300/60 dark:border-ink-700" />
+
+            <MusicPanel />
+
+            <AmbiencePanel />
+
+            <footer className="mt-auto flex items-center justify-between pt-4 text-xs text-ink-700/70 dark:text-cream-300/60">
+              <span>made for MOA 🐰</span>
+              <div className="flex items-center gap-0.5 rounded-full bg-cream-200/70 p-0.5 dark:bg-ink-700">
+                {THEMES.map((t) => (
+                  <button
+                    key={t.value}
+                    onClick={() => onSetTheme(t.value)}
+                    aria-label={t.label}
+                    title={t.label}
+                    className={
+                      'grid h-6 w-7 place-items-center rounded-full text-[12px] leading-none transition ' +
+                      (theme === t.value
+                        ? 'bg-white shadow dark:bg-ink-900'
+                        : 'opacity-45 hover:opacity-100')
+                    }
+                  >
+                    {t.icon}
+                  </button>
+                ))}
+              </div>
+            </footer>
           </div>
-
-          <div className="flex items-center justify-between text-xs">
-            <a
-              href={`https://www.youtube.com/watch?v=${currentVideo.id}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
-            >
-              Watch on YouTube
-            </a>
-            <a
-              href={playlistUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
-            >
-              Full playlist
-            </a>
-          </div>
-
-          <VolumeControl volume={volume} onChange={onVolumeChange} />
-
-          <hr className="border-cream-300/60 dark:border-ink-700" />
-
-          <MusicPanel />
-
-          <AmbiencePanel />
-
-          <footer className="mt-auto flex items-center justify-between pt-4 text-xs text-ink-700/70 dark:text-cream-300/60">
-            <span>made for MOA 🐰</span>
-            <div className="flex items-center gap-0.5 rounded-full bg-cream-200/70 p-0.5 dark:bg-ink-700">
-              {THEMES.map((t) => (
-                <button
-                  key={t.value}
-                  onClick={() => onSetTheme(t.value)}
-                  aria-label={t.label}
-                  title={t.label}
-                  className={
-                    'grid h-6 w-7 place-items-center rounded-full text-[12px] leading-none transition ' +
-                    (theme === t.value
-                      ? 'bg-white shadow dark:bg-ink-900'
-                      : 'opacity-45 hover:opacity-100')
-                  }
-                >
-                  {t.icon}
-                </button>
-              ))}
-            </div>
-          </footer>
-        </div>
-      </aside>
-
-      <button
-        onClick={onToggleCollapsed}
-        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        className="absolute top-1/2 -right-4 flex h-14 w-4 -translate-y-1/2 items-center justify-center rounded-r-lg bg-cream-50/95 text-ink-700 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/90 dark:text-cream-200 dark:hover:bg-ink-700"
-      >
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          style={{ transform: collapsed ? 'scaleX(-1)' : undefined }}
-        >
-          <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-    </div>
+          <ResizeGrip onStart={startResize} />
+        </>
+      )}
+    </motion.aside>
   )
 }
 
@@ -256,4 +279,3 @@ function ListIcon() {
     </svg>
   )
 }
-

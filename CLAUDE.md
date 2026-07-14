@@ -45,21 +45,34 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
 - `App.tsx` loads `playlist.json` and owns all top-level state: current `videoId`
   (**starts `null`** — a `WelcomeScreen` video-selection grid renders until the user
   picks one; only then does the main UI mount), `volume`, sidebar `collapsed`,
-  `favorites` and `dark` theme (both persisted to localStorage). The main UI is a
-  side-by-side flex layout — sidebar in normal flow, video area taking `flex-1`:
+  `favorites`, `theme`, and which floating panel is on top (`topPanel`). The main UI
+  is a fullscreen letterboxed video with **two independent floating panels** over it:
   - `VideoBackground` — a muted-autoplay YouTube IFrame Player (`controls: 0`,
     `pointer-events: none`). The `.yt-bg` / `.yt-frame-box` CSS in `index.css`
-    **letterboxes** the 16:9 iframe inside the area next to the sidebar (contain,
-    not cover — the whole frame stays visible and re-fits when the sidebar
-    collapses). It creates the `YT.Player` once on mount; subsequent video swaps
-    go through `loadVideoById` rather than remounting.
-  - `Sidebar` — the translucent LifeAt-style control panel, composed of `TimerPanel`
-    (15/30/60-min presets, click-the-time-to-type custom durations, and a 🍅 Pomodoro
-    mode with configurable focus/break/rounds cycles — all from `useTimer`),
-    `VideoPicker` (paged 4x2 thumbnail grid), `VolumeControl` (video volume),
-    `MusicPanel` (built-in lofi stations + paste-your-own YouTube/Spotify links,
-    rendered as iframe embeds), and `AmbiencePanel` (procedural rain/snow/storm
-    sound via Web Audio).
+    **letterboxes** the 16:9 iframe inside the full viewport (contain, not cover —
+    the whole frame always stays visible). It creates the `YT.Player` once on
+    mount; subsequent video swaps go through `loadVideoById` rather than
+    remounting. It exposes a `seekBy` handle via `forwardRef`, and reports real
+    play/pause state up through `onPlayingChange` — `App` renders a floating
+    bottom-center control pill (pause/play, ±10s) over the video. `MusicPanel`'s
+    YouTube stations use the same IFrame API via `YouTubeMusicPlayer`
+    (play/pause/seek/volume); Spotify stations keep the official embed, which has
+    its own controls.
+  - `TimerCard` — a floating, draggable, width-resizable card wrapping `TimerPanel`
+    (15/30/60-min presets, click-the-time-to-type custom durations, and a 🍅
+    Pomodoro mode with configurable focus/break/rounds cycles — all from `useTimer`).
+  - `Sidebar` — a floating, draggable, width+height-resizable panel (min 280px wide,
+    scrollable body, minimize chevron in the header), composed of `VideoPicker`
+    (paged 4x2 thumbnail grid), `VolumeControl` (video volume), `MusicPanel`
+    (built-in lofi stations + paste-your-own YouTube/Spotify links), and
+    `AmbiencePanel` (procedural rain/snow/storm sound via Web Audio).
+  - **Drag/resize pattern (from TaskNook's Drawer/FocusTimer):** framer-motion
+    `drag` with `dragListener={false}` + `useDragControls` — only the header/grab
+    strip starts a drag; `dragMomentum={false}`, `dragElastic={0}`; panels are
+    positioned with explicit `left`/`top` (never Tailwind translate classes)
+    because framer-motion owns the inline `transform`. Resizing is a plain
+    pointer-event corner grip (`usePanelSize` + `ResizeGrip`) — TaskNook has no
+    resize; that part is ours. Last-touched panel gets the higher z-index.
 - `useTimer` is a self-contained countdown state machine; it does not know about
   video state. Its pomodoro extension auto-advances focus → break → focus… and
   stops after the configured number of rounds. Setting any preset/custom duration

@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import playlistData from './data/playlist.json'
 import type { Playlist, Video } from './types/playlist'
 import { useTimer } from './hooks/useTimer'
-import { VideoBackground } from './components/VideoBackground'
+import { VideoBackground, type VideoBackgroundHandle } from './components/VideoBackground'
 import { Sidebar } from './components/Sidebar'
+import { TimerCard } from './components/TimerCard'
 import { WelcomeScreen } from './components/WelcomeScreen'
 
 const playlist = playlistData as Playlist
@@ -51,6 +52,9 @@ export default function App() {
   // restrictions surface only at playback time, not in playlist metadata)
   const [blockedIds, setBlockedIds] = useState<string[]>([])
   const [notice, setNotice] = useState<string | null>(null)
+  const [videoPlaying, setVideoPlaying] = useState(true)
+  const [topPanel, setTopPanel] = useState<'timer' | 'sidebar'>('sidebar')
+  const videoRef = useRef<VideoBackgroundHandle>(null)
   const timer = useTimer(25)
 
   useEffect(() => {
@@ -97,35 +101,82 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-black">
-      <div className="relative z-10 h-full shrink-0">
-        <Sidebar
-          collapsed={collapsed}
-          onToggleCollapsed={() => setCollapsed((c) => !c)}
-          timer={timer}
-          videos={playable}
-          currentVideo={currentVideo}
-          onSelectVideo={setVideoId}
-          volume={volume}
-          onVolumeChange={setVolume}
-          playlistUrl={playlist.sourceUrl}
-          favorites={favorites}
-          onToggleFavorite={toggleFavorite}
-          theme={theme}
-          onSetTheme={setTheme}
-        />
-      </div>
+    <div className="relative h-screen w-screen overflow-hidden bg-black">
+      <VideoBackground
+        ref={videoRef}
+        videoId={videoId}
+        volume={volume}
+        isPlaying={videoPlaying}
+        onEnded={() => setVideoId(pickRandom(playable, videoId))}
+        onPlayingChange={setVideoPlaying}
+        onUnplayable={handleUnplayable}
+      />
 
-      <div className="relative flex-1">
-        <VideoBackground
-          videoId={videoId}
-          volume={volume}
-          isPlaying
-          onEnded={() => setVideoId(pickRandom(playable, videoId))}
-          onUnplayable={handleUnplayable}
-        />
+      <TimerCard
+        timer={timer}
+        zIndex={topPanel === 'timer' ? 40 : 30}
+        onFocus={() => setTopPanel('timer')}
+      />
 
-        <div className="absolute right-4 top-4 z-10 flex items-center gap-2">
+      <Sidebar
+        collapsed={collapsed}
+        onToggleCollapsed={() => setCollapsed((c) => !c)}
+        videos={playable}
+        currentVideo={currentVideo}
+        onSelectVideo={setVideoId}
+        volume={volume}
+        onVolumeChange={setVolume}
+        playlistUrl={playlist.sourceUrl}
+        favorites={favorites}
+        onToggleFavorite={toggleFavorite}
+        theme={theme}
+        onSetTheme={setTheme}
+        zIndex={topPanel === 'sidebar' ? 40 : 30}
+        onFocus={() => setTopPanel('sidebar')}
+      />
+
+      <div className="pointer-events-none absolute inset-0">
+
+        <div className="pointer-events-auto absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full bg-cream-50/90 px-2 py-1.5 shadow-panel backdrop-blur-md dark:bg-ink-800/80">
+          <button
+            onClick={() => videoRef.current?.seekBy(-10)}
+            aria-label="Back 10 seconds"
+            title="Back 10 seconds"
+            className="grid h-8 w-8 place-items-center rounded-full text-ink-800 transition hover:bg-cream-200 dark:text-cream-200 dark:hover:bg-ink-700"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: 'scaleX(-1)' }}>
+              <path d="M13 5l7 7-7 7M5 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button
+            onClick={() => setVideoPlaying((p) => !p)}
+            aria-label={videoPlaying ? 'Pause video' : 'Play video'}
+            title={videoPlaying ? 'Pause video' : 'Play video'}
+            className="grid h-9 w-9 place-items-center rounded-full bg-clay-500 text-white transition hover:bg-clay-600"
+          >
+            {videoPlaying ? (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+              </svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
+          </button>
+          <button
+            onClick={() => videoRef.current?.seekBy(10)}
+            aria-label="Forward 10 seconds"
+            title="Forward 10 seconds"
+            className="grid h-8 w-8 place-items-center rounded-full text-ink-800 transition hover:bg-cream-200 dark:text-cream-200 dark:hover:bg-ink-700"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M13 5l7 7-7 7M5 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="pointer-events-auto absolute right-4 top-4 z-10 flex items-center gap-2">
           <a
             href={TXT_CHANNEL_URL}
             target="_blank"
@@ -146,7 +197,7 @@ export default function App() {
         </div>
 
         {notice && (
-          <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm text-cream-100 shadow-panel backdrop-blur-md">
+          <div className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm text-cream-100 shadow-panel backdrop-blur-md">
             {notice}
           </div>
         )}

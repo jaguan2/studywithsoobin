@@ -38,6 +38,9 @@ declare namespace YT {
     isMuted(): boolean
     setVolume(volume: number): void
     getVolume(): number
+    getCurrentTime(): number
+    getPlayerState(): number
+    seekTo(seconds: number, allowSeekAhead: boolean): void
     destroy(): void
   }
 }

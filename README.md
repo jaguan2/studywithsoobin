@@ -15,9 +15,13 @@ an internet connection since the videos stream from YouTube.)
 ## Features
 
 - Start screen to pick your study-companion video (or hit 🎲 Surprise me)
-- Looping YouTube video that always stays fully in frame — it resizes to fit
-  beside the sidebar, and expands when you collapse it (autoplay, muted until
-  you turn up the volume slider)
+- Looping YouTube video that always stays fully in frame (autoplay, muted
+  until you turn up the volume slider)
+- The timer and the control panel are separate floating cards — drag them
+  anywhere, resize them from the corner, minimize the panel to just its
+  header
+- Floating video controls: pause/play and skip back/forward 10 seconds; the
+  music player has its own play/pause/seek/volume controls too
 - Focus timer: 15 min / 30 min / 1 hour presets, or click the time and type
   any duration ("45", "25:30", "1:30:00")
 - 🍅 Pomodoro mode: set your focus length, break length, and number of
@@ -109,7 +113,8 @@ studywithsoobin/
 │   ├── components/
 │   │   ├── WelcomeScreen.tsx     # start screen: pick a video (or 🎲 random)
 │   │   ├── VideoBackground.tsx   # letterboxed YouTube IFrame player
-│   │   ├── Sidebar.tsx           # LifeAt-style control panel + theme switcher
+│   │   ├── Sidebar.tsx           # floating control panel (drag/resize/minimize)
+│   │   ├── TimerCard.tsx         # floating timer card (drag/resize)
 │   │   ├── TimerPanel.tsx        # presets, custom time, 🍅 pomodoro cycles
 │   │   ├── VideoPicker.tsx       # paged 4x2 thumbnail grid
 │   │   ├── MusicPanel.tsx        # lofi stations + custom YouTube/Spotify links

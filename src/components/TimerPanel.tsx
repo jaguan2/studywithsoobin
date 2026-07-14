@@ -34,7 +34,7 @@ export function TimerPanel({ timer }: TimerPanelProps) {
   const pomo = timer.pomodoro
 
   return (
-    <div className="rounded-xl2 bg-cream-100/90 p-4 dark:bg-ink-700/70">
+    <div>
       <div className="flex items-center gap-3">
         {editing ? (
           <input

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { resolveMusicLink, stationKey, type Station } from '../lib/musicLink'
+import { YouTubeMusicPlayer } from './YouTubeMusicPlayer'
 
 // A few cozy lofi streams to start with; users can add their own via
 // YouTube or Spotify link. (Same starter set as TaskNook.)
@@ -21,18 +22,14 @@ function loadCustomStations(): Station[] {
   }
 }
 
-function embedProps(station: Station) {
-  if (station.provider === 'spotify') {
-    return {
-      src: `https://open.spotify.com/embed/${station.kind}/${station.id}?utm_source=generator&theme=0`,
-      height: SPOTIFY_TALL_KINDS.has(station.kind ?? '') ? 280 : 152,
-      allow: 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture',
-    }
-  }
+// Spotify keeps its official embed — the widget ships its own working
+// play/next controls. YouTube stations get our custom mini-player instead
+// (see YouTubeMusicPlayer), since the bare embed is uncontrollable this small.
+function spotifyEmbedProps(station: Station) {
   return {
-    src: `https://www.youtube.com/embed/${station.id}?autoplay=1`,
-    height: 140,
-    allow: 'autoplay; encrypted-media',
+    src: `https://open.spotify.com/embed/${station.kind}/${station.id}?utm_source=generator&theme=0`,
+    height: SPOTIFY_TALL_KINDS.has(station.kind ?? '') ? 280 : 152,
+    allow: 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture',
   }
 }
 
@@ -97,15 +94,21 @@ export function MusicPanel() {
       </div>
 
       {musicOn && activeStation && (
-        <div className="mt-2 overflow-hidden rounded-xl border border-cream-300 dark:border-ink-700">
-          <iframe
-            key={stationKey(activeStation)}
-            title="music player"
-            width="100%"
-            className="block"
-            {...embedProps(activeStation)}
-            allowFullScreen
-          />
+        <div className="mt-2">
+          {activeStation.provider === 'youtube' ? (
+            <YouTubeMusicPlayer key={stationKey(activeStation)} videoId={activeStation.id} />
+          ) : (
+            <div className="overflow-hidden rounded-xl border border-cream-300 dark:border-ink-700">
+              <iframe
+                key={stationKey(activeStation)}
+                title="music player"
+                width="100%"
+                className="block"
+                {...spotifyEmbedProps(activeStation)}
+                allowFullScreen
+              />
+            </div>
+          )}
         </div>
       )}
 
