@@ -52,12 +52,32 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
     **letterboxes** the 16:9 iframe inside the full viewport (contain, not cover —
     the whole frame always stays visible). It creates the `YT.Player` once on
     mount; subsequent video swaps go through `loadVideoById` rather than
-    remounting. It exposes a `seekBy` handle via `forwardRef`, and reports real
-    play/pause state up through `onPlayingChange` — `App` renders a floating
-    bottom-center control pill (pause/play, ±10s) over the video. `MusicPanel`'s
-    YouTube stations use the same IFrame API via `YouTubeMusicPlayer`
-    (play/pause/seek/volume); Spotify stations keep the official embed, which has
-    its own controls.
+    remounting. It exposes `seekBy` / `seekTo` / `getProgress` via
+    `forwardRef`, and reports real play/pause state up through
+    `onPlayingChange`. `VideoControls` renders the floating bottom-center pill
+    (pause/play, ±10s, and a scrub bar with elapsed/total times) over the
+    video. The scrub bar is a plain `<input type="range">` — that buys
+    click-to-jump, drag-to-scrub and arrow-key seeking for free — and the
+    played portion is a gradient (`.scrubber` in `index.css`) because
+    `appearance: none` disables the native accent-coloured fill. The IFrame
+    API has no timeupdate event, so `VideoControls` polls `getProgress()`
+    every 500ms; it's a separate component precisely so that poll re-renders
+    the pill rather than `App` and every panel under it. The bar itself is
+    `Scrubber`, shared with the music player. A "Change video" button (top
+    right) drops `videoId` back to `null` to return to the `WelcomeScreen`.
+    `MusicPanel`'s YouTube stations use the same IFrame API via
+    `YouTubeMusicPlayer` (play/pause/±10s/seek/volume); Spotify stations keep
+    the official embed, which has its own controls.
+  - **Built-in music stations rot, by design of YouTube.** They're 24/7
+    livestreams: when one restarts it returns under a *new* video id and the
+    old id becomes an archive with embedding disabled (error 150). Two of the
+    three original stations died this way. Note that `oEmbed` still reports
+    such an id as fine — the only way to know is to load it in a real player
+    and wait for `PLAYING` vs `onError`. `YouTubeMusicPlayer` handles
+    `onError` and explains the failure instead of showing a black box.
+    Livestreams also report a `getDuration()` of weeks (their DVR window), so
+    the player checks the undocumented `getVideoData().isLive` and renders a
+    `LiveBadge` in place of a meaningless seek bar.
   - `TimerCard` — a floating, draggable, width-resizable card wrapping `TimerPanel`
     (15/30/60-min presets, click-the-time-to-type custom durations, and a 🍅
     Pomodoro mode with configurable focus/break/rounds cycles — all from `useTimer`).
@@ -84,7 +104,12 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
 - `lib/musicLink.ts` (YouTube/Spotify URL → station descriptor) and
   `lib/ambience.ts` (filtered-noise rain/snow/storm engine, no audio files) are
   ports of TaskNook's `frontend/src/lib/{musicLink,youtube,spotify,audio}.js` —
-  if a parsing/audio bug is fixed in one repo, mirror it in the other.
+  if a parsing/audio bug is fixed in one repo, mirror it in the other. Note the
+  ambience presets have since been retuned here (rain/snow are softer than
+  TaskNook's), so don't blindly copy those numbers back. The engine's output is
+  measurable without ears: patch `AudioNode.prototype.connect` in a page to tap
+  whatever reaches `ctx.destination` with an `AnalyserNode`, then compare RMS
+  and the share of energy above 2kHz.
 - The YouTube IFrame API's `window.YT` global is loaded lazily and once via
   `loadYouTubeIframeApi()` in `hooks/useYouTubeIframeApi.ts` — safe to call from
   multiple components, guards against injecting the `<script>` tag twice.
@@ -96,7 +121,20 @@ values are CSS variables (`src/index.css`), not hex literals in `tailwind.config
 that's what makes the **coffee theme** work: `:root.coffee` swaps the variable values
 (palette borrowed from the personal-portfolio repo) without any per-component classes.
 Dark mode is separate and class-based (`dark:` variants, `.dark` on `<html>`). Theme
-selection (`light`/`coffee`/`dark`) lives in `App.tsx` and persists to localStorage.
+selection (`light`/`coffee`/`dark`/`custom`) lives in `App.tsx` and persists to
+localStorage.
+
+The **custom theme** (`lib/theme.ts`) derives all ten palette variables from one
+user-picked colour and applies them as **inline styles on `:root`**, which is what
+lets them win over the stylesheet's `:root` / `:root.coffee` rules. Two consequences:
+- Leaving the custom theme *must* call `clearCustomTheme()`, or the inline vars keep
+  overriding whichever preset was selected. `App.tsx`'s theme effect does this.
+- Only hue and saturation come from the picked colour. Lightness is solved per stop
+  (bisection) so each variable keeps the **relative luminance** of the light preset's
+  matching colour. Do not "simplify" this back to a fixed HSL lightness ladder: HSL
+  lightness isn't brightness, so a fixed ladder makes yellow/cyan accents wash out to
+  near-white (white-on-accent measured 1.17:1 before this was fixed). The luminance
+  anchors keep contrast identical to the light preset for every hue.
 
 **Desktop app:** `desktop.py` (repo root) serves the built `dist/` with a stdlib
 `http.server` on a stable local port and opens it in a native window with `pywebview`

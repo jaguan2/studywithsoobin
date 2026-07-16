@@ -39,6 +39,11 @@ declare namespace YT {
     setVolume(volume: number): void
     getVolume(): number
     getCurrentTime(): number
+    getDuration(): number
+    /** Undocumented but long-stable. Livestreams report a duration (their DVR
+     *  window, often weeks), so this is the only way to tell one from a very
+     *  long video. Optional + call it defensively. */
+    getVideoData?(): { isLive?: boolean; title?: string; video_id?: string }
     getPlayerState(): number
     seekTo(seconds: number, allowSeekAhead: boolean): void
     destroy(): void

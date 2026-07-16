@@ -4,6 +4,11 @@ import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
 export interface VideoBackgroundHandle {
   /** Seek relative to the current position (negative = backward). */
   seekBy: (deltaSeconds: number) => void
+  /** Seek to an absolute position, for the scrubber. */
+  seekTo: (seconds: number) => void
+  /** Current position and length, or null until the player reports them.
+   *  The IFrame API has no timeupdate event, so callers poll this. */
+  getProgress: () => { current: number; duration: number } | null
 }
 
 interface VideoBackgroundProps {
@@ -37,6 +42,23 @@ export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackground
         const player = playerRef.current
         if (!player) return
         player.seekTo(Math.max(0, player.getCurrentTime() + deltaSeconds), true)
+      },
+      seekTo: (seconds: number) => {
+        playerRef.current?.seekTo(Math.max(0, seconds), true)
+      },
+      getProgress: () => {
+        const player = playerRef.current
+        // The YT.Player object exists before its methods are wired up, and
+        // they throw if called too early — hence the guard and the catch.
+        if (!player || typeof player.getDuration !== 'function') return null
+        try {
+          const duration = player.getDuration()
+          const current = player.getCurrentTime()
+          if (!Number.isFinite(duration) || !Number.isFinite(current)) return null
+          return { current, duration }
+        } catch {
+          return null
+        }
       },
     }))
 

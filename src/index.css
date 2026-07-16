@@ -70,6 +70,30 @@ body {
   height: 100%;
 }
 
+/* Video scrubber. `appearance: none` (needed to style the track at all) also
+   kills the native accent-coloured fill, so the elapsed portion is painted
+   with a hard gradient stop driven by the --played percentage. */
+.scrubber {
+  background: linear-gradient(
+    to right,
+    rgb(var(--clay-500)) var(--played, 0%),
+    rgb(var(--cream-300)) var(--played, 0%)
+  );
+}
+.dark .scrubber {
+  background: linear-gradient(
+    to right,
+    rgb(var(--clay-500)) var(--played, 0%),
+    rgb(var(--ink-700)) var(--played, 0%)
+  );
+}
+.scrubber:disabled {
+  background: rgb(var(--cream-300));
+}
+.dark .scrubber:disabled {
+  background: rgb(var(--ink-700));
+}
+
 /* Slim, warm-toned scrollbar for thumbnail rails */
 .scrollbar-thin::-webkit-scrollbar {
   height: 6px;

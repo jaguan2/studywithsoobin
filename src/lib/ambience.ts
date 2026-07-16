@@ -19,9 +19,12 @@ const PRESETS: Record<AmbienceMode, {
   lfoFreq: number
   lfoDepth: number
 }> = {
-  rain: { lowpass: 2600, highpass: 380, gain: 0.6, lfoFreq: 0.12, lfoDepth: 0.12 },
+  // Gentle rain heard from indoors, not splatter on a tin roof: the lowpass
+  // does the work (it strips the high-frequency hiss), and the lower highpass
+  // keeps enough low end that what's left reads as warm rather than thin.
+  rain: { lowpass: 1150, highpass: 200, gain: 0.36, lfoFreq: 0.1, lfoDepth: 0.09 },
   // Snow has no patter of its own — just a hushed, heavily-muffled wind.
-  snow: { lowpass: 900, highpass: 120, gain: 0.22, lfoFreq: 0.045, lfoDepth: 0.22 },
+  snow: { lowpass: 600, highpass: 80, gain: 0.13, lfoFreq: 0.04, lfoDepth: 0.16 },
   // Storm is rain pushed louder/brighter, with gustier modulation.
   storm: { lowpass: 3600, highpass: 260, gain: 0.85, lfoFreq: 0.2, lfoDepth: 0.18 },
 }

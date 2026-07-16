@@ -45,6 +45,8 @@ interface SidebarProps {
   onToggleFavorite: (id: string) => void
   theme: Theme
   onSetTheme: (theme: Theme) => void
+  customColor: string
+  onSetCustomColor: (hex: string) => void
   zIndex: number
   onFocus: () => void
 }
@@ -65,6 +67,8 @@ export function Sidebar({
   onToggleFavorite,
   theme,
   onSetTheme,
+  customColor,
+  onSetCustomColor,
   zIndex,
   onFocus,
 }: SidebarProps) {
@@ -219,6 +223,33 @@ export function Sidebar({
                     {t.icon}
                   </button>
                 ))}
+                {/* Clicking the swatch both selects the custom theme and opens
+                    the OS colour picker, so it's one control rather than two. */}
+                <label
+                  onClick={() => onSetTheme('custom')}
+                  title="Custom colour — pick your own"
+                  className={
+                    'grid h-6 w-7 cursor-pointer place-items-center rounded-full transition ' +
+                    (theme === 'custom'
+                      ? 'bg-white shadow dark:bg-ink-900'
+                      : 'opacity-45 hover:opacity-100')
+                  }
+                >
+                  <span
+                    className="h-3.5 w-3.5 rounded-full ring-1 ring-inset ring-ink-900/20"
+                    style={{ background: customColor }}
+                  />
+                  <input
+                    type="color"
+                    value={customColor}
+                    onChange={(e) => {
+                      onSetCustomColor(e.target.value)
+                      onSetTheme('custom')
+                    }}
+                    aria-label="Custom colour theme"
+                    className="sr-only"
+                  />
+                </label>
               </div>
             </footer>
       </div>

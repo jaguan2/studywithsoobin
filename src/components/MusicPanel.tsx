@@ -3,11 +3,22 @@ import { resolveMusicLink, stationKey, type Station } from '../lib/musicLink'
 import { YouTubeMusicPlayer } from './YouTubeMusicPlayer'
 
 // A few cozy lofi streams to start with; users can add their own via
-// YouTube or Spotify link. (Same starter set as TaskNook.)
+// YouTube or Spotify link.
+//
+// These rot. They're 24/7 livestreams, and when one restarts it comes back
+// under a *new* video id while the old id becomes an archive with embedding
+// disabled (error 150) — which is how the original starter set died. Every id
+// below was checked by loading it in a real player and waiting for PLAYING,
+// not just by asking oEmbed whether the video exists. Re-check them the same
+// way if stations start failing; YouTubeMusicPlayer surfaces the error rather
+// than showing a dead black box.
+// Last verified: 2026-07-15.
 const BUILT_IN_STATIONS: Station[] = [
-  { provider: 'youtube', id: 'jfKfPfyJRdk', label: 'lofi hip hop radio 📚' },
+  { provider: 'youtube', id: 'X4VbdwhkE10', label: 'lofi hip hop radio 📚' },
   { provider: 'youtube', id: '4xDzrJKXOOY', label: 'synthwave radio 🌃' },
-  { provider: 'youtube', id: 'rUxyKA_-grg', label: 'lofi sleep & chill 🌙' },
+  { provider: 'youtube', id: 'JD-kMIpDfnY', label: 'lofi sleep & chill 🌙' },
+  { provider: 'youtube', id: 'E2vONfzoyRI', label: 'jazz lofi 🎷' },
+  { provider: 'youtube', id: 'CwPCy1GLS38', label: 'rainy day lofi ☔' },
 ]
 
 // Spotify's embed needs a taller frame for content with a tracklist.

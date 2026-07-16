@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
+import { LiveBadge, Scrubber } from './Scrubber'
 
 // A compact music player driven by the YouTube IFrame API instead of a bare
-// embed, so we can offer real controls (play/pause, ±10s, volume) at sidebar
-// width — the native embed UI is unusable this small.
+// embed, so we can offer real controls (play/pause, ±10s, seek, volume) at
+// sidebar width — the native embed UI is unusable this small.
+const POLL_MS = 500
+
 interface YouTubeMusicPlayerProps {
   videoId: string
 }
@@ -14,6 +17,13 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [ready, setReady] = useState(false)
   const [volume, setVolume] = useState(60)
+  const [current, setCurrent] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [isLive, setIsLive] = useState(false)
+  // Station links rot: YouTube livestreams get a fresh video id whenever the
+  // stream restarts, and the old archived id usually has embedding disabled
+  // (error 150). Without this the panel just showed a silent black box.
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -40,7 +50,15 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
           },
           onStateChange: (event) => {
             setIsPlaying(event.data === YT.PlayerState.PLAYING)
+            if (event.data === YT.PlayerState.PLAYING) {
+              try {
+                setIsLive(!!event.target.getVideoData?.()?.isLive)
+              } catch {
+                /* undocumented API — fall back to a normal seek bar */
+              }
+            }
           },
+          onError: () => setError(true),
         },
       })
     })
@@ -53,6 +71,25 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
     // remounted per station via key={videoId}, so create-once is correct
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // The IFrame API has no timeupdate event, so poll. Skipped for livestreams,
+  // whose "duration" is a DVR window measured in weeks.
+  useEffect(() => {
+    if (!ready || isLive || error) return
+    const id = window.setInterval(() => {
+      const player = playerRef.current
+      if (!player) return
+      try {
+        const total = player.getDuration()
+        const now = player.getCurrentTime()
+        if (Number.isFinite(total)) setDuration(total)
+        if (Number.isFinite(now)) setCurrent(now)
+      } catch {
+        /* player not ready yet */
+      }
+    }, POLL_MS)
+    return () => window.clearInterval(id)
+  }, [ready, isLive, error])
 
   const togglePlay = () => {
     const player = playerRef.current
@@ -72,13 +109,40 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
     playerRef.current?.setVolume(next)
   }
 
+  if (error) {
+    return (
+      <div className="rounded-xl border border-cream-300 bg-white/80 px-3 py-3 text-xs text-ink-700 dark:border-ink-700 dark:bg-ink-800/80 dark:text-cream-300">
+        <p className="font-medium">This station won't play here.</p>
+        <p className="mt-1 opacity-75">
+          Its owner disabled embedding, or the livestream restarted under a new link. Pick another
+          station, or paste a link below.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="overflow-hidden rounded-xl border border-cream-300 dark:border-ink-700">
       <div className="aspect-video w-full bg-black [&_iframe]:h-full [&_iframe]:w-full">
         <div ref={containerRef} />
       </div>
 
-      <div className="flex items-center gap-1 bg-white/80 px-2 py-1.5 dark:bg-ink-800/80">
+      <div className="flex items-center gap-2 bg-white/80 px-2 pt-1.5 dark:bg-ink-800/80">
+        {isLive ? (
+          <LiveBadge />
+        ) : (
+          <Scrubber
+            current={current}
+            duration={duration}
+            onSeek={(seconds) => {
+              playerRef.current?.seekTo(seconds, true)
+              setCurrent(seconds)
+            }}
+          />
+        )}
+      </div>
+
+      <div className="flex items-center gap-1 bg-white/80 px-2 pb-1.5 pt-1 dark:bg-ink-800/80">
         <ControlButton onClick={() => seekBy(-10)} label="Back 10 seconds" disabled={!ready}>
           <SeekIcon direction="back" />
         </ControlButton>
