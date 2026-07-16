@@ -65,6 +65,50 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
     the pill rather than `App` and every panel under it. The bar itself is
     `Scrubber`, shared with the music player. A "Change video" button (top
     right) drops `videoId` back to `null` to return to the `WelcomeScreen`.
+  - **The pill auto-hides, copying YouTube's model** (`VideoControls`): it
+    fades after `HIDE_AFTER_MS` (3s) of no pointer movement, and *any*
+    `pointermove` anywhere brings it back — not just hovering its last
+    position, which would make the user hunt for a small target. It refuses to
+    hide while `keepVisible` holds: video paused (YouTube keeps controls up
+    when paused), pointer over the pill, CC menu open, or `interacting` (set
+    on pointerdown, cleared on window pointerup — this is what stops a
+    scrubber drag that wanders off the pill from hiding mid-drag). When hidden
+    it also drops `pointer-events`, so it can't swallow clicks.
+  - The pill is **draggable**, which forces two things. (1) framer-motion owns
+    the dragged element's inline transform, so the `-translate-x-1/2` that
+    centres it lives on a **non-dragged wrapper** — the wrapper is the resting
+    place (centring + the caption lift), the inner `motion.div` is what drags.
+    (2) It sits at **z-50, above the panels** (z-30/40): it doesn't overlap
+    them where it rests, but a pill dragged *under* a panel could never be
+    grabbed back. `dragConstraints` is the full-viewport overlay (`bounds`
+    prop from `App`) so it can't be thrown off screen — unlike the other
+    panels, it has no restore pill to recover it. Once dragged, the caption
+    lift stops applying: the position is the user's.
+  - **Subtitles** (the pill's `CC` button) drive YouTube's undocumented
+    captions module, since `controls: 0` hides YouTube's own CC button. The
+    playlist's videos carry 4–7 translation tracks each. Rules learned by
+    testing against real videos — the docs and `getOption` both mislead here:
+    - on = `loadModule('captions')` then `setOption('captions','track',t)`;
+      off = `setOption('captions','track',{})`. **`unloadModule('captions')`
+      does not hide rendered captions** — don't reach for it.
+    - `getOption('captions','track')` is not a reliable read-back (it reports
+      `{}` for a track that is in fact showing). The only trustworthy check is
+      a screenshot; the iframe is cross-origin, so the DOM tells you nothing.
+    - The tracklist doesn't exist until playback starts and is rebuilt on
+      every `loadVideoById`, so `VideoBackground.applyCaptions()` re-applies
+      the stored language on each `PLAYING` and retries while the module spins
+      up.
+    - `controls: 0` also means YouTube reserves no space for controls and
+      renders subtitles hard against the bottom of the frame — exactly where
+      the control pill sits. Nothing in the API moves the captions, so the
+      pill raises itself (`bottom-24`) while a track is active.
+  - **Video quality is not controllable** — don't add a quality selector.
+    `setPlaybackQuality()` and `loadVideoById({suggestedQuality})` are both
+    ignored (verified on a 1920x1080 player: every call stayed at `hd1080`).
+    `getAvailableQualityLevels()` still returns a list, which makes the API
+    look alive; it isn't. The player picks quality from bandwidth and player
+    size, and since the video is letterboxed to fill the viewport it already
+    resolves to `hd1080` on its own.
     `MusicPanel`'s YouTube stations use the same IFrame API via
     `YouTubeMusicPlayer` (play/pause/±10s/seek/volume); Spotify stations keep
     the official embed, which has its own controls.

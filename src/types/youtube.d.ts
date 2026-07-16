@@ -15,6 +15,14 @@ declare namespace YT {
     data: number
   }
 
+  /** An entry from the captions module's `tracklist` option. */
+  interface CaptionTrack {
+    languageCode: string
+    languageName?: string
+    displayName?: string
+    kind?: string
+  }
+
   interface PlayerOptions {
     videoId?: string
     width?: string | number
@@ -47,5 +55,19 @@ declare namespace YT {
     getPlayerState(): number
     seekTo(seconds: number, allowSeekAhead: boolean): void
     destroy(): void
+
+    /** Captions. Undocumented in the current IFrame API reference but stable,
+     *  and the only way to drive subtitles while `controls: 0` hides YouTube's
+     *  own CC button. Verified against real playlist videos:
+     *    on   -> loadModule('captions') then setOption('captions','track',t)
+     *    off  -> setOption('captions','track',{})
+     *  `unloadModule('captions')` does NOT hide rendered captions — don't use
+     *  it to turn them off. Everything here throws if called before the
+     *  module is up, so guard every call. */
+    loadModule?(module: string): void
+    unloadModule?(module: string): void
+    setOption?(module: string, option: string, value: unknown): void
+    getOption?(module: string, option: string): unknown
+    getOptions?(): string[]
   }
 }

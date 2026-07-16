@@ -1,5 +1,10 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
+
+export interface CaptionTrack {
+  code: string
+  name: string
+}
 
 export interface VideoBackgroundHandle {
   /** Seek relative to the current position (negative = backward). */
@@ -9,12 +14,18 @@ export interface VideoBackgroundHandle {
   /** Current position and length, or null until the player reports them.
    *  The IFrame API has no timeupdate event, so callers poll this. */
   getProgress: () => { current: number; duration: number } | null
+  /** Subtitle tracks for the current video. Empty until the captions module
+   *  has spun up, and varies per video, so callers poll this too. */
+  getCaptionTracks: () => CaptionTrack[]
 }
 
 interface VideoBackgroundProps {
   videoId: string
   volume: number
   isPlaying: boolean
+  /** Preferred subtitle language code, or null for off. Re-applied to each
+   *  new video that has a matching track. */
+  captionLang: string | null
   onEnded: () => void
   /** Keeps the caller's play/pause state in sync with the real player state. */
   onPlayingChange: (playing: boolean) => void
@@ -25,7 +36,7 @@ interface VideoBackgroundProps {
 
 export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackgroundProps>(
   function VideoBackground(
-    { videoId, volume, isPlaying, onEnded, onPlayingChange, onUnplayable },
+    { videoId, volume, isPlaying, captionLang, onEnded, onPlayingChange, onUnplayable },
     ref,
   ) {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -36,6 +47,44 @@ export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackground
     onPlayingChangeRef.current = onPlayingChange
     const onUnplayableRef = useRef(onUnplayable)
     onUnplayableRef.current = onUnplayable
+    const captionLangRef = useRef(captionLang)
+    captionLangRef.current = captionLang
+    const captionRetryRef = useRef<number | undefined>(undefined)
+
+    /** Push the current preference into the player. The tracklist only exists
+     *  once the captions module has spun up (a second or two after playback
+     *  starts, and again after each video swap), so this retries instead of
+     *  giving up on the first miss. */
+    const applyCaptions = useCallback(() => {
+      window.clearTimeout(captionRetryRef.current)
+      let attempts = 0
+      const tick = () => {
+        const player = playerRef.current
+        if (!player?.loadModule) return
+        try {
+          player.loadModule('captions')
+          const lang = captionLangRef.current
+          if (!lang) {
+            // An empty track object is the only thing that hides captions;
+            // unloadModule leaves them rendered on screen.
+            player.setOption?.('captions', 'track', {})
+            return
+          }
+          const tracks = player.getOption?.('captions', 'tracklist') as
+            | YT.CaptionTrack[]
+            | undefined
+          if (Array.isArray(tracks) && tracks.length > 0) {
+            const match = tracks.find((t) => t.languageCode === lang)
+            player.setOption?.('captions', 'track', match ?? {})
+            return
+          }
+        } catch {
+          /* module not ready yet — fall through to the retry */
+        }
+        if (++attempts < 12) captionRetryRef.current = window.setTimeout(tick, 500)
+      }
+      tick()
+    }, [])
 
     useImperativeHandle(ref, () => ({
       seekBy: (deltaSeconds: number) => {
@@ -58,6 +107,22 @@ export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackground
           return { current, duration }
         } catch {
           return null
+        }
+      },
+      getCaptionTracks: () => {
+        const player = playerRef.current
+        if (!player?.getOption) return []
+        try {
+          const tracks = player.getOption('captions', 'tracklist') as
+            | YT.CaptionTrack[]
+            | undefined
+          if (!Array.isArray(tracks)) return []
+          return tracks.map((t) => ({
+            code: t.languageCode,
+            name: t.languageName ?? t.displayName ?? t.languageCode,
+          }))
+        } catch {
+          return []
         }
       },
     }))
@@ -91,6 +156,10 @@ export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackground
                 onEndedRef.current()
               } else if (event.data === YT.PlayerState.PLAYING) {
                 onPlayingChangeRef.current(true)
+                // The tracklist doesn't exist until playback starts, and it's
+                // rebuilt per video — so re-apply the preference here rather
+                // than once on ready.
+                applyCaptions()
               } else if (event.data === YT.PlayerState.PAUSED) {
                 onPlayingChangeRef.current(false)
               }
@@ -104,12 +173,17 @@ export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackground
 
       return () => {
         cancelled = true
+        window.clearTimeout(captionRetryRef.current)
         playerRef.current?.destroy()
         playerRef.current = null
       }
       // Player is intentionally created once; video/volume changes are handled below.
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+      applyCaptions()
+    }, [captionLang, applyCaptions])
 
     // Swap videos without recreating the player.
     useEffect(() => {

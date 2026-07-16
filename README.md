@@ -28,6 +28,12 @@ an internet connection since the videos stream from YouTube.)
   scrub bar — click or drag anywhere on the line to jump to that point, with
   the elapsed and total time either side of it; the music player has its own
   play/pause/seek/volume controls too
+- The video controls fade away after a few seconds and come back the moment
+  you move the mouse — they stay put while the video is paused or while you're
+  using them. Drag them anywhere by the grip on their left
+- 💬 Subtitles: the `CC` button lists whatever translations a video carries
+  (most have English, Japanese, Chinese and more). Your language is remembered
+  and turned back on automatically for every video that has it
 - Focus timer: 15 min / 30 min / 1 hour presets, or click the time and type
   any duration ("45", "25:30", "1:30:00")
 - 🍅 Pomodoro mode: set your focus length, break length, and number of

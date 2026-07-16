@@ -40,6 +40,12 @@ function loadCustomColor(): string {
   return stored && /^#[0-9a-f]{6}$/i.test(stored) ? stored : DEFAULT_CUSTOM_COLOR
 }
 
+/** Preferred subtitle language, re-applied to every video that has it. */
+function loadCaptionLang(): string | null {
+  const stored = localStorage.getItem('sws.captionLang')
+  return stored && /^[\w-]{2,10}$/.test(stored) ? stored : null
+}
+
 function RestoreChevron() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="opacity-60">
@@ -64,6 +70,7 @@ export default function App() {
   const [favorites, setFavorites] = useState<string[]>(loadFavorites)
   const [theme, setTheme] = useState<Theme>(loadTheme)
   const [customColor, setCustomColor] = useState<string>(loadCustomColor)
+  const [captionLang, setCaptionLang] = useState<string | null>(loadCaptionLang)
   // videos YouTube refused to play embedded this session (copyright/embed
   // restrictions surface only at playback time, not in playlist metadata)
   const [blockedIds, setBlockedIds] = useState<string[]>([])
@@ -72,6 +79,8 @@ export default function App() {
   const [timerCollapsed, setTimerCollapsed] = useState(false)
   const [topPanel, setTopPanel] = useState<'timer' | 'sidebar'>('sidebar')
   const videoRef = useRef<VideoBackgroundHandle>(null)
+  // The full-viewport overlay, used to keep a dragged control pill on screen.
+  const overlayRef = useRef<HTMLDivElement>(null)
   const timer = useTimer(25)
 
   useEffect(() => {
@@ -97,6 +106,12 @@ export default function App() {
     () => playlist.videos.find((v) => v.id === videoId) ?? playlist.videos[0],
     [videoId],
   )
+
+  const chooseCaptionLang = (code: string | null) => {
+    setCaptionLang(code)
+    if (code) localStorage.setItem('sws.captionLang', code)
+    else localStorage.removeItem('sws.captionLang')
+  }
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => {
@@ -132,6 +147,7 @@ export default function App() {
         videoId={videoId}
         volume={volume}
         isPlaying={videoPlaying}
+        captionLang={captionLang}
         onEnded={() => setVideoId(pickRandom(playable, videoId))}
         onPlayingChange={setVideoPlaying}
         onUnplayable={handleUnplayable}
@@ -164,12 +180,15 @@ export default function App() {
         onFocus={() => setTopPanel('sidebar')}
       />
 
-      <div className="pointer-events-none absolute inset-0">
+      <div ref={overlayRef} className="pointer-events-none absolute inset-0">
 
         <VideoControls
           player={videoRef}
+          bounds={overlayRef}
           isPlaying={videoPlaying}
           onTogglePlay={() => setVideoPlaying((p) => !p)}
+          captionLang={captionLang}
+          onSetCaptionLang={chooseCaptionLang}
         />
 
         <div className="pointer-events-auto absolute right-4 top-4 z-10 flex items-center gap-2">
