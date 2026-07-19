@@ -23,6 +23,7 @@ const BUILT_IN_STATIONS: Station[] = [
   // radios do, since the video id is fixed.
   { provider: 'youtube', id: 'foEjHAkrIDA', label: 'secret cafe r&b ☕' },
   { provider: 'youtube', id: 'mWI10M1M7JM', label: 'spring cleaning 🧺' },
+  { provider: 'youtube', id: 'WPfOjN8aY-Y', label: 'weathering with you ☁️' },
   { provider: 'youtube', id: 'PLwzQP2wCE5w5_L9yjomQyX2CMFa0T-pw_', isPlaylist: true, label: 'my playlist 🎧' },
   // Spotify keeps its official embed. Note it will only play full tracks for
   // a listener already logged into Spotify in this browser — everyone else
