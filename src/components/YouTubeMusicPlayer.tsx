@@ -8,10 +8,12 @@ import { LiveBadge, Scrubber } from './Scrubber'
 const POLL_MS = 500
 
 interface YouTubeMusicPlayerProps {
+  /** A video id, or a playlist id when `isPlaylist` is set. */
   videoId: string
+  isPlaylist?: boolean
 }
 
-export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
+export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<YT.Player | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -20,6 +22,9 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
   const [current, setCurrent] = useState(0)
   const [duration, setDuration] = useState(0)
   const [isLive, setIsLive] = useState(false)
+  // Which track of a playlist is playing — a 41-video list is unusable
+  // without it.
+  const [track, setTrack] = useState<{ title: string; index: number; count: number } | null>(null)
   // Station links rot: YouTube livestreams get a fresh video id whenever the
   // stream restarts, and the old archived id usually has embedding disabled
   // (error 150). Without this the panel just showed a silent black box.
@@ -31,7 +36,8 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
     loadYouTubeIframeApi().then((YT) => {
       if (cancelled || !containerRef.current) return
       playerRef.current = new YT.Player(containerRef.current, {
-        videoId,
+        // A playlist is loaded through listType/list instead of videoId.
+        ...(isPlaylist ? {} : { videoId }),
         width: '100%',
         height: '100%',
         playerVars: {
@@ -41,6 +47,7 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
           modestbranding: 1,
           rel: 0,
           iv_load_policy: 3,
+          ...(isPlaylist ? { listType: 'playlist', list: videoId } : {}),
         },
         events: {
           onReady: (event) => {
@@ -55,6 +62,18 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
                 setIsLive(!!event.target.getVideoData?.()?.isLive)
               } catch {
                 /* undocumented API — fall back to a normal seek bar */
+              }
+              if (isPlaylist) {
+                try {
+                  const items = event.target.getPlaylist?.()
+                  setTrack({
+                    title: event.target.getVideoData?.()?.title ?? '',
+                    index: (event.target.getPlaylistIndex?.() ?? 0) + 1,
+                    count: Array.isArray(items) ? items.length : 0,
+                  })
+                } catch {
+                  /* playlist data not ready */
+                }
               }
             }
           },
@@ -127,6 +146,17 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
         <div ref={containerRef} />
       </div>
 
+      {track && (
+        <div className="flex items-baseline gap-1.5 bg-white/80 px-2.5 pt-1.5 text-[11px] dark:bg-ink-800/80">
+          <span className="shrink-0 tabular-nums text-ink-700/60 dark:text-cream-300/50">
+            {track.index}/{track.count}
+          </span>
+          <span className="truncate text-ink-800 dark:text-cream-200" title={track.title}>
+            {track.title}
+          </span>
+        </div>
+      )}
+
       <div className="flex items-center gap-2 bg-white/80 px-2 pt-1.5 dark:bg-ink-800/80">
         {isLive ? (
           <LiveBadge />
@@ -143,15 +173,35 @@ export function YouTubeMusicPlayer({ videoId }: YouTubeMusicPlayerProps) {
       </div>
 
       <div className="flex items-center gap-1 bg-white/80 px-2 pb-1.5 pt-1 dark:bg-ink-800/80">
-        <ControlButton onClick={() => seekBy(-10)} label="Back 10 seconds" disabled={!ready}>
-          <SeekIcon direction="back" />
-        </ControlButton>
+        {isPlaylist ? (
+          <ControlButton
+            onClick={() => playerRef.current?.previousVideo?.()}
+            label="Previous track"
+            disabled={!ready}
+          >
+            <SkipIcon direction="back" />
+          </ControlButton>
+        ) : (
+          <ControlButton onClick={() => seekBy(-10)} label="Back 10 seconds" disabled={!ready}>
+            <SeekIcon direction="back" />
+          </ControlButton>
+        )}
         <ControlButton onClick={togglePlay} label={isPlaying ? 'Pause music' : 'Play music'} disabled={!ready} primary>
           {isPlaying ? <PauseIcon /> : <PlayIcon />}
         </ControlButton>
-        <ControlButton onClick={() => seekBy(10)} label="Forward 10 seconds" disabled={!ready}>
-          <SeekIcon direction="forward" />
-        </ControlButton>
+        {isPlaylist ? (
+          <ControlButton
+            onClick={() => playerRef.current?.nextVideo?.()}
+            label="Next track"
+            disabled={!ready}
+          >
+            <SkipIcon direction="forward" />
+          </ControlButton>
+        ) : (
+          <ControlButton onClick={() => seekBy(10)} label="Forward 10 seconds" disabled={!ready}>
+            <SeekIcon direction="forward" />
+          </ControlButton>
+        )}
         <input
           type="range"
           min={0}
@@ -205,6 +255,20 @@ function PauseIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
       <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+    </svg>
+  )
+}
+
+function SkipIcon({ direction }: { direction: 'back' | 'forward' }) {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      style={{ transform: direction === 'back' ? 'scaleX(-1)' : undefined }}
+    >
+      <path d="M5 5l10 7-10 7V5zM17 5h2.5v14H17V5z" />
     </svg>
   )
 }

@@ -39,8 +39,10 @@ an internet connection since the videos stream from YouTube.)
 - 🍅 Pomodoro mode: set your focus length, break length, and number of
   rounds — the timer cycles through them automatically
 - 🎵 Music player: built-in lofi stations with their own play/pause, seek and
-  volume, or paste any YouTube or Spotify link (playlist/album/track/show/
-  episode) to add your own
+  volume, or paste any YouTube or Spotify link to add your own. YouTube
+  playlists work too — they get next/previous track buttons and show which
+  track is playing. (Spotify embeds play 30-second previews unless you're
+  signed into Spotify in the same browser.)
 - 🌦️ Ambience: procedurally generated rain, snow, or storm (with thunder) —
   no audio files, works offline
 - Paged thumbnail grid to switch videos mid-session

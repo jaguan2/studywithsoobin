@@ -121,7 +121,21 @@ is the main correctness gate. A single `tsconfig.json` covers both `src/` and
     `onError` and explains the failure instead of showing a black box.
     Livestreams also report a `getDuration()` of weeks (their DVR window), so
     the player checks the undocumented `getVideoData().isLive` and renders a
-    `LiveBadge` in place of a meaningless seek bar.
+    `LiveBadge` in place of a meaningless seek bar. Long *mix videos* (a fixed
+    video id, not a stream) don't rot this way — prefer them where possible.
+  - **YouTube playlists** are supported as stations (`Station.isPlaylist`).
+    They load through `playerVars.listType/list` rather than `videoId`, and
+    swap the ±10s buttons for next/prev (`nextVideo`/`previousVideo`) plus an
+    "index/count · title" line, since a 40-track list is unusable without
+    knowing what's playing. `resolveMusicLink` prefers a real playlist over a
+    video id in the same URL, but deliberately ignores `list=RD…` (an
+    auto-generated radio mix seeded from that very video — what
+    `&start_radio=1` links are) and `WL`/`LL` (private). For those the video
+    itself is what was meant.
+  - **Spotify stations only ever play 30-second previews** unless the viewer
+    is logged into Spotify in that same browser — the widget shows a
+    "Preview" badge. Nothing in the embed API changes this, so don't try; it's
+    also why Spotify keeps its official embed instead of a custom player.
   - `TimerCard` — a floating, draggable, width-resizable card wrapping `TimerPanel`
     (15/30/60-min presets, click-the-time-to-type custom durations, and a 🍅
     Pomodoro mode with configurable focus/break/rounds cycles — all from `useTimer`).

@@ -12,13 +12,23 @@ import { YouTubeMusicPlayer } from './YouTubeMusicPlayer'
 // not just by asking oEmbed whether the video exists. Re-check them the same
 // way if stations start failing; YouTubeMusicPlayer surfaces the error rather
 // than showing a dead black box.
-// Last verified: 2026-07-15.
+// Last verified: 2026-07-16.
 const BUILT_IN_STATIONS: Station[] = [
   { provider: 'youtube', id: 'X4VbdwhkE10', label: 'lofi hip hop radio 📚' },
   { provider: 'youtube', id: '4xDzrJKXOOY', label: 'synthwave radio 🌃' },
   { provider: 'youtube', id: 'JD-kMIpDfnY', label: 'lofi sleep & chill 🌙' },
   { provider: 'youtube', id: 'E2vONfzoyRI', label: 'jazz lofi 🎷' },
   { provider: 'youtube', id: 'CwPCy1GLS38', label: 'rainy day lofi ☔' },
+  // Long mixes rather than livestreams — these don't rot the way the 24/7
+  // radios do, since the video id is fixed.
+  { provider: 'youtube', id: 'foEjHAkrIDA', label: 'secret cafe r&b ☕' },
+  { provider: 'youtube', id: 'mWI10M1M7JM', label: 'spring cleaning 🧺' },
+  { provider: 'youtube', id: 'PLwzQP2wCE5w5_L9yjomQyX2CMFa0T-pw_', isPlaylist: true, label: 'my playlist 🎧' },
+  // Spotify keeps its official embed. Note it will only play full tracks for
+  // a listener already logged into Spotify in this browser — everyone else
+  // gets 30-second previews, and nothing autoplays. That's the widget's
+  // behaviour, not something the app can override.
+  { provider: 'spotify', id: '5Aa3V6dW5XCkDg2utkZjdE', kind: 'playlist', label: "soobin's recs 🐰" },
 ]
 
 // Spotify's embed needs a taller frame for content with a tracklist.
@@ -107,7 +117,11 @@ export function MusicPanel() {
       {musicOn && activeStation && (
         <div className="mt-2">
           {activeStation.provider === 'youtube' ? (
-            <YouTubeMusicPlayer key={stationKey(activeStation)} videoId={activeStation.id} />
+            <YouTubeMusicPlayer
+              key={stationKey(activeStation)}
+              videoId={activeStation.id}
+              isPlaylist={activeStation.isPlaylist}
+            />
           ) : (
             <div className="overflow-hidden rounded-xl border border-cream-300 dark:border-ink-700">
               <iframe

@@ -8,23 +8,7 @@ import { VolumeControl } from './VolumeControl'
 import { MusicPanel } from './MusicPanel'
 import { AmbiencePanel } from './AmbiencePanel'
 
-const SOCIALS = [
-  {
-    label: 'TXT on YouTube',
-    href: 'https://www.youtube.com/@TOMORROWXTOGETHER',
-    icon: <YouTubeIcon />,
-  },
-  {
-    label: 'TXT on Instagram',
-    href: 'https://www.instagram.com/txt.bighitent',
-    icon: <InstagramIcon />,
-  },
-  {
-    label: 'TXT on X',
-    href: 'https://x.com/TXT_members',
-    icon: <XIcon />,
-  },
-]
+const GITHUB_URL = 'https://github.com/jaguan2'
 
 const THEMES: { value: Theme; label: string; icon: string }[] = [
   { value: 'light', label: 'Light theme', icon: '☀️' },
@@ -114,18 +98,16 @@ export function Sidebar({
           study with soobin
         </span>
         <div className="flex items-center gap-2 text-ink-700 dark:text-cream-300">
-          {SOCIALS.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={s.label}
-              className="transition hover:text-clay-500"
-            >
-              {s.icon}
-            </a>
-          ))}
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="This project on GitHub"
+            title="This project on GitHub"
+            className="transition hover:text-clay-500"
+          >
+            <GitHubIcon />
+          </a>
           <button
             onClick={onToggleCollapsed}
             aria-label="Minimize panel"
@@ -258,28 +240,10 @@ export function Sidebar({
   )
 }
 
-function YouTubeIcon() {
+function GitHubIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M23 7.5s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.3-1C16.6 4 12 4 12 4s-4.6 0-7.8.2c-.4.1-1.4.1-2.3 1-.7.7-.9 2.3-.9 2.3S.8 9.4.8 11.3v1.4c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2 .9 2.5 1 1.8.2 7.6.2 7.6.2s4.6 0 7.8-.2c.4-.1 1.4-.1 2.3-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-1.4c0-1.9-.2-3.8-.2-3.8zM9.7 15.2V8.7l6.1 3.3-6.1 3.2z" />
-    </svg>
-  )
-}
-
-function InstagramIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
-      <circle cx="12" cy="12" r="4.5" />
-      <circle cx="17.8" cy="6.2" r="1.2" fill="currentColor" stroke="none" />
-    </svg>
-  )
-}
-
-function XIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.3L1.2 2h6.4l4.5 5.9L18.9 2zm-1.1 18.1h1.7L7.7 3.8H5.9l11.9 16.3z" />
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
     </svg>
   )
 }

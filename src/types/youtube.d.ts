@@ -56,6 +56,12 @@ declare namespace YT {
     seekTo(seconds: number, allowSeekAhead: boolean): void
     destroy(): void
 
+    /** Playlist playback (a player created with playerVars.listType/list). */
+    nextVideo?(): void
+    previousVideo?(): void
+    getPlaylist?(): string[] | undefined
+    getPlaylistIndex?(): number
+
     /** Captions. Undocumented in the current IFrame API reference but stable,
      *  and the only way to drive subtitles while `controls: 0` hides YouTube's
      *  own CC button. Verified against real playlist videos:
