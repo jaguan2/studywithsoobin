@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { motion, useDragControls } from 'framer-motion'
 import { Scrubber } from './Scrubber'
+import { PauseIcon, PlayIcon, SeekIcon } from './icons'
 import type { CaptionTrack, VideoBackgroundHandle } from './VideoBackground'
 
 // How often to ask the player where it is. The IFrame API has no timeupdate
@@ -21,7 +22,7 @@ interface VideoControlsProps {
   onSetCaptionLang: (code: string | null) => void
 }
 
-export function VideoControls({
+function VideoControlsInner({
   player,
   bounds,
   isPlaying,
@@ -47,6 +48,7 @@ export function VideoControls({
 
   useEffect(() => {
     const id = window.setInterval(() => {
+      if (document.hidden) return // nothing visible to update
       const progress = player.current?.getProgress()
       if (progress) {
         setCurrent(progress.current)
@@ -167,15 +169,7 @@ export function VideoControls({
           title={isPlaying ? 'Pause video' : 'Play video'}
           className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-clay-500 text-white transition hover:bg-clay-600"
         >
-          {isPlaying ? (
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
-            </svg>
-          ) : (
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          )}
+          {isPlaying ? <PauseIcon /> : <PlayIcon />}
         </button>
         <button
           onClick={() => player.current?.seekBy(10)}
@@ -284,18 +278,7 @@ function MenuItem({
   )
 }
 
-function SeekIcon({ direction }: { direction: 'back' | 'forward' }) {
-  return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      style={{ transform: direction === 'back' ? 'scaleX(-1)' : undefined }}
-    >
-      <path d="M13 5l7 7-7 7M5 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
+// memo: App re-renders every second while the timer runs; this component's
+// own poll drives its updates, and its props only change on play/caption
+// state changes.
+export const VideoControls = memo(VideoControlsInner)

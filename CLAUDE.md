@@ -16,6 +16,7 @@ npm run dev             # start Vite dev server (http://localhost:5173, or next 
 npm run build            # tsc --noEmit type-check, then vite build to dist/
 npm run preview           # serve the production build locally
 npm run lint             # eslint .
+npm test                 # vitest run (pure-logic tests: musicLink, timer parsing, theme solver)
 npm run fetch-playlist    # refresh src/data/playlist.json from the live YouTube playlist
 
 python desktop.py        # run as a native desktop window (needs dist/ built +
@@ -23,9 +24,11 @@ python desktop.py        # run as a native desktop window (needs dist/ built +
 build-exe.bat            # package into StudyWithSoobin.exe at the repo root (PyInstaller)
 ```
 
-There is no test suite yet. Type-checking (`tsc --noEmit`, run as part of `npm run build`)
-is the main correctness gate. A single `tsconfig.json` covers both `src/` and
-`vite.config.ts` — there is deliberately no tsconfig.app/node split.
+Type-checking (`tsc --noEmit`, run as part of `npm run build`) is the main
+correctness gate, plus a small Vitest suite (`npm test`) over the pure logic:
+`lib/musicLink`, the timer's parse/format helpers, and the theme luminance solver.
+A single `tsconfig.json` covers both `src/` and `vite.config.ts` — there is
+deliberately no tsconfig.app/node split.
 
 ## Architecture
 

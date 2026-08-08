@@ -1,4 +1,6 @@
+import { memo } from 'react'
 import type { Video } from '../types/playlist'
+import { HeartIcon } from './icons'
 
 interface WelcomeScreenProps {
   videos: Video[]
@@ -7,7 +9,7 @@ interface WelcomeScreenProps {
   onSurprise: () => void
 }
 
-export function WelcomeScreen({ videos, favorites, onSelect, onSurprise }: WelcomeScreenProps) {
+function WelcomeScreenInner({ videos, favorites, onSelect, onSurprise }: WelcomeScreenProps) {
   return (
     <div className="h-screen w-screen overflow-y-auto bg-cream-50 dark:bg-ink-900">
       <div className="mx-auto max-w-5xl px-6 py-10">
@@ -45,9 +47,7 @@ export function WelcomeScreen({ videos, favorites, onSelect, onSurprise }: Welco
                 </span>
                 {favorites.includes(video.id) && (
                   <span className="absolute left-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-white/90 text-clay-500">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z" />
-                    </svg>
+                    <HeartIcon filled size={11} />
                   </span>
                 )}
               </div>
@@ -64,3 +64,7 @@ export function WelcomeScreen({ videos, favorites, onSelect, onSurprise }: Welco
     </div>
   )
 }
+
+// memo: the timer keeps ticking in App while the welcome screen is shown
+// (after "Change video"); nothing here depends on it.
+export const WelcomeScreen = memo(WelcomeScreenInner)

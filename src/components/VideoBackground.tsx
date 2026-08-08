@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
 
 export interface CaptionTrack {
@@ -32,11 +32,14 @@ interface VideoBackgroundProps {
   /** Fired when YouTube refuses to play the video in an embed (copyright /
    *  embed restrictions — error codes 2, 5, 100, 101, 150). */
   onUnplayable: () => void
+  /** Fired when the IFrame API itself can't be loaded (offline / blocked) —
+   *  distinct from onUnplayable, which blocklists the *video*. */
+  onApiUnavailable: () => void
 }
 
-export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackgroundProps>(
+const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundProps>(
   function VideoBackground(
-    { videoId, volume, isPlaying, captionLang, onEnded, onPlayingChange, onUnplayable },
+    { videoId, volume, isPlaying, captionLang, onEnded, onPlayingChange, onUnplayable, onApiUnavailable },
     ref,
   ) {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -47,8 +50,15 @@ export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackground
     onPlayingChangeRef.current = onPlayingChange
     const onUnplayableRef = useRef(onUnplayable)
     onUnplayableRef.current = onUnplayable
+    const onApiUnavailableRef = useRef(onApiUnavailable)
+    onApiUnavailableRef.current = onApiUnavailable
     const captionLangRef = useRef(captionLang)
     captionLangRef.current = captionLang
+    // Read at player-creation time: if videoId changes while the IFrame API is
+    // still loading, the swap effect no-ops (no player yet) — creating with
+    // the mount-time id would then play the wrong video.
+    const videoIdRef = useRef(videoId)
+    videoIdRef.current = videoId
     const captionRetryRef = useRef<number | undefined>(undefined)
 
     /** Push the current preference into the player. The tracklist only exists
@@ -131,45 +141,49 @@ export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackground
     useEffect(() => {
       let cancelled = false
 
-      loadYouTubeIframeApi().then((YT) => {
-        if (cancelled || !containerRef.current) return
-        playerRef.current = new YT.Player(containerRef.current, {
-          videoId,
-          width: '100%',
-          height: '100%',
-          playerVars: {
-            autoplay: 1,
-            controls: 0,
-            disablekb: 1,
-            modestbranding: 1,
-            rel: 0,
-            iv_load_policy: 3,
-            mute: 1,
-          },
-          events: {
-            onReady: (event) => {
-              event.target.setVolume(volume)
-              event.target.playVideo()
+      loadYouTubeIframeApi()
+        .then((YT) => {
+          if (cancelled || !containerRef.current) return
+          playerRef.current = new YT.Player(containerRef.current, {
+            videoId: videoIdRef.current,
+            width: '100%',
+            height: '100%',
+            playerVars: {
+              autoplay: 1,
+              controls: 0,
+              disablekb: 1,
+              modestbranding: 1,
+              rel: 0,
+              iv_load_policy: 3,
+              mute: 1,
             },
-            onStateChange: (event) => {
-              if (event.data === YT.PlayerState.ENDED) {
-                onEndedRef.current()
-              } else if (event.data === YT.PlayerState.PLAYING) {
-                onPlayingChangeRef.current(true)
-                // The tracklist doesn't exist until playback starts, and it's
-                // rebuilt per video — so re-apply the preference here rather
-                // than once on ready.
-                applyCaptions()
-              } else if (event.data === YT.PlayerState.PAUSED) {
-                onPlayingChangeRef.current(false)
-              }
+            events: {
+              onReady: (event) => {
+                event.target.setVolume(volume)
+                event.target.playVideo()
+              },
+              onStateChange: (event) => {
+                if (event.data === YT.PlayerState.ENDED) {
+                  onEndedRef.current()
+                } else if (event.data === YT.PlayerState.PLAYING) {
+                  onPlayingChangeRef.current(true)
+                  // The tracklist doesn't exist until playback starts, and it's
+                  // rebuilt per video — so re-apply the preference here rather
+                  // than once on ready.
+                  applyCaptions()
+                } else if (event.data === YT.PlayerState.PAUSED) {
+                  onPlayingChangeRef.current(false)
+                }
+              },
+              onError: () => {
+                onUnplayableRef.current()
+              },
             },
-            onError: () => {
-              onUnplayableRef.current()
-            },
-          },
+          })
         })
-      })
+        .catch(() => {
+          if (!cancelled) onApiUnavailableRef.current()
+        })
 
       return () => {
         cancelled = true
@@ -217,3 +231,7 @@ export const VideoBackground = forwardRef<VideoBackgroundHandle, VideoBackground
     )
   },
 )
+
+// memo: the timer ticking in App re-renders the tree every second; this
+// component's props only actually change on video/volume/caption changes.
+export const VideoBackground = memo(VideoBackgroundInner)

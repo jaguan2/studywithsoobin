@@ -30,25 +30,43 @@ function extractYouTubeId(input: string): string | null {
   const match = trimmed.match(YOUTUBE_PATTERN)
   if (match) return match[1]
 
-  try {
-    const v = new URL(trimmed).searchParams.get('v')
-    if (v && /^[\w-]{11}$/.test(v)) return v
-  } catch {
-    /* not a valid URL */
+  // Fallback for unusual-but-valid YouTube URLs the pattern misses; the host
+  // check keeps a ?v= on some unrelated site from resolving as YouTube.
+  if (/youtube\.com|youtu\.be/.test(trimmed)) {
+    try {
+      const v = new URL(trimmed).searchParams.get('v')
+      if (v && /^[\w-]{11}$/.test(v)) return v
+    } catch {
+      /* not a valid URL */
+    }
   }
   return null
 }
 
 function extractYouTubePlaylistId(input: string): string | null {
   const trimmed = input.trim()
+  // A bare pasted playlist id, no URL around it (TaskNook's parser accepts
+  // these too). Only public-list prefixes: PL (normal), OL (album), UU/FL
+  // (channel uploads/favourites) — not WL/LL/RD, per below.
+  if (/^(PL|OL|UU|FL)[\w-]{10,}$/.test(trimmed)) return trimmed
   if (!/youtube\.com|youtu\.be/.test(trimmed)) return null
-  const match = trimmed.match(YOUTUBE_PLAYLIST_PATTERN)
-  if (!match) return null
-  const id = match[1]
+  let id = trimmed.match(YOUTUBE_PLAYLIST_PATTERN)?.[1] ?? null
+  if (!id) {
+    // Fallback for unusual-but-valid URLs the regex misses (e.g. list= as the
+    // first query param of a path the pattern doesn't anticipate).
+    try {
+      id = new URL(trimmed).searchParams.get('list')
+    } catch {
+      /* not a parseable URL */
+    }
+  }
+  if (!id) return null
   // RD… is an auto-generated radio "mix" seeded from the video in the very
   // same URL (that's what &start_radio=1 links are), and WL/LL are the user's
   // private Watch Later / Liked lists which won't load in an embed. In all of
   // those the video itself is what was meant, so let the video path take it.
+  // (Deliberate divergence: TaskNook accepts a bare LL… id; private lists
+  // don't play in embeds, so we don't.)
   if (/^(RD|WL|LL)/.test(id)) return null
   return id
 }

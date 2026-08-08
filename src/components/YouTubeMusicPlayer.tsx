@@ -1,11 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
+import { storageGet, storageSet } from '../lib/storage'
 import { LiveBadge, Scrubber } from './Scrubber'
+import { PauseIcon, PlayIcon, SeekIcon, SkipIcon } from './icons'
 
 // A compact music player driven by the YouTube IFrame API instead of a bare
 // embed, so we can offer real controls (play/pause, ±10s, seek, volume) at
 // sidebar width — the native embed UI is unusable this small.
 const POLL_MS = 500
+
+const VOLUME_KEY = 'sws.music.volume'
+const DEFAULT_VOLUME = 60
+
+function loadMusicVolume(): number {
+  const stored = Number(storageGet(VOLUME_KEY))
+  return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : DEFAULT_VOLUME
+}
 
 interface YouTubeMusicPlayerProps {
   /** A video id, or a playlist id when `isPlaylist` is set. */
@@ -18,7 +28,9 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
   const playerRef = useRef<YT.Player | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [ready, setReady] = useState(false)
-  const [volume, setVolume] = useState(60)
+  const [volume, setVolume] = useState(loadMusicVolume)
+  const volumeRef = useRef(volume)
+  volumeRef.current = volume
   const [current, setCurrent] = useState(0)
   const [duration, setDuration] = useState(0)
   const [isLive, setIsLive] = useState(false)
@@ -28,59 +40,65 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
   // Station links rot: YouTube livestreams get a fresh video id whenever the
   // stream restarts, and the old archived id usually has embedding disabled
   // (error 150). Without this the panel just showed a silent black box.
-  const [error, setError] = useState(false)
+  // 'api' is the other failure mode: the IFrame API itself didn't load
+  // (offline / blocked) — a different problem needing a different message.
+  const [error, setError] = useState<'video' | 'api' | null>(null)
 
   useEffect(() => {
     let cancelled = false
 
-    loadYouTubeIframeApi().then((YT) => {
-      if (cancelled || !containerRef.current) return
-      playerRef.current = new YT.Player(containerRef.current, {
-        // A playlist is loaded through listType/list instead of videoId.
-        ...(isPlaylist ? {} : { videoId }),
-        width: '100%',
-        height: '100%',
-        playerVars: {
-          autoplay: 1,
-          controls: 0,
-          disablekb: 1,
-          modestbranding: 1,
-          rel: 0,
-          iv_load_policy: 3,
-          ...(isPlaylist ? { listType: 'playlist', list: videoId } : {}),
-        },
-        events: {
-          onReady: (event) => {
-            event.target.setVolume(60)
-            event.target.playVideo()
-            setReady(true)
+    loadYouTubeIframeApi()
+      .then((YT) => {
+        if (cancelled || !containerRef.current) return
+        playerRef.current = new YT.Player(containerRef.current, {
+          // A playlist is loaded through listType/list instead of videoId.
+          ...(isPlaylist ? {} : { videoId }),
+          width: '100%',
+          height: '100%',
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            disablekb: 1,
+            modestbranding: 1,
+            rel: 0,
+            iv_load_policy: 3,
+            ...(isPlaylist ? { listType: 'playlist', list: videoId } : {}),
           },
-          onStateChange: (event) => {
-            setIsPlaying(event.data === YT.PlayerState.PLAYING)
-            if (event.data === YT.PlayerState.PLAYING) {
-              try {
-                setIsLive(!!event.target.getVideoData?.()?.isLive)
-              } catch {
-                /* undocumented API — fall back to a normal seek bar */
-              }
-              if (isPlaylist) {
+          events: {
+            onReady: (event) => {
+              event.target.setVolume(volumeRef.current)
+              event.target.playVideo()
+              setReady(true)
+            },
+            onStateChange: (event) => {
+              setIsPlaying(event.data === YT.PlayerState.PLAYING)
+              if (event.data === YT.PlayerState.PLAYING) {
                 try {
-                  const items = event.target.getPlaylist?.()
-                  setTrack({
-                    title: event.target.getVideoData?.()?.title ?? '',
-                    index: (event.target.getPlaylistIndex?.() ?? 0) + 1,
-                    count: Array.isArray(items) ? items.length : 0,
-                  })
+                  setIsLive(!!event.target.getVideoData?.()?.isLive)
                 } catch {
-                  /* playlist data not ready */
+                  /* undocumented API — fall back to a normal seek bar */
+                }
+                if (isPlaylist) {
+                  try {
+                    const items = event.target.getPlaylist?.()
+                    setTrack({
+                      title: event.target.getVideoData?.()?.title ?? '',
+                      index: (event.target.getPlaylistIndex?.() ?? 0) + 1,
+                      count: Array.isArray(items) ? items.length : 0,
+                    })
+                  } catch {
+                    /* playlist data not ready */
+                  }
                 }
               }
-            }
+            },
+            onError: () => setError('video'),
           },
-          onError: () => setError(true),
-        },
+        })
       })
-    })
+      .catch(() => {
+        if (!cancelled) setError('api')
+      })
 
     return () => {
       cancelled = true
@@ -96,6 +114,7 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
   useEffect(() => {
     if (!ready || isLive || error) return
     const id = window.setInterval(() => {
+      if (document.hidden) return // nothing visible to update
       const player = playerRef.current
       if (!player) return
       try {
@@ -126,16 +145,28 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
   const changeVolume = (next: number) => {
     setVolume(next)
     playerRef.current?.setVolume(next)
+    storageSet(VOLUME_KEY, String(next))
   }
 
   if (error) {
     return (
       <div className="rounded-xl border border-cream-300 bg-white/80 px-3 py-3 text-xs text-ink-700 dark:border-ink-700 dark:bg-ink-800/80 dark:text-cream-300">
-        <p className="font-medium">This station won't play here.</p>
-        <p className="mt-1 opacity-75">
-          Its owner disabled embedding, or the livestream restarted under a new link. Pick another
-          station, or paste a link below.
-        </p>
+        {error === 'api' ? (
+          <>
+            <p className="font-medium">Couldn't reach YouTube.</p>
+            <p className="mt-1 opacity-75">
+              Check your internet connection, then pick the station again to retry.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="font-medium">This station won't play here.</p>
+            <p className="mt-1 opacity-75">
+              Its owner disabled embedding, or the livestream restarted under a new link. Pick
+              another station, or paste a link below.
+            </p>
+          </>
+        )}
       </div>
     )
   }
@@ -183,11 +214,11 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
           </ControlButton>
         ) : (
           <ControlButton onClick={() => seekBy(-10)} label="Back 10 seconds" disabled={!ready}>
-            <SeekIcon direction="back" />
+            <SeekIcon direction="back" size={14} />
           </ControlButton>
         )}
         <ControlButton onClick={togglePlay} label={isPlaying ? 'Pause music' : 'Play music'} disabled={!ready} primary>
-          {isPlaying ? <PauseIcon /> : <PlayIcon />}
+          {isPlaying ? <PauseIcon size={12} /> : <PlayIcon size={12} />}
         </ControlButton>
         {isPlaylist ? (
           <ControlButton
@@ -199,7 +230,7 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
           </ControlButton>
         ) : (
           <ControlButton onClick={() => seekBy(10)} label="Forward 10 seconds" disabled={!ready}>
-            <SeekIcon direction="forward" />
+            <SeekIcon direction="forward" size={14} />
           </ControlButton>
         )}
         <input
@@ -240,51 +271,5 @@ function ControlButton({ onClick, label, disabled, primary, children }: ControlB
     >
       {children}
     </button>
-  )
-}
-
-function PlayIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M8 5v14l11-7z" />
-    </svg>
-  )
-}
-
-function PauseIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
-    </svg>
-  )
-}
-
-function SkipIcon({ direction }: { direction: 'back' | 'forward' }) {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      style={{ transform: direction === 'back' ? 'scaleX(-1)' : undefined }}
-    >
-      <path d="M5 5l10 7-10 7V5zM17 5h2.5v14H17V5z" />
-    </svg>
-  )
-}
-
-function SeekIcon({ direction }: { direction: 'back' | 'forward' }) {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      style={{ transform: direction === 'back' ? 'scaleX(-1)' : undefined }}
-    >
-      <path d="M13 5l7 7-7 7M5 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   )
 }

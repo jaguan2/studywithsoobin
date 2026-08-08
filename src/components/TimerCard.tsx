@@ -6,6 +6,9 @@ import { TimerPanel } from './TimerPanel'
 
 interface TimerCardProps {
   timer: TimerApi
+  /** Viewport-sized ancestor the card may be dragged around inside — without
+   *  constraints a panel flung off screen is unrecoverable. */
+  bounds: React.RefObject<HTMLDivElement | null>
   zIndex: number
   onFocus: () => void
   collapsed: boolean
@@ -16,7 +19,7 @@ interface TimerCardProps {
 // FocusTimer: drag starts only from the grab strip, no momentum, and the
 // element is positioned with explicit left/top because framer-motion owns the
 // inline transform.
-export function TimerCard({ timer, zIndex, onFocus, collapsed, onToggleCollapsed }: TimerCardProps) {
+export function TimerCard({ timer, bounds, zIndex, onFocus, collapsed, onToggleCollapsed }: TimerCardProps) {
   const dragControls = useDragControls()
   const { width, startResize } = usePanelSize({ width: 300, minWidth: 272, maxWidth: 480 })
 
@@ -25,6 +28,7 @@ export function TimerCard({ timer, zIndex, onFocus, collapsed, onToggleCollapsed
       drag
       dragListener={false}
       dragControls={dragControls}
+      dragConstraints={bounds}
       dragMomentum={false}
       dragElastic={0}
       onPointerDownCapture={onFocus}

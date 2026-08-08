@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import playlistData from './data/playlist.json'
 import type { Playlist, Video } from './types/playlist'
 import { useTimer } from './hooks/useTimer'
@@ -8,6 +8,7 @@ import { Sidebar } from './components/Sidebar'
 import { TimerCard } from './components/TimerCard'
 import { WelcomeScreen } from './components/WelcomeScreen'
 import { applyCustomTheme, clearCustomTheme, DEFAULT_CUSTOM_COLOR } from './lib/theme'
+import { storageGet, storageGetJson, storageRemove, storageSet, storageSetJson } from './lib/storage'
 
 const playlist = playlistData as Playlist
 
@@ -22,27 +23,23 @@ function pickRandom(pool: Video[], excludeId?: string): string | null {
 }
 
 function loadFavorites(): string[] {
-  try {
-    const raw = JSON.parse(localStorage.getItem('sws.favorites') ?? '[]')
-    return Array.isArray(raw) ? raw.filter((id) => typeof id === 'string') : []
-  } catch {
-    return []
-  }
+  const raw = storageGetJson<unknown>('sws.favorites', [])
+  return Array.isArray(raw) ? raw.filter((id): id is string => typeof id === 'string') : []
 }
 
 function loadTheme(): Theme {
-  const stored = localStorage.getItem('sws.theme')
+  const stored = storageGet('sws.theme')
   return stored === 'dark' || stored === 'coffee' || stored === 'custom' ? stored : 'light'
 }
 
 function loadCustomColor(): string {
-  const stored = localStorage.getItem('sws.customColor')
+  const stored = storageGet('sws.customColor')
   return stored && /^#[0-9a-f]{6}$/i.test(stored) ? stored : DEFAULT_CUSTOM_COLOR
 }
 
 /** Preferred subtitle language, re-applied to every video that has it. */
 function loadCaptionLang(): string | null {
-  const stored = localStorage.getItem('sws.captionLang')
+  const stored = storageGet('sws.captionLang')
   return stored && /^[\w-]{2,10}$/.test(stored) ? stored : null
 }
 
@@ -79,8 +76,13 @@ export default function App() {
   const [timerCollapsed, setTimerCollapsed] = useState(false)
   const [topPanel, setTopPanel] = useState<'timer' | 'sidebar'>('sidebar')
   const videoRef = useRef<VideoBackgroundHandle>(null)
+  // Constrains panel drags to the viewport — a panel flung past the edge
+  // would otherwise be unrecoverable (the restore pill restores visibility,
+  // not position).
+  const rootRef = useRef<HTMLDivElement>(null)
   // The full-viewport overlay, used to keep a dragged control pill on screen.
   const overlayRef = useRef<HTMLDivElement>(null)
+  const noticeTimer = useRef<number | undefined>(undefined)
   const timer = useTimer(25)
 
   useEffect(() => {
@@ -90,12 +92,19 @@ export default function App() {
     // when switching to a preset or it would keep overriding it.
     if (theme === 'custom') applyCustomTheme(customColor)
     else clearCustomTheme()
-    localStorage.setItem('sws.theme', theme)
+    storageSet('sws.theme', theme)
   }, [theme, customColor])
 
   useEffect(() => {
-    localStorage.setItem('sws.customColor', customColor)
+    storageSet('sws.customColor', customColor)
   }, [customColor])
+
+  // Persisted from an effect rather than inside the setState updater:
+  // updaters should be pure (StrictMode runs them twice), and localStorage
+  // writes can throw.
+  useEffect(() => {
+    storageSetJson('sws.favorites', favorites)
+  }, [favorites])
 
   const playable = useMemo(
     () => playlist.videos.filter((v) => !blockedIds.includes(v.id)),
@@ -107,27 +116,46 @@ export default function App() {
     [videoId],
   )
 
-  const chooseCaptionLang = (code: string | null) => {
+  const showNotice = useCallback((message: string, ms = 5000) => {
+    setNotice(message)
+    window.clearTimeout(noticeTimer.current)
+    noticeTimer.current = window.setTimeout(() => setNotice(null), ms)
+  }, [])
+
+  const chooseCaptionLang = useCallback((code: string | null) => {
     setCaptionLang(code)
-    if (code) localStorage.setItem('sws.captionLang', code)
-    else localStorage.removeItem('sws.captionLang')
-  }
+    if (code) storageSet('sws.captionLang', code)
+    else storageRemove('sws.captionLang')
+  }, [])
 
-  const toggleFavorite = (id: string) => {
-    setFavorites((prev) => {
-      const next = prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-      localStorage.setItem('sws.favorites', JSON.stringify(next))
-      return next
-    })
-  }
+  const toggleFavorite = useCallback((id: string) => {
+    setFavorites((prev) => (prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]))
+  }, [])
 
-  const handleUnplayable = () => {
+  const handleUnplayable = useCallback(() => {
     if (!videoId || blockedIds.includes(videoId)) return
     setBlockedIds((prev) => [...prev, videoId])
-    setNotice("That video won't play embedded — skipped to another one")
-    window.setTimeout(() => setNotice(null), 5000)
+    showNotice("That video won't play embedded — skipped to another one")
     setVideoId(pickRandom(playable.filter((v) => v.id !== videoId)))
-  }
+  }, [videoId, blockedIds, playable, showNotice])
+
+  const handleApiUnavailable = useCallback(() => {
+    showNotice('Couldn’t reach YouTube — check your internet connection, then pick a video to retry', 8000)
+  }, [showNotice])
+
+  const handleEnded = useCallback(() => {
+    setVideoId((prev) => pickRandom(playable, prev ?? undefined))
+  }, [playable])
+
+  const handleSurprise = useCallback(() => {
+    setVideoId(pickRandom(playable))
+  }, [playable])
+
+  const handleTogglePlay = useCallback(() => setVideoPlaying((p) => !p), [])
+  const toggleSidebarCollapsed = useCallback(() => setCollapsed((c) => !c), [])
+  const toggleTimerCollapsed = useCallback(() => setTimerCollapsed((c) => !c), [])
+  const focusTimer = useCallback(() => setTopPanel('timer'), [])
+  const focusSidebar = useCallback(() => setTopPanel('sidebar'), [])
 
   if (videoId === null) {
     return (
@@ -135,35 +163,38 @@ export default function App() {
         videos={playable}
         favorites={favorites}
         onSelect={setVideoId}
-        onSurprise={() => setVideoId(pickRandom(playable))}
+        onSurprise={handleSurprise}
       />
     )
   }
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-black">
+    <div ref={rootRef} className="relative h-screen w-screen overflow-hidden bg-black">
       <VideoBackground
         ref={videoRef}
         videoId={videoId}
         volume={volume}
         isPlaying={videoPlaying}
         captionLang={captionLang}
-        onEnded={() => setVideoId(pickRandom(playable, videoId))}
+        onEnded={handleEnded}
         onPlayingChange={setVideoPlaying}
         onUnplayable={handleUnplayable}
+        onApiUnavailable={handleApiUnavailable}
       />
 
       <TimerCard
         timer={timer}
+        bounds={rootRef}
         zIndex={topPanel === 'timer' ? 40 : 30}
-        onFocus={() => setTopPanel('timer')}
+        onFocus={focusTimer}
         collapsed={timerCollapsed}
-        onToggleCollapsed={() => setTimerCollapsed((c) => !c)}
+        onToggleCollapsed={toggleTimerCollapsed}
       />
 
       <Sidebar
         collapsed={collapsed}
-        onToggleCollapsed={() => setCollapsed((c) => !c)}
+        onToggleCollapsed={toggleSidebarCollapsed}
+        bounds={rootRef}
         videos={playable}
         currentVideo={currentVideo}
         onSelectVideo={setVideoId}
@@ -177,7 +208,7 @@ export default function App() {
         customColor={customColor}
         onSetCustomColor={setCustomColor}
         zIndex={topPanel === 'sidebar' ? 40 : 30}
-        onFocus={() => setTopPanel('sidebar')}
+        onFocus={focusSidebar}
       />
 
       <div ref={overlayRef} className="pointer-events-none absolute inset-0">
@@ -186,7 +217,7 @@ export default function App() {
           player={videoRef}
           bounds={overlayRef}
           isPlaying={videoPlaying}
-          onTogglePlay={() => setVideoPlaying((p) => !p)}
+          onTogglePlay={handleTogglePlay}
           captionLang={captionLang}
           onSetCaptionLang={chooseCaptionLang}
         />

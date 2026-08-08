@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Video } from '../types/playlist'
+import { HeartIcon } from './icons'
 
 const PAGE_SIZE = 8 // 4 columns x 2 rows, matching the LifeAt scenery grid
 
@@ -68,9 +69,7 @@ export function VideoPicker({ videos, selectedId, onSelect, favorites }: VideoPi
               />
               {favorites.includes(video.id) && (
                 <span className="absolute right-0.5 top-0.5 grid h-4 w-4 place-items-center rounded-full bg-white/90 text-clay-500 dark:bg-ink-800/90">
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z" />
-                  </svg>
+                  <HeartIcon filled size={9} />
                 </span>
               )}
             </button>

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { ensureNotifyPermission, timerCue } from '../lib/cues'
 
 const MIN_SECONDS = 10
 const MAX_SECONDS = 12 * 60 * 60
@@ -59,20 +60,56 @@ export function useTimer(initialMinutes = 25): TimerApi {
   const [secondsLeft, setSecondsLeft] = useState(durationSeconds)
   const [isRunning, setIsRunning] = useState(false)
   const [pomodoro, setPomodoro] = useState<PomodoroState | null>(null)
-  const intervalRef = useRef<number | undefined>(undefined)
+  // Counting down by decrementing on a 1s interval drifts badly: browsers
+  // throttle background-tab timers to as little as one tick per minute, and
+  // the study-session use case is precisely "this tab is in the background".
+  // So the source of truth is an absolute deadline; the interval only
+  // refreshes the display from it.
+  const endAtRef = useRef<number | null>(null)
+  const secondsLeftRef = useRef(secondsLeft)
+  secondsLeftRef.current = secondsLeft
+  const pomodoroRef = useRef(pomodoro)
+  pomodoroRef.current = pomodoro
+  const durationRef = useRef(durationSeconds)
+  durationRef.current = durationSeconds
 
   useEffect(() => {
     if (!isRunning) return
-    intervalRef.current = window.setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          setIsRunning(false)
-          return 0
+    // (Re)arm the deadline from whatever is on the clock right now. Starting
+    // a finished plain timer restarts it from its duration rather than
+    // instantly re-firing the completion cue.
+    let base = secondsLeftRef.current
+    if (base <= 0 && !pomodoroRef.current) {
+      base = durationRef.current
+      setSecondsLeft(base)
+    }
+    endAtRef.current = Date.now() + base * 1000
+    const tick = () => {
+      if (endAtRef.current === null) return
+      const remaining = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000))
+      setSecondsLeft(remaining)
+      if (remaining <= 0) {
+        setIsRunning(false)
+        // Pomodoro phase edges cue from the advancement effect below; a plain
+        // timer has no other place to announce itself.
+        if (!pomodoroRef.current) {
+          timerCue("Time's up", 'Your focus timer finished.')
         }
-        return prev - 1
-      })
-    }, 1000)
-    return () => window.clearInterval(intervalRef.current)
+      }
+    }
+    // 250ms so a throttled-then-restored tab snaps to the right time quickly;
+    // setState with an unchanged value skips the re-render, so the visible
+    // update rate is still once a second.
+    const id = window.setInterval(tick, 250)
+    const onVisible = () => {
+      if (!document.hidden) tick()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      window.clearInterval(id)
+      document.removeEventListener('visibilitychange', onVisible)
+      endAtRef.current = null
+    }
   }, [isRunning])
 
   // Pomodoro phase advancement: when a focus/break block hits zero, roll into
@@ -81,6 +118,7 @@ export function useTimer(initialMinutes = 25): TimerApi {
     if (!pomodoro || pomodoro.completed || secondsLeft > 0) return
     if (pomodoro.phase === 'focus' && pomodoro.round >= pomodoro.rounds) {
       setPomodoro({ ...pomodoro, completed: true })
+      timerCue('All rounds done! 🎉', `${pomodoro.rounds} focus rounds complete — great work.`)
       return
     }
     const nextPhase = pomodoro.phase === 'focus' ? 'break' : 'focus'
@@ -90,9 +128,19 @@ export function useTimer(initialMinutes = 25): TimerApi {
       (nextPhase === 'focus' ? pomodoro.focusMinutes : pomodoro.breakMinutes) * 60,
     )
     setIsRunning(true)
+    if (nextPhase === 'break') {
+      timerCue('Focus round done', `Take a ${pomodoro.breakMinutes} minute break.`)
+    } else {
+      timerCue('Break over', `Round ${nextRound} — ${pomodoro.focusMinutes} minutes of focus.`)
+    }
   }, [secondsLeft, pomodoro])
 
-  const toggle = useCallback(() => setIsRunning((r) => !r), [])
+  const toggle = useCallback(() => {
+    setIsRunning((r) => {
+      if (!r) ensureNotifyPermission()
+      return !r
+    })
+  }, [])
   const pause = useCallback(() => setIsRunning(false), [])
 
   const reset = useCallback(() => {
@@ -117,6 +165,7 @@ export function useTimer(initialMinutes = 25): TimerApi {
     const focusMinutes = Math.min(Math.max(Math.round(config.focusMinutes), 1), 180)
     const breakMinutes = Math.min(Math.max(Math.round(config.breakMinutes), 1), 60)
     const rounds = Math.min(Math.max(Math.round(config.rounds), 1), 12)
+    ensureNotifyPermission()
     setPomodoro({ focusMinutes, breakMinutes, rounds, phase: 'focus', round: 1, completed: false })
     setSecondsLeft(focusMinutes * 60)
     setIsRunning(true)

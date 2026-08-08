@@ -9,8 +9,16 @@ let ctx: AudioContext | null = null
 let noiseSource: AudioBufferSourceNode | null = null
 let masterGain: GainNode | null = null
 let lfo: OscillatorNode | null = null
+let lfoGain: GainNode | null = null
+// Thunder one-shots route through this bus so switching ambience off can
+// silence a rumble mid-tail instead of letting it play out for seconds.
+let thunderBus: GainNode | null = null
 let thunderTimer: number | null = null
+let suspendTimer: number | null = null
 let mode: AmbienceMode | null = null
+// The current slider volume; thunder strikes read it at strike time so the
+// slider affects them too (a captured start-time volume wouldn't).
+let currentVolume = 0.5
 
 const PRESETS: Record<AmbienceMode, {
   lowpass: number
@@ -29,12 +37,23 @@ const PRESETS: Record<AmbienceMode, {
   storm: { lowpass: 3600, highpass: 260, gain: 0.85, lfoFreq: 0.2, lfoDepth: 0.18 },
 }
 
+/** LFO swing, capped below the base gain so the modulation can never push the
+ *  gain negative (negative gain phase-inverts the noise — the "breathing"
+ *  stops hushing and sounds wrong; snow's preset dips negative without this). */
+function lfoDepthFor(preset: (typeof PRESETS)[AmbienceMode]): number {
+  return Math.min(preset.lfoDepth, preset.gain * 0.95)
+}
+
 function ensureContext(): AudioContext {
   if (!ctx) {
     const Ctor =
       window.AudioContext ??
       (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
     ctx = new Ctor()
+  }
+  if (suspendTimer !== null) {
+    window.clearTimeout(suspendTimer)
+    suspendTimer = null
   }
   if (ctx.state === 'suspended') void ctx.resume()
   return ctx
@@ -53,8 +72,8 @@ function createNoiseBuffer(context: AudioContext, seconds = 2): AudioBuffer {
   return buffer
 }
 
-function playThunder(volume: number) {
-  if (!ctx) return
+function playThunder() {
+  if (!ctx || !thunderBus) return
   const context = ctx
   const burst = context.createBufferSource()
   burst.buffer = createNoiseBuffer(context, 3)
@@ -64,23 +83,24 @@ function playThunder(volume: number) {
   rumble.frequency.value = 180 + Math.random() * 120
 
   const env = context.createGain()
-  const peak = volume * (0.5 + Math.random() * 0.4)
+  // Read the volume at strike time so the slider governs thunder as well.
+  const peak = currentVolume * (0.5 + Math.random() * 0.4)
   const now = context.currentTime
   env.gain.setValueAtTime(0, now)
   env.gain.linearRampToValueAtTime(peak, now + 0.15)
   env.gain.exponentialRampToValueAtTime(0.001, now + 2.5 + Math.random() * 2)
 
-  burst.connect(rumble).connect(env).connect(context.destination)
+  burst.connect(rumble).connect(env).connect(thunderBus)
   burst.start()
   burst.stop(now + 5)
 }
 
-function scheduleThunder(volume: number) {
+function scheduleThunder() {
   const delay = 6000 + Math.random() * 14000
   thunderTimer = window.setTimeout(() => {
     if (mode !== 'storm') return
-    playThunder(volume)
-    scheduleThunder(volume)
+    playThunder()
+    scheduleThunder()
   }, delay)
 }
 
@@ -97,6 +117,7 @@ export function startAmbience(nextMode: AmbienceMode | 'off', volume = 0.5) {
 
   const context = ensureContext()
   const preset = PRESETS[nextMode]
+  currentVolume = volume
 
   noiseSource = context.createBufferSource()
   noiseSource.buffer = createNoiseBuffer(context)
@@ -115,9 +136,9 @@ export function startAmbience(nextMode: AmbienceMode | 'off', volume = 0.5) {
 
   // Slow LFO so the ambience "breathes" instead of sounding static.
   lfo = context.createOscillator()
-  const lfoGain = context.createGain()
+  lfoGain = context.createGain()
   lfo.frequency.value = preset.lfoFreq
-  lfoGain.gain.value = volume * preset.lfoDepth
+  lfoGain.gain.value = volume * lfoDepthFor(preset)
   lfo.connect(lfoGain).connect(masterGain.gain)
 
   noiseSource.connect(highpass).connect(lowpass).connect(masterGain).connect(context.destination)
@@ -125,7 +146,12 @@ export function startAmbience(nextMode: AmbienceMode | 'off', volume = 0.5) {
   lfo.start()
   mode = nextMode
 
-  if (nextMode === 'storm') scheduleThunder(volume)
+  if (nextMode === 'storm') {
+    thunderBus = context.createGain()
+    thunderBus.gain.value = 1
+    thunderBus.connect(context.destination)
+    scheduleThunder()
+  }
 }
 
 export function stopAmbience() {
@@ -141,14 +167,39 @@ export function stopAmbience() {
       /* already stopped */
     }
   }
+  // Fade any in-flight thunder tail out fast instead of letting it rumble on
+  // for seconds after the user switched ambience off.
+  if (thunderBus && ctx) {
+    const bus = thunderBus
+    bus.gain.setTargetAtTime(0, ctx.currentTime, 0.05)
+    window.setTimeout(() => bus.disconnect(), 400)
+  }
   noiseSource = null
   lfo = null
+  lfoGain = null
+  masterGain = null
+  thunderBus = null
   mode = null
+
+  // A running AudioContext keeps the audio hardware awake even when producing
+  // silence; suspend once everything (including the thunder fade) is done.
+  if (ctx) {
+    if (suspendTimer !== null) window.clearTimeout(suspendTimer)
+    suspendTimer = window.setTimeout(() => {
+      suspendTimer = null
+      if (mode === null && ctx) void ctx.suspend()
+    }, 500)
+  }
 }
 
 export function setAmbienceVolume(volume: number) {
+  currentVolume = volume
   if (masterGain && ctx && mode) {
     const preset = PRESETS[mode]
     masterGain.gain.setTargetAtTime(volume * preset.gain, ctx.currentTime, 0.2)
+    // Rescale the modulation depth with the volume, or lowering the slider
+    // leaves the old swing overpowering the new base gain (and dipping it
+    // negative).
+    lfoGain?.gain.setTargetAtTime(volume * lfoDepthFor(preset), ctx.currentTime, 0.2)
   }
 }

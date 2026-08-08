@@ -18,6 +18,13 @@ export function usePanelSize(options: PanelSizeOptions) {
   const startResize = (e: React.PointerEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    // Capture so the grip keeps receiving events during a fast drag that
+    // leaves the element (or the window).
+    try {
+      ;(e.target as Element).setPointerCapture(e.pointerId)
+    } catch {
+      /* capture unsupported — window listeners below still work */
+    }
     const startX = e.clientX
     const startY = e.clientY
     const startWidth = width
@@ -36,9 +43,16 @@ export function usePanelSize(options: PanelSizeOptions) {
         )
       }
     }
-    const onUp = () => window.removeEventListener('pointermove', onMove)
+    // pointercancel too: a touch drag that gets interrupted never fires
+    // pointerup, and the move listener would leak until the next release.
+    const onEnd = () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onEnd)
+      window.removeEventListener('pointercancel', onEnd)
+    }
     window.addEventListener('pointermove', onMove)
-    window.addEventListener('pointerup', onUp, { once: true })
+    window.addEventListener('pointerup', onEnd)
+    window.addEventListener('pointercancel', onEnd)
   }
 
   return { width, height, startResize }

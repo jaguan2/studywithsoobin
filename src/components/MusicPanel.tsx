@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { resolveMusicLink, stationKey, type Station } from '../lib/musicLink'
+import { storageGet, storageGetJson, storageSet, storageSetJson } from '../lib/storage'
 import { YouTubeMusicPlayer } from './YouTubeMusicPlayer'
 
 // A few cozy lofi streams to start with; users can add their own via
@@ -35,13 +36,23 @@ const BUILT_IN_STATIONS: Station[] = [
 // Spotify's embed needs a taller frame for content with a tracklist.
 const SPOTIFY_TALL_KINDS = new Set(['playlist', 'album', 'show'])
 
+/** Stored JSON is user-editable and can be from an older app version, so
+ *  validate each entry rather than trusting the cast — a station without an
+ *  id or label renders as a broken chip. */
 function loadCustomStations(): Station[] {
-  try {
-    const raw = JSON.parse(localStorage.getItem('sws.music.custom') ?? '[]')
-    return Array.isArray(raw) ? raw : []
-  } catch {
-    return []
-  }
+  const raw = storageGetJson<unknown>('sws.music.custom', [])
+  if (!Array.isArray(raw)) return []
+  return raw.filter((s): s is Station => {
+    if (typeof s !== 'object' || s === null) return false
+    const station = s as Partial<Station>
+    return (
+      (station.provider === 'youtube' || station.provider === 'spotify') &&
+      typeof station.id === 'string' &&
+      station.id.length > 0 &&
+      typeof station.label === 'string' &&
+      station.label.length > 0
+    )
+  })
 }
 
 // Spotify keeps its official embed — the widget ships its own working
@@ -59,7 +70,7 @@ export function MusicPanel() {
   const [musicOn, setMusicOn] = useState(false)
   const [customStations, setCustomStations] = useState<Station[]>(loadCustomStations)
   const [activeKey, setActiveKey] = useState(
-    () => localStorage.getItem('sws.music.station') ?? stationKey(BUILT_IN_STATIONS[0]),
+    () => storageGet('sws.music.station') ?? stationKey(BUILT_IN_STATIONS[0]),
   )
   const [url, setUrl] = useState('')
   const [label, setLabel] = useState('')
@@ -71,7 +82,7 @@ export function MusicPanel() {
   const selectStation = (station: Station) => {
     const key = stationKey(station)
     setActiveKey(key)
-    localStorage.setItem('sws.music.station', key)
+    storageSet('sws.music.station', key)
     setMusicOn(true)
   }
 
@@ -84,7 +95,7 @@ export function MusicPanel() {
     if (!stations.some((s) => stationKey(s) === stationKey(station))) {
       const next = [...customStations, station]
       setCustomStations(next)
-      localStorage.setItem('sws.music.custom', JSON.stringify(next))
+      storageSetJson('sws.music.custom', next)
     }
     selectStation(station)
     setError('')
@@ -95,7 +106,7 @@ export function MusicPanel() {
   const removeCustomStation = (station: Station) => {
     const next = customStations.filter((s) => stationKey(s) !== stationKey(station))
     setCustomStations(next)
-    localStorage.setItem('sws.music.custom', JSON.stringify(next))
+    storageSetJson('sws.music.custom', next)
   }
 
   return (
