@@ -146,7 +146,9 @@ deliberately no tsconfig.app/node split.
     so the music-link placeholder fits, scrollable body), composed of `VideoPicker`
     (paged 4x2 thumbnail grid), `VolumeControl` (video volume), `MusicPanel`
     (built-in lofi stations + paste-your-own YouTube/Spotify links), and
-    `AmbiencePanel` (procedural rain/snow/storm sound via Web Audio).
+    `AmbiencePanel` (a 7-channel procedural sound mixer via Web Audio — rain,
+    storm, snow, wind, fireplace, café, page turns — layerable, per-channel
+    volumes).
   - **Drag/resize pattern (from TaskNook's Drawer/FocusTimer):** framer-motion
     `drag` with `dragListener={false}` + `useDragControls` — only the header/grab
     strip starts a drag; `dragMomentum={false}`, `dragElastic={0}`; panels are
@@ -163,14 +165,17 @@ deliberately no tsconfig.app/node split.
   stops after the configured number of rounds. Setting any preset/custom duration
   exits pomodoro mode.
 - `lib/musicLink.ts` (YouTube/Spotify URL → station descriptor) and
-  `lib/ambience.ts` (filtered-noise rain/snow/storm engine, no audio files) are
+  `lib/ambience.ts` (the 7-channel procedural sound mixer, no audio files) are
   ports of TaskNook's `frontend/src/lib/{musicLink,youtube,spotify,audio}.js` —
-  if a parsing/audio bug is fixed in one repo, mirror it in the other. Note the
-  ambience presets have since been retuned here (rain/snow are softer than
-  TaskNook's), so don't blindly copy those numbers back. The engine's output is
-  measurable without ears: patch `AudioNode.prototype.connect` in a page to tap
-  whatever reaches `ctx.destination` with an `AnalyserNode`, then compare RMS
-  and the share of energy above 2kHz.
+  if a parsing/audio bug is fixed in one repo, mirror it in the other. Two
+  deliberate divergences from TaskNook's audio.js: snow/storm keep this app's
+  softer presets (rain adopted TaskNook's darker bed because the droplet plinks
+  carry the identity now), and the LFO depth is capped below each preset's base
+  gain so modulation can't push a channel's gain negative — that cap is a fix
+  worth mirroring *to* TaskNook. The engine's output is measurable without
+  ears: patch `AudioNode.prototype.connect` in a page to tap whatever reaches
+  `ctx.destination` with an `AnalyserNode`, then compare RMS and the share of
+  energy above 2kHz.
 - The YouTube IFrame API's `window.YT` global is loaded lazily and once via
   `loadYouTubeIframeApi()` in `hooks/useYouTubeIframeApi.ts` — safe to call from
   multiple components, guards against injecting the `<script>` tag twice.
@@ -218,8 +223,11 @@ exit without opening a window — use it to verify a build headlessly.
 ## Known constraints
 
 - Browser autoplay policy requires the background video to start muted; volume is
-  applied after the player is ready, and unmuting only happens on explicit user
-  interaction with the volume slider.
+  applied after the player is ready, and unmuting only happens on an explicit user
+  gesture — the volume slider or the "Tap to unmute" chip. `App` tracks a `muted`
+  flag for this, reset to true whenever the player is recreated (returning from
+  the welcome screen), because each fresh player starts muted again regardless of
+  the persisted volume.
 - Some playlist videos report `embeddable=true` in metadata but still refuse to play
   in an embed at runtime ("Watch on YouTube" — copyright-restricted VLIVE re-uploads).
   This is unknowable ahead of time, so `App.tsx` handles the IFrame player's `onError`:

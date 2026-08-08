@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { motion, useDragControls } from 'framer-motion'
 import type { Theme } from '../App'
 import type { Video } from '../types/playlist'
+import { usePanelPosition } from '../hooks/usePanelPosition'
 import { usePanelSize } from '../hooks/usePanelSize'
 import { ResizeGrip } from './ResizeGrip'
 import { VideoPicker } from './VideoPicker'
@@ -11,6 +12,8 @@ import { AmbiencePanel } from './AmbiencePanel'
 import { HeartIcon } from './icons'
 
 const GITHUB_URL = 'https://github.com/jaguan2'
+
+const BASE = { left: 16, top: 232 }
 
 const THEMES: { value: Theme; label: string; icon: string }[] = [
   { value: 'light', label: 'Light theme', icon: '☀️' },
@@ -71,7 +74,10 @@ function SidebarInner({
     maxWidth: 560,
     height: Math.min(560, window.innerHeight - 240),
     minHeight: 320,
+    storageKey: 'sws.size.sidebar',
   })
+  // x/y ride framer-motion's drag; persisted so the layout survives a reload.
+  const { x, y, savePosition } = usePanelPosition('sws.pos.sidebar', BASE)
 
   const isFavorite = favorites.includes(currentVideo.id)
 
@@ -83,14 +89,17 @@ function SidebarInner({
       dragConstraints={bounds}
       dragMomentum={false}
       dragElastic={0}
+      onDragEnd={savePosition}
       onPointerDownCapture={onFocus}
       // visibility (not unmount) so music keeps playing and the dragged
       // position survives a minimize/restore cycle
       style={{
+        x,
+        y,
         width,
         height,
-        left: 16,
-        top: 232,
+        left: BASE.left,
+        top: BASE.top,
         zIndex,
         visibility: collapsed ? 'hidden' : 'visible',
       }}

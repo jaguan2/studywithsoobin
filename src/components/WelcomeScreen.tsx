@@ -5,11 +5,13 @@ import { HeartIcon } from './icons'
 interface WelcomeScreenProps {
   videos: Video[]
   favorites: string[]
+  /** The video from the previous session (if still playable), for one-click resume. */
+  lastVideo: Video | null
   onSelect: (id: string) => void
   onSurprise: () => void
 }
 
-function WelcomeScreenInner({ videos, favorites, onSelect, onSurprise }: WelcomeScreenProps) {
+function WelcomeScreenInner({ videos, favorites, lastVideo, onSelect, onSurprise }: WelcomeScreenProps) {
   return (
     <div className="h-screen w-screen overflow-y-auto bg-cream-50 dark:bg-ink-900">
       <div className="mx-auto max-w-5xl px-6 py-10">
@@ -26,7 +28,26 @@ function WelcomeScreenInner({ videos, favorites, onSelect, onSurprise }: Welcome
           >
             🎲 Surprise me
           </button>
+          {lastVideo && (
+            <button
+              onClick={() => onSelect(lastVideo.id)}
+              className="mx-auto mt-3 flex max-w-full items-center gap-1.5 text-sm text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
+            >
+              <span className="shrink-0">▶ Continue where you left off:</span>
+              <span className="max-w-[18rem] truncate">{lastVideo.title}</span>
+            </button>
+          )}
         </header>
+
+        {/* every video can end up session-blocked (embeds refused at play
+            time) — without this the grid is just silently empty */}
+        {videos.length === 0 && (
+          <p className="mt-16 text-center text-sm text-ink-700 dark:text-cream-300">
+            Nothing playable right now — every video refused to embed this session.
+            <br />
+            Reload the page to try again.
+          </p>
+        )}
 
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {videos.map((video) => (

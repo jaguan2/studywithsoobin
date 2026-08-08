@@ -43,6 +43,11 @@ function loadCaptionLang(): string | null {
   return stored && /^[\w-]{2,10}$/.test(stored) ? stored : null
 }
 
+function loadVolume(): number {
+  const stored = Number(storageGet('sws.volume'))
+  return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : 40
+}
+
 function RestoreChevron() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="opacity-60">
@@ -62,7 +67,13 @@ function toggleFullscreen() {
 export default function App() {
   // null until the user picks a video on the welcome screen
   const [videoId, setVideoId] = useState<string | null>(null)
-  const [volume, setVolume] = useState(40)
+  const [volume, setVolume] = useState(loadVolume)
+  // Autoplay policy forces every freshly-created player to start muted, and
+  // unmuting must come from an explicit user gesture — this tracks whether
+  // that gesture (volume slider or the unmute chip) has happened for the
+  // current player. Reset whenever the player is recreated.
+  const [muted, setMuted] = useState(true)
+  const [lastVideoId, setLastVideoId] = useState<string | null>(() => storageGet('sws.lastVideo'))
   const [collapsed, setCollapsed] = useState(false)
   const [favorites, setFavorites] = useState<string[]>(loadFavorites)
   const [theme, setTheme] = useState<Theme>(loadTheme)
@@ -106,6 +117,18 @@ export default function App() {
     storageSetJson('sws.favorites', favorites)
   }, [favorites])
 
+  useEffect(() => {
+    storageSet('sws.volume', String(volume))
+  }, [volume])
+
+  // Remember the last video so the welcome screen can offer to continue it.
+  useEffect(() => {
+    if (videoId) {
+      storageSet('sws.lastVideo', videoId)
+      setLastVideoId(videoId)
+    }
+  }, [videoId])
+
   const playable = useMemo(
     () => playlist.videos.filter((v) => !blockedIds.includes(v.id)),
     [blockedIds],
@@ -114,6 +137,11 @@ export default function App() {
   const currentVideo = useMemo(
     () => playlist.videos.find((v) => v.id === videoId) ?? playlist.videos[0],
     [videoId],
+  )
+
+  const lastVideo = useMemo(
+    () => playable.find((v) => v.id === lastVideoId) ?? null,
+    [playable, lastVideoId],
   )
 
   const showNotice = useCallback((message: string, ms = 5000) => {
@@ -152,6 +180,12 @@ export default function App() {
   }, [playable])
 
   const handleTogglePlay = useCallback(() => setVideoPlaying((p) => !p), [])
+  // The slider is an explicit gesture, so it may also unmute (autoplay policy).
+  const handleVolumeChange = useCallback((v: number) => {
+    setVolume(v)
+    setMuted(false)
+  }, [])
+  const handleUnmute = useCallback(() => setMuted(false), [])
   const toggleSidebarCollapsed = useCallback(() => setCollapsed((c) => !c), [])
   const toggleTimerCollapsed = useCallback(() => setTimerCollapsed((c) => !c), [])
   const focusTimer = useCallback(() => setTopPanel('timer'), [])
@@ -159,12 +193,24 @@ export default function App() {
 
   if (videoId === null) {
     return (
-      <WelcomeScreen
-        videos={playable}
-        favorites={favorites}
-        onSelect={setVideoId}
-        onSurprise={handleSurprise}
-      />
+      <>
+        <WelcomeScreen
+          videos={playable}
+          favorites={favorites}
+          lastVideo={lastVideo}
+          onSelect={setVideoId}
+          onSurprise={handleSurprise}
+        />
+        {/* The timer keeps counting after "Change video" — show it, or its
+            chime comes out of nowhere. */}
+        {timer.isRunning && (
+          <div className="pointer-events-none fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm tabular-nums text-cream-100 shadow-panel backdrop-blur-md">
+            ⏱ {timer.label}
+            {timer.pomodoro && (timer.pomodoro.phase === 'focus' ? ' · 📖 focus' : ' · ☕ break')}
+            {' · still running'}
+          </div>
+        )}
+      </>
     )
   }
 
@@ -174,6 +220,7 @@ export default function App() {
         ref={videoRef}
         videoId={videoId}
         volume={volume}
+        muted={muted}
         isPlaying={videoPlaying}
         captionLang={captionLang}
         onEnded={handleEnded}
@@ -199,7 +246,7 @@ export default function App() {
         currentVideo={currentVideo}
         onSelectVideo={setVideoId}
         volume={volume}
-        onVolumeChange={setVolume}
+        onVolumeChange={handleVolumeChange}
         playlistUrl={playlist.sourceUrl}
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
@@ -212,6 +259,17 @@ export default function App() {
       />
 
       <div ref={overlayRef} className="pointer-events-none absolute inset-0">
+
+        {/* Autoplay policy: every fresh player starts muted no matter what
+            the slider shows. One explicit tap restores the saved volume. */}
+        {muted && volume > 0 && (
+          <button
+            onClick={handleUnmute}
+            className="pointer-events-auto absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-ink-900/85 px-4 py-1.5 text-sm font-medium text-cream-100 shadow-panel backdrop-blur-md transition hover:bg-ink-900"
+          >
+            🔇 Tap to unmute
+          </button>
+        )}
 
         <VideoControls
           player={videoRef}
@@ -226,7 +284,12 @@ export default function App() {
           {/* Back to the welcome grid. Unmounting the main UI stops the music
               and the ambience, which is what "exit the video" should do. */}
           <button
-            onClick={() => setVideoId(null)}
+            onClick={() => {
+              setVideoId(null)
+              // Returning here unmounts the player; its replacement will be
+              // created muted again (autoplay policy), so track that.
+              setMuted(true)
+            }}
             aria-label="Back to video selection"
             title="Pick a different video"
             className="flex items-center gap-1.5 rounded-full bg-cream-50/90 px-3.5 py-1.5 text-sm font-medium text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
@@ -255,8 +318,10 @@ export default function App() {
           </button>
         </div>
 
+        {/* z-50: the draggable panels are z-30/40 and would otherwise cover
+            the toast when one happens to sit bottom-center. */}
         {notice && (
-          <div className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm text-cream-100 shadow-panel backdrop-blur-md">
+          <div className="absolute bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm text-cream-100 shadow-panel backdrop-blur-md">
             {notice}
           </div>
         )}

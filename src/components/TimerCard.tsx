@@ -1,8 +1,11 @@
 import { motion, useDragControls } from 'framer-motion'
 import type { TimerApi } from '../hooks/useTimer'
+import { usePanelPosition } from '../hooks/usePanelPosition'
 import { usePanelSize } from '../hooks/usePanelSize'
 import { ResizeGrip } from './ResizeGrip'
 import { TimerPanel } from './TimerPanel'
+
+const BASE = { left: 16, top: 16 }
 
 interface TimerCardProps {
   timer: TimerApi
@@ -21,7 +24,14 @@ interface TimerCardProps {
 // inline transform.
 export function TimerCard({ timer, bounds, zIndex, onFocus, collapsed, onToggleCollapsed }: TimerCardProps) {
   const dragControls = useDragControls()
-  const { width, startResize } = usePanelSize({ width: 300, minWidth: 272, maxWidth: 480 })
+  const { width, startResize } = usePanelSize({
+    width: 300,
+    minWidth: 272,
+    maxWidth: 480,
+    storageKey: 'sws.size.timer',
+  })
+  // x/y ride framer-motion's drag; persisted so the layout survives a reload.
+  const { x, y, savePosition } = usePanelPosition('sws.pos.timer', BASE)
 
   return (
     <motion.div
@@ -31,9 +41,10 @@ export function TimerCard({ timer, bounds, zIndex, onFocus, collapsed, onToggleC
       dragConstraints={bounds}
       dragMomentum={false}
       dragElastic={0}
+      onDragEnd={savePosition}
       onPointerDownCapture={onFocus}
       // visibility (not unmount) so the dragged position survives minimize
-      style={{ width, left: 16, top: 16, zIndex, visibility: collapsed ? 'hidden' : 'visible' }}
+      style={{ x, y, width, left: BASE.left, top: BASE.top, zIndex, visibility: collapsed ? 'hidden' : 'visible' }}
       className="absolute select-none rounded-2xl bg-cream-50/95 shadow-panel backdrop-blur-md dark:bg-ink-800/90"
     >
       <div

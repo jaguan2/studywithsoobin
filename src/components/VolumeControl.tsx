@@ -1,3 +1,5 @@
+import { Slider } from './Slider'
+
 interface VolumeControlProps {
   volume: number
   onChange: (volume: number) => void
@@ -9,14 +11,7 @@ export function VolumeControl({ volume, onChange }: VolumeControlProps) {
       <p className="text-sm font-semibold text-ink-800 dark:text-cream-200">Video volume</p>
       <div className="mt-2.5 flex items-center gap-3">
         <SpeakerIcon muted={volume === 0} />
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={volume}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-cream-300 accent-clay-500 dark:bg-ink-700"
-        />
+        <Slider value={volume} onChange={onChange} ariaLabel="Video volume" />
       </div>
     </div>
   )

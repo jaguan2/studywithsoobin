@@ -5,192 +5,100 @@
 the reference sibling — several of its libs are the proven, battle-tested versions of
 things this app ports or lacks.*
 
-> **Status (2026-08-08): sections 1–3 are fixed.** All bugs (1.1–1.9), both
-> actionable perf items (2.1 via memo + stable callbacks, 2.2), and all code-health
-> items (3.1–3.7) were applied — including the timer chime/notification (1.2 ≈
-> feature A) and a Vitest suite (48 tests) covering the music-link parser, timer
-> parsing/formatting, and the theme luminance solver. 2.3 (dropping framer-motion)
-> was deliberately skipped as documented. Section 4's features (B–T, minus A) remain
-> open. `StudyWithSoobin.exe` has not been rebuilt — run `build-exe.bat` and
-> re-commit it when ready to ship.
-
-Overall: the codebase is small, tidy, and well-commented, and the hard-won YouTube
-IFrame knowledge in CLAUDE.md is respected everywhere. The issues below are mostly
-edge-case correctness, a few real audio bugs, one systemic performance nit, and a lot
-of headroom for features.
+> **Status (2026-08-08): sections 1–3 are all fixed** (struck through below), verified
+> by `npm test` (48 passing), `npm run build`, and `npm run lint`. A second review
+> pass added section 6 (now fully fixed except 6.5/6.6, which need a manual exe
+> check and a playlist re-fetch respectively) and section 7 (UI/UX suggestions —
+> 7.4 done). From section 4, **A** (timer cues), **J** (persistence: volume,
+> ambience, pomodoro config, panel positions/sizes, last video + unmute chip +
+> welcome-screen timer pill), and **B** (the 7-channel ambience mixer port) are
+> done; the rest remain open.
 
 ---
 
 ## 1. Bugs & correctness (prioritized)
 
-### 1.1 The timer drifts when the tab is backgrounded — the core feature fails its main use case
-`useTimer.ts:64-76` counts down by decrementing state in a 1-second `setInterval`.
-Browsers throttle background-tab timers (Chrome's intensive throttling groups them to
-**once per minute** after ~5 minutes when the tab is silent; WebView2 does the same
-when the desktop window is minimized). A muted video doesn't exempt the tab. So the
-person who starts a 25-minute focus block and switches to their work — i.e., the
-target user — comes back to a timer that has counted far less than 25 minutes.
+### ~~1.1 The timer drifts when the tab is backgrounded~~ ✅ fixed
+`useTimer` now counts against an absolute deadline (`endAtRef`) instead of
+decrementing on an interval, and re-syncs on `visibilitychange` — browser timer
+throttling now only delays the *display*, never the accuracy. Starting a finished
+timer restarts it from its duration.
 
-**Fix:** store an absolute deadline (`endsAt = Date.now() + secondsLeft * 1000`) when
-the timer starts, compute `secondsLeft` from the clock on every tick, and re-sync on
-`visibilitychange`. The interval then only affects display refresh, not accuracy.
+### ~~1.2 Nothing happens when the timer finishes~~ ✅ fixed
+`src/lib/cues.ts` (pattern from TaskNook's timer provider): a procedural two-note
+chime plus a Web Notification at every phase edge — time's up, focus→break,
+break→focus, all rounds done. Permission is requested when a timer starts, not on
+page load.
 
-### 1.2 Nothing happens when the timer finishes
-When a plain (non-pomodoro) timer hits 0:00 it just stops, silently. No chime, no
-notification, no title change. Combined with 1.1, a user in another window gets no
-signal at all. TaskNook already solved this — `frontend/src/timer.jsx:146-233` has the
-full pattern: a procedural two-note `playChime()` (no audio files, matching the
-ambience philosophy) for whoever is at the screen, plus a Web Notification (permission
-requested on first timer start) for whoever stepped away. Port it.
+### ~~1.3 Ambience volume bugs~~ ✅ fixed
+All three: thunder reads the slider volume at strike time and routes through a bus
+that fades out on stop; `setAmbienceVolume` rescales the LFO depth (capped below the
+base gain, so snow can't dip negative); the `AudioContext` suspends when idle.
 
-### 1.3 Ambience volume bugs (`src/lib/ambience.ts`)
-Three related, all real:
+### ~~1.4 The sidebar and timer card can be dragged off-screen, unrecoverably~~ ✅ fixed
+Both panels now get `dragConstraints` bound to the viewport root, same as the
+control pill. (Residual edge: window *resize* can still strand a panel — see 6.3.)
 
-- **Thunder ignores the volume slider.** `playThunder` connects straight to
-  `ctx.destination`, bypassing `masterGain` (`ambience.ts:73`), and
-  `scheduleThunder(volume)` captures the volume *at start time*
-  (`ambience.ts:128`). Start a storm at 0.5, slide down to 0.05 — thunder keeps
-  booming at the original level.
-- **LFO depth isn't rescaled on volume change.** `setAmbienceVolume` retunes
-  `masterGain` only (`ambience.ts:149-154`); `lfoGain` keeps the depth computed from
-  the starting volume (`ambience.ts:120`). Lower the volume and the modulation swings
-  the gain negative (phase-inverts the noise) — the "breathing" sounds wrong at low
-  volumes. The snow preset (`gain: 0.13`, `lfoDepth: 0.16`) dips negative even at
-  default settings.
-- **`stopAmbience` doesn't silence an in-flight thunder burst** (up to ~5 s of tail
-  after switching off), and the `AudioContext` is never suspended when idle, which
-  keeps the audio hardware awake producing silence.
+### ~~1.5 `loadYouTubeIframeApi` can never fail~~ ✅ fixed
+12 s timeout + script `onerror`, and the cached promise clears on failure so a retry
+works. The video background surfaces a "couldn't reach YouTube" toast;
+`YouTubeMusicPlayer` distinguishes "needs internet" from "this station won't embed."
 
-**Fix path:** rather than patching these individually, see feature B below — TaskNook's
-`frontend/src/lib/audio.js` is a strict superset that already routes one-shots through
-the master gain, fades out with `setTargetAtTime(0)`, and calls `ctx.suspend()` when
-every channel is silent. Per the CLAUDE.md mirror rule, whatever is patched here
-should be reconciled with TaskNook either way.
+### ~~1.6 Player-creation race in `VideoBackground`~~ ✅ fixed
+The player is created from `videoIdRef.current` at promise-resolution time, not the
+mount-time closure value.
 
-### 1.4 The sidebar and timer card can be dragged off-screen, unrecoverably
-`VideoControls` gets `dragConstraints={bounds}` precisely because "a pill dragged
-under a panel could never be grabbed back" — but the two big panels get no constraints
-at all (`Sidebar.tsx:73-79`, `TimerCard.tsx:24-30`). A panel flung past the viewport
-edge is gone: the restore pill only flips `visibility`, not position, so minimizing
-and restoring doesn't bring it back. Only a reload does.
+### ~~1.7 Small pointer-handling gaps in `usePanelSize`~~ ✅ fixed
+`pointercancel` now detaches the move listener, and the grip takes pointer capture.
 
-**Fix:** thread the same overlay ref down as `dragConstraints` for both panels (or
-clamp position in `onDragEnd`).
+### ~~1.8 Unguarded `localStorage` writes, some inside setState updaters~~ ✅ fixed
+All storage access goes through guarded `src/lib/storage.ts`; the favorites write
+moved out of the setState updater into an effect.
 
-### 1.5 `loadYouTubeIframeApi` can never fail — so failure looks like a permanent black screen
-`useYouTubeIframeApi.ts` has no `onerror` on the script tag and no timeout, and the
-promise is cached forever — including a pending one that will never settle. Offline
-start, a captive portal (which returns 200 and then `onYouTubeIframeAPIReady` never
-fires), or a flaky first load ⇒ every player in the app silently never initializes,
-*and stays that way after the network returns* because the dead promise is cached.
-This matters double for the shipped `.exe`. TaskNook's `MusicDock.jsx` has the fix
-pattern: a 12 s timeout, clearing the cached promise on failure so a retry can work,
-and a distinct "needs internet" error state in the UI.
-
-### 1.6 Player-creation race in `VideoBackground`
-The player is created once with the `videoId` captured at mount
-(`VideoBackground.tsx:131-182`); swaps go through the `loadVideoById` effect
-(`:189-191`). If `videoId` changes in the window between mount and the IFrame API
-promise resolving, the swap effect no-ops (`playerRef.current` still null) and the
-player is then created with the stale id — wrong video plays. Unlikely in practice
-(swaps come from the sidebar, well after mount) but the fix is one line: read the
-current id from a ref inside the `.then`, or call `loadVideoById` after creation when
-it differs.
-
-### 1.7 Small pointer-handling gaps in `usePanelSize`
-`usePanelSize.ts:39-41`: only `pointerup` detaches the `pointermove` listener; a
-`pointercancel` (common on touch) leaks the move listener until the next pointer-up
-anywhere. No `setPointerCapture` either, so a fast drag can drop the grip. Low
-stakes, small fix.
-
-### 1.8 Unguarded `localStorage` writes, some inside setState updaters
-`toggleFavorite` writes to `localStorage` inside the state updater
-(`App.tsx:116-122`) — updaters run twice under StrictMode (harmless here, but an
-anti-pattern), and more importantly `setItem` can throw (quota, security settings).
-The read helpers are wrapped in try/catch; the writes are not — anywhere
-(`App.tsx:93,97,112`, `MusicPanel.tsx:74,87,98`). TaskNook wraps every access in
-`frontend/src/lib/storage.js` for exactly one reason worth respecting: an unguarded
-throw inside a React effect renders as a **blank window in the packaged exe**. Worth
-adopting wholesale (see 3.2).
-
-### 1.9 `fetch-playlist.mjs` will happily write an empty playlist
-The script's extraction paths are documented as brittle, but there's no guard: if
-YouTube's schema shifts and every item fails `filter((item) => item.content_id)`, the
-script overwrites `playlist.json` with `videos: []` and exits 0. Add
-`if (videos.length === 0) throw new Error(...)` (and arguably "fewer than last time by
->50%" as a warning). While in there: store a numeric `durationSeconds` alongside the
-display string — it unlocks sorting/filtering features (see N).
+### ~~1.9 `fetch-playlist.mjs` will happily write an empty playlist~~ ✅ fixed
+The script throws (without writing) when it parses zero videos, and now emits a
+numeric `durationSeconds` per video. Note: the checked-in `playlist.json` won't have
+`durationSeconds` until the next `npm run fetch-playlist` (see 6.6).
 
 ---
 
 ## 2. Performance / efficiency
 
-### 2.1 The whole app re-renders every second while the timer runs
-`useTimer` lives in `App` (`App.tsx:84`), so each tick re-renders `App` and its entire
-children tree — `Sidebar` (thumbnail grid, music panel, ambience panel), `TimerCard`,
-`VideoBackground`, `VideoControls` — once per second for the length of every study
-session. The pill/progress polling was deliberately isolated into `VideoControls` to
-avoid exactly this ("it's a separate component precisely so that poll re-renders the
-pill rather than App"), but the timer undoes it.
+### ~~2.1 The whole app re-renders every second while the timer runs~~ ✅ fixed
+`Sidebar`, `VideoBackground`, `VideoControls`, and `WelcomeScreen` are memoized and
+every callback App passes them is `useCallback`-stable, so a timer tick re-renders
+only the timer card (which displays it) and App's own now-trivial body.
 
-**Fix (cleanest):** move `useTimer` into a small component that renders both
-`TimerCard` and the timer restore pill — those are the only two consumers of
-`timer.label`. Then a tick re-renders just that subtree.
-**Fix (alternative):** keep it in `App`, wrap `Sidebar`/`VideoBackground` in
-`React.memo`, and stabilize their callback props with `useCallback`. More churn for
-the same result.
+### ~~2.2 `VideoControls` polls while hidden~~ ✅ fixed
+Both 500 ms polls (video controls, music player) skip work while `document.hidden`.
 
-### 2.2 `VideoControls` polls while hidden
-The 500 ms poll (`VideoControls.tsx:48-63`) keeps calling `getProgress()` and
-`getCaptionTracks()` when the pill is faded out and when the tab is hidden. Cheap
-calls, but free to skip: bail when `document.hidden`, and consider polling caption
-tracks at a slower cadence once a non-empty list has been seen (it only changes on
-video swap, which is observable).
-
-### 2.3 framer-motion is a ~35 kB (gz) dependency used only for drag
-No layout animations, no springs — just `drag` + `dragControls` on three elements,
-while resizing is already hand-rolled pointer events. A shared ~60-line `useDrag`
-hook would drop the dependency entirely. **Only worth it if bundle size starts to
-matter** (the app is otherwise tiny); framer-motion works and the CLAUDE.md-documented
-transform-ownership rules are already encoded around it.
+### ~~2.3 framer-motion is a ~35 kB (gz) dependency used only for drag~~ ⏭️ won't do
+Deliberately skipped: it works, the transform-ownership rules are documented around
+it, and bundle size isn't currently a pain point. Revisit only if it becomes one.
 
 ---
 
 ## 3. Better implementation / code health
 
-- **3.1 Duplicated SVG icon components.** `PlayIcon`/`PauseIcon`/`SeekIcon` exist in
-  both `VideoControls.tsx` and `YouTubeMusicPlayer.tsx`; the heart icon is pasted in
-  `Sidebar.tsx`, `WelcomeScreen.tsx`, and `VideoPicker.tsx`; chevrons appear in three
-  places. One `components/icons.tsx` would collapse ~150 lines.
-- **3.2 One storage utility instead of five ad-hoc helpers.** `loadFavorites` /
-  `loadTheme` / `loadCustomColor` / `loadCaptionLang` (`App.tsx:24-47`) and
-  `loadCustomStations` (`MusicPanel.tsx:38-45`) are the same shape. Port TaskNook's
-  `lib/storage.js` (guarded get/set) and keep the `sws.*` keys in one typed module.
-  Fixes 1.8 as a side effect.
-- **3.3 `loadCustomStations` trusts stored JSON.** It casts `Array.isArray(raw) ? raw
-  : []` straight to `Station[]` — a corrupt/hand-edited entry with no `label` or `id`
-  renders as a broken chip. Validate `provider`/`id`/`label` per entry.
-- **3.4 The Inter font is declared but never loaded.** `index.css:45` and
-  `tailwind.config.js:28` name `'Inter'`, but nothing loads it — no `@font-face`, no
-  link in `index.html`. Everyone silently gets system-ui unless they happen to have
-  Inter installed. Either self-host the woff2 (keeps the exe self-contained) or
-  delete it from the stack so the declared design matches the real one.
-- **3.5 `musicLink.ts` has quietly diverged from TaskNook's parser.** TaskNook's
-  `lib/youtube.js` accepts a **bare pasted playlist id** (`PL…`/`UU…` etc.) and has a
-  `searchParams` fallback for `list=`; this port requires the string to contain
-  `youtube.com|youtu.be` first (`musicLink.ts:44`), so a bare playlist id falls
-  through to "couldn't find a video". Conversely this port rejects `WL`/`LL` where
-  TaskNook accepts a bare `LL…`. CLAUDE.md's mirror rule says these should be
-  reconciled deliberately — and TaskNook has regression tests
-  (`frontend/src/lib/youtube.test.js`) worth porting with it.
-- **3.6 No tests at all.** `tsc --noEmit` is the only gate. The purest, highest-value
-  targets are already isolated: `parseTimeInput`, the pomodoro phase machine in
-  `useTimer`, `resolveMusicLink`, and the luminance solver in `lib/theme.ts` (assert
-  contrast ratios per hue — the exact regression the CLAUDE.md warning describes).
-  Vitest drops into Vite with near-zero config; TaskNook's test files are templates.
-- **3.7 In `YouTubeMusicPlayer`, `onReady` hardcodes `setVolume(60)`** while the
-  slider state also inits to 60 (`YouTubeMusicPlayer.tsx:21,54`) — one constant,
-  used twice, and the right place to plug in a persisted music volume (see J).
+- ~~**3.1 Duplicated SVG icon components.**~~ ✅ Play/Pause/Seek/Skip/Heart now live in
+  `src/components/icons.tsx`; single-use icons stayed put.
+- ~~**3.2 One storage utility instead of five ad-hoc helpers.**~~ ✅ `src/lib/storage.ts`
+  (guarded get/set/JSON helpers), used by App, MusicPanel, and the music player.
+- ~~**3.3 `loadCustomStations` trusts stored JSON.**~~ ✅ Each entry is validated
+  (provider/id/label) before use.
+- ~~**3.4 The Inter font is declared but never loaded.**~~ ✅ Self-hosted via
+  `@fontsource/inter` (400–700), imported in `main.tsx`, bundled into `dist/` so the
+  offline exe gets it too.
+- ~~**3.5 `musicLink.ts` has quietly diverged from TaskNook's parser.**~~ ✅ Reconciled:
+  bare playlist ids (`PL`/`OL`/`UU`/`FL`) accepted, `list=`/`v=` searchParams
+  fallbacks added — the `v=` fallback now host-checked (a test caught that
+  `example.com/watch?v=…` used to parse as YouTube). WL/LL/RD still deliberately
+  rejected; the divergence is documented in a comment.
+- ~~**3.6 No tests at all.**~~ ✅ Vitest, 48 tests: `musicLink` (URL forms, playlist
+  precedence, rejections), `parseTimeInput`/`formatTime`, and the theme luminance
+  solver (per-hue luminance preservation + the white-on-clay contrast regression).
+- ~~**3.7 `YouTubeMusicPlayer` hardcoded volume.**~~ ✅ One constant, and the music
+  volume persists to `sws.music.volume`.
 
 ---
 
@@ -200,13 +108,13 @@ transform-ownership rules are already encoded around it.
 
 | # | Feature | Source | Effort | Notes |
 |---|---------|--------|--------|-------|
-| **A** | **Timer chime + Web Notification at phase edges** | `timer.jsx:146-233` | S | Fixes 1.2. The single highest-value change in this list. |
-| **B** | **Ambient mixer upgrade** — 7 layerable channels (rain, storm, snow, wind, fireplace, café, page-turns) with per-channel volume, rain droplet plinks with stereo pan, noise-buffer cache, fade-out + `ctx.suspend()` | `lib/audio.js` (368 lines, UI-free) | M | Strict superset of `ambience.ts`; replacing rather than patching also fixes all of 1.3. Keep this app's softer rain/snow tuning per CLAUDE.md. |
+| ~~**A**~~ | ~~**Timer chime + Web Notification at phase edges**~~ ✅ done | `timer.jsx:146-233` | S | Shipped as `src/lib/cues.ts` with fix 1.2. |
+| ~~**B**~~ | ~~**Ambient mixer upgrade** — 7 layerable channels (rain, storm, snow, wind, fireplace, café, page-turns) with per-channel volume, rain droplet plinks with stereo pan, noise-buffer cache, fade-out + `ctx.suspend()`~~ ✅ done | `lib/audio.js` (368 lines, UI-free) | M | Ported as the new `lib/ambience.ts` + mixer UI in `AmbiencePanel` (old single-mode storage keys migrate). Snow/storm keep this app's softer tuning; the LFO-depth cap is a divergence worth mirroring back to TaskNook. |
 | **C** | **Tasks panel** — to-dos with duration/priority/groups, drag-reorder, daily routines | `TaskPanel.jsx` + `lib/algorithms.js` | M | localStorage-only version is fine here (no backend by design). Pairs naturally with the timer: "what am I focusing on". |
 | **D** | **Focus stats** — log completed focus sessions, daily goal ring, 🔥 streak | `lib/stats.js` (local-day math, tested) | M | The app currently remembers nothing about effort spent. Streaks are the retention feature for a study app. |
 | **E** | **Break nudge** — presence-based "you've been at it 2 hours" toast | `lib/breaks.js` (pure, tested) | S | Works even when no timer is running. |
 | **F** | **Timer QoL** — stopwatch mode, ±1:00 mid-session nudges (with clamped accounting), skip-break, long-break every N rounds | `timer.jsx`, `HudFocusCard.jsx` | S–M | Also: TaskNook guards against resetting phase/round mid-run; `useTimer` here has no such guard. |
-| **G** | **Music player robustness** — 12 s IFrame-API timeout + retry (fixes 1.5), bounded auto-skip past broken playlist tracks, "needs internet" vs "won't play" error split | `MusicDock.jsx` | S | The auto-skip matters for the built-in playlist station. |
+| **G** | **Music player robustness** — bounded auto-skip past broken playlist tracks | `MusicDock.jsx` | S | The API-timeout/retry/error-split parts shipped with 1.5; the auto-skip for the built-in playlist station remains. |
 | **H** | **Named presets** — snapshot video + ambience mix + timer config as one-click "study scenes" | `store.jsx` weather presets | M | Maps TaskNook's "weather preset" idea onto this app's trio. |
 | **I** | Real-weather auto-match (keyless Open-Meteo) to drive ambience | `lib/weather.js` | M | Optional flavor; the geolocation-deadline workaround is already written. |
 
@@ -214,26 +122,93 @@ transform-ownership rules are already encoded around it.
 
 | # | Feature | Effort | Notes |
 |---|---------|--------|-------|
-| **J** | **Persist what's currently forgotten**: video volume, ambience mode+volume, music volume, pomodoro config, panel drag positions/sizes (`onDragEnd` → localStorage), last video | S each | Cheap wins; the desktop app went to real lengths (stable port, storage_path) to make localStorage survive — but most state never reaches it. |
+| ~~**J**~~ | ~~**Persist what's currently forgotten**: video volume, ambience mode+volume, pomodoro config, panel drag positions/sizes, last video~~ ✅ done | S each | All persist now: `sws.volume`, ambience mode+volume, pomodoro config, panel positions (`usePanelPosition`, clamped) + sizes, last video (welcome-screen "continue" button). The control pill's position stays transient by design. |
 | **K** | **"Continue watching"** — store playback position per video every ~10 s; welcome screen gets a resume tile | S–M | These are 1–2 hour vlogs; losing your place is a real cost. |
 | **L** | **Keyboard shortcuts** — space play/pause, ←/→ ±10 s, `F` fullscreen, `M` mute, `T` start/pause timer | S | `disablekb: 1` + `pointer-events: none` mean the app owns every key already; nothing is listening. |
 | **M** | **Countdown in `document.title`** while the timer runs | S | Visible from any other tab — pairs with fix 1.1. |
 | **N** | **Zen mode** — one key/button hides every panel and pill | S | The panels already support `visibility: hidden`; this is a single boolean. |
 | **O** | **Deep links** — read `?v=<id>` on load (skip the welcome screen), write it on video change | S | Makes sessions shareable/bookmarkable; MOA will send each other links. |
-| **P** | **Length-aware picking** — with numeric durations (1.9), sort/filter the grid by length, or suggest a video at least as long as the focus block | S–M | Cute tie-in between the two halves of the app. |
+| **P** | **Length-aware picking** — with numeric durations (1.9 ✅), sort/filter the grid by length, or suggest a video at least as long as the focus block | S–M | Needs one `npm run fetch-playlist` re-run first (6.6). |
 | **Q** | Theme picker on the welcome screen (currently buried in the sidebar footer, unreachable before picking a video) | S | |
 | **R** | PWA manifest + icon — installable from the browser on any OS, complementing the Windows-only exe | S | |
 | **S** | Mobile layout pass — panels spawn at fixed `left/top`, sidebar min-width 340 px overflows phones | M | Depends on whether mobile is a target at all. |
+| **T** | Auto-pause/resume video with pomodoro phases (optional toggle: pause video during breaks or play chime only) | S | |
 
 ---
 
-## 5. Suggested order
+## 5. Suggested order (remaining work)
 
-1. **Timer correctness bundle** — 1.1 (deadline-based timer) + A (chime/notification) + M (title countdown). This is the app's core loop; everything else is decoration around it.
-2. **1.4** drag constraints (small, prevents a genuinely lost-panel state).
-3. **J** persistence quick wins (volume, ambience, pomodoro config, panel positions).
-4. **B** ambience port — one change fixes three bugs (1.3) and adds the fireplace/café/layering feature set.
-5. **2.1** timer re-render isolation + **G/1.5** IFrame-API failure handling.
-6. **L + N + O** keyboard shortcuts, zen mode, deep links — small, all pure UX surplus.
-7. **D (stats) then C (tasks)** if the app should grow toward TaskNook's "study home" scope rather than staying a focused video-Pomodoro tool.
-8. **3.5 + 3.6** parser reconciliation with tests riding along — first tests in the repo.
+1. ~~**J** persistence quick wins — volume, ambience, pomodoro config, panel positions (also closes 6.3).~~ ✅ done
+2. ~~**B** ambience mixer port — the biggest single upgrade left.~~ ✅ done
+3. **L + M + N + O** keyboard shortcuts, title countdown, zen mode, deep links — small, all pure UX surplus.
+4. **D (stats) then C (tasks)** if the app should grow toward TaskNook's "study home" scope.
+5. **G** playlist auto-skip, **K** continue-watching (playback *position* — the video itself now resumes), and the section-7 polish items as they appeal.
+
+*(Done from the original list: the timer correctness bundle, drag constraints, re-render isolation, IFrame-API failure handling, parser reconciliation + first tests, and the J persistence bundle.)*
+
+---
+
+## 6. Second-pass findings (missed in the first sweep)
+
+- ~~**6.1 The unplayable-video toast can hide under a panel.**~~ ✅ fixed — notices
+  rendered at `z-10` while the draggable panels are z-30/40, so a sidebar parked
+  bottom-center covered the "skipped to another one" message. Now `z-50`.
+- ~~**6.2 No empty state when every video is blocked.**~~ ✅ fixed — if all embeds get
+  session-blocked, the welcome grid rendered silently empty; it now explains and
+  suggests a reload.
+- ~~**6.3 Window resize can still strand a dragged panel.**~~ ✅ fixed —
+  `usePanelPosition` clamps the stored offset on restore *and* on window `resize`,
+  so a panel always keeps a grabbable edge on screen.
+- ~~**6.4 The volume slider lies after a remount.**~~ ✅ fixed — App tracks a `muted`
+  flag (reset whenever the player is recreated) and shows a "🔇 Tap to unmute"
+  chip while sound is off with a non-zero slider; the chip or the slider unmutes.
+- **6.5 Notifications in the packaged exe are unverified.** pywebview/WebView2 does
+  not surface permission prompts the way a browser does, so `Notification.
+  requestPermission()` may silently stay `default` — the chime still works, the
+  system notification may not. Worth a manual check of `StudyWithSoobin.exe`
+  before relying on it.
+- **6.6 `durationSeconds` isn't in the shipped snapshot yet.** The fetch script now
+  emits it, but `playlist.json` predates the change. Next `npm run fetch-playlist`
+  run picks it up (diff the JSON as usual — the playlist itself may have changed).
+- ~~**6.7 The timer is invisible from the welcome screen.**~~ ✅ fixed — a running
+  timer now shows a bottom-center pill on the welcome screen (with the pomodoro
+  phase when applicable), so its chime never comes out of nowhere.
+
+---
+
+## 7. UI/UX suggestions (from an alignment/design pass)
+
+Ordered roughly by value; none are bugs.
+
+1. **Opening the pomodoro form makes the timer card overlap the sidebar.** The
+   sidebar spawns at `top: 232` and the expanded card reaches past it. Cheapest:
+   spawn the sidebar a bit lower (~`top: 280`); nicer: measure the card and stack
+   dynamically, since both panels are draggable anyway.
+2. **Pomodoro phases look identical at a glance.** Focus vs break is one small
+   badge; the time itself doesn't change character. A phase-tinted card accent
+   (clay for focus, cream/green for break) or a thin progress ring around the time
+   would read from across the room — which is how a Pomodoro timer is actually used.
+3. **Keyboard/focus affordances.** Most buttons rely on the browser's default
+   outline, and several inputs use `focus:outline-none` with only a faint ring; the
+   CC menu has no Escape-to-close. Adding consistent `focus-visible` rings (clay,
+   2px) and Escape handling would make the app fully keyboard-friendly — and pairs
+   with feature L.
+4. ~~**Slider inconsistency.**~~ ✅ done — `src/components/Slider.tsx` is now the one
+   style for the three plain sliders (video volume, music volume, ambience); the
+   seek bars stay on `Scrubber`, which needs its gradient fill.
+5. **The top-right cluster never fades.** The control pill auto-hides for immersion
+   but "Change video / Join MOA! / fullscreen" stay pinned over the video forever.
+   Letting that cluster fade on the same idle timer (any `pointermove` brings it
+   back) would complete the theater effect — with zen mode (N) as the always-hidden
+   version.
+6. **Touch targets run small.** Several controls are 24–28 px (minimize buttons,
+   pager chevrons, CC menu items) against the ~44 px touch guideline. Fine for
+   mouse-first today, but worth padding via larger hit areas (not larger icons) if
+   mobile/touch matters — see feature S.
+7. **Respect `prefers-reduced-motion`.** Thumbnail zooms, hover lifts, and the
+   pill's fade are all unconditional. Tailwind's `motion-reduce:` variant makes
+   this a find-and-annotate pass; TaskNook has an explicit motion mode for the
+   same reason.
+8. **Welcome screen is a dead end for settings.** Theme (Q) and — once durations
+   are in the snapshot — length sorting (P) naturally live there. (The
+   running-timer pill and the continue-last-video button landed with 6.7/J.)

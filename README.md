@@ -38,16 +38,23 @@ an internet connection since the videos stream from YouTube.)
   any duration ("45", "25:30", "1:30:00")
 - 🍅 Pomodoro mode: set your focus length, break length, and number of
   rounds — the timer cycles through them automatically
+- 🔔 A soft chime (and a system notification, if you allow it) marks the end
+  of every focus block and break — the timer keeps perfect time even while
+  the tab is in the background
 - 🎵 Music player: built-in lofi stations with their own play/pause, seek and
   volume, or paste any YouTube or Spotify link to add your own. YouTube
   playlists work too — they get next/previous track buttons and show which
   track is playing. (Spotify embeds play 30-second previews unless you're
   signed into Spotify in the same browser.)
-- 🌦️ Ambience: procedurally generated rain, snow, or storm (with thunder) —
-  no audio files, works offline
+- 🌦️ Ambience mixer: layer rain (with real droplet plinks), storm (thunder),
+  snow, wind, fireplace crackle, café murmur, and page turns — each channel
+  has its own volume slider, all procedurally generated (no audio files,
+  works offline)
 - Paged thumbnail grid to switch videos mid-session
 - Favorites (❤) and four themes — light, ☕ coffee, dark, and 🎨 a custom
-  colour you pick yourself — all remembered between visits
+  colour you pick yourself — all remembered between visits, along with your
+  volumes, ambience mix, pomodoro settings, panel layout, and last video
+  (the start screen offers to continue where you left off)
 - Auto-advances to a random video when the current one ends; videos that
   refuse to play embedded are skipped automatically
 - No backend, no API key, no login — everything runs client-side

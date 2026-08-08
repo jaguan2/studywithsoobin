@@ -1,11 +1,28 @@
 import { useState } from 'react'
 import { parseTimeInput, type TimerApi } from '../hooks/useTimer'
+import { storageGetJson, storageSetJson } from '../lib/storage'
 
 const PRESETS = [
   { label: '15 min', seconds: 15 * 60 },
   { label: '30 min', seconds: 30 * 60 },
   { label: '1 hour', seconds: 60 * 60 },
 ]
+
+/** The last-used pomodoro settings, so the form doesn't reset to 25/5/4
+ *  every session. */
+function loadPomodoroConfig(): { focus: number; break: number; rounds: number } {
+  const stored = storageGetJson<{ focus?: unknown; break?: unknown; rounds?: unknown }>(
+    'sws.pomodoro',
+    {},
+  )
+  const num = (v: unknown, fallback: number, max: number) =>
+    typeof v === 'number' && Number.isFinite(v) && v >= 1 && v <= max ? Math.round(v) : fallback
+  return {
+    focus: num(stored.focus, 25, 180),
+    break: num(stored.break, 5, 60),
+    rounds: num(stored.rounds, 4, 12),
+  }
+}
 
 interface TimerPanelProps {
   timer: TimerApi
@@ -15,9 +32,10 @@ export function TimerPanel({ timer }: TimerPanelProps) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
   const [showPomodoroForm, setShowPomodoroForm] = useState(false)
-  const [focusMin, setFocusMin] = useState(25)
-  const [breakMin, setBreakMin] = useState(5)
-  const [rounds, setRounds] = useState(4)
+  const [initialConfig] = useState(loadPomodoroConfig)
+  const [focusMin, setFocusMin] = useState(initialConfig.focus)
+  const [breakMin, setBreakMin] = useState(initialConfig.break)
+  const [rounds, setRounds] = useState(initialConfig.rounds)
 
   const startEdit = () => {
     timer.pause()
@@ -154,6 +172,7 @@ export function TimerPanel({ timer }: TimerPanelProps) {
               </div>
               <button
                 onClick={() => {
+                  storageSetJson('sws.pomodoro', { focus: focusMin, break: breakMin, rounds })
                   timer.startPomodoro({ focusMinutes: focusMin, breakMinutes: breakMin, rounds })
                   setShowPomodoroForm(false)
                 }}

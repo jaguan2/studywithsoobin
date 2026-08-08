@@ -22,6 +22,9 @@ export interface VideoBackgroundHandle {
 interface VideoBackgroundProps {
   videoId: string
   volume: number
+  /** True until the user makes an explicit unmute gesture (autoplay policy
+   *  forces every freshly-created player to start muted). */
+  muted: boolean
   isPlaying: boolean
   /** Preferred subtitle language code, or null for off. Re-applied to each
    *  new video that has a matching track. */
@@ -39,7 +42,7 @@ interface VideoBackgroundProps {
 
 const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundProps>(
   function VideoBackground(
-    { videoId, volume, isPlaying, captionLang, onEnded, onPlayingChange, onUnplayable, onApiUnavailable },
+    { videoId, volume, muted, isPlaying, captionLang, onEnded, onPlayingChange, onUnplayable, onApiUnavailable },
     ref,
   ) {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -207,13 +210,13 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
     useEffect(() => {
       const player = playerRef.current
       if (!player) return
-      if (volume <= 0) {
+      if (muted || volume <= 0) {
         player.mute()
       } else {
         player.unMute()
         player.setVolume(volume)
       }
-    }, [volume])
+    }, [volume, muted])
 
     useEffect(() => {
       const player = playerRef.current

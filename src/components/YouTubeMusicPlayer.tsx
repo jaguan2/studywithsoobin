@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
 import { storageGet, storageSet } from '../lib/storage'
 import { LiveBadge, Scrubber } from './Scrubber'
+import { Slider } from './Slider'
 import { PauseIcon, PlayIcon, SeekIcon, SkipIcon } from './icons'
 
 // A compact music player driven by the YouTube IFrame API instead of a bare
@@ -233,15 +234,7 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
             <SeekIcon direction="forward" size={14} />
           </ControlButton>
         )}
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={volume}
-          onChange={(e) => changeVolume(Number(e.target.value))}
-          aria-label="Music volume"
-          className="ml-1 h-1 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-cream-300 accent-clay-500 dark:bg-ink-700"
-        />
+        <Slider value={volume} onChange={changeVolume} ariaLabel="Music volume" className="ml-1 flex-1" />
       </div>
     </div>
   )
