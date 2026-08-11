@@ -50,6 +50,19 @@ an internet connection since the videos stream from YouTube.)
   snow, wind, fireplace crackle, café murmur, and page turns — each channel
   has its own volume slider, all procedurally generated (no audio files,
   works offline)
+- 📝 Tasks: a little checklist card for what you're working on — add, check
+  off, clear done, drag it wherever
+- 📊 Focus stats under the timer: minutes studied today and a 🔥 day streak,
+  kept on your device
+- ⌨️ Keyboard shortcuts: space play/pause · ←/→ skip 10s · F fullscreen ·
+  M mute · T start/pause the timer · Z zen mode
+- 🧘 Zen mode (Z or the 👁 button): everything disappears except the video —
+  Z or Esc brings it all back
+- Videos remember where you stopped and pick up there next time, and the URL
+  carries `?v=` so you can share exactly what you're watching
+- Pomodoro extras: skip a break, nudge ±1:00 mid-round, and optionally pause
+  the video during breaks — plus a gentle nudge if you've studied two hours
+  without one
 - Paged thumbnail grid to switch videos mid-session
 - Favorites (❤) and four themes — light, ☕ coffee, dark, and 🎨 a custom
   colour you pick yourself — all remembered between visits, along with your

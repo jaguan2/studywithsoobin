@@ -16,13 +16,24 @@ interface TimerCardProps {
   onFocus: () => void
   collapsed: boolean
   onToggleCollapsed: () => void
+  pauseOnBreak: boolean
+  onSetPauseOnBreak: (value: boolean) => void
 }
 
 // A floating, draggable timer card — same framer-motion pattern as TaskNook's
 // FocusTimer: drag starts only from the grab strip, no momentum, and the
 // element is positioned with explicit left/top because framer-motion owns the
 // inline transform.
-export function TimerCard({ timer, bounds, zIndex, onFocus, collapsed, onToggleCollapsed }: TimerCardProps) {
+export function TimerCard({
+  timer,
+  bounds,
+  zIndex,
+  onFocus,
+  collapsed,
+  onToggleCollapsed,
+  pauseOnBreak,
+  onSetPauseOnBreak,
+}: TimerCardProps) {
   const dragControls = useDragControls()
   const { width, startResize } = usePanelSize({
     width: 300,
@@ -32,6 +43,15 @@ export function TimerCard({ timer, bounds, zIndex, onFocus, collapsed, onToggleC
   })
   // x/y ride framer-motion's drag; persisted so the layout survives a reload.
   const { x, y, savePosition } = usePanelPosition('sws.pos.timer', BASE)
+
+  // Phase readable at a glance from across the room: a clay ring while
+  // focusing, a quiet one on break.
+  const pomo = timer.pomodoro
+  const phaseRing = !pomo || pomo.completed
+    ? ''
+    : pomo.phase === 'focus'
+      ? ' ring-2 ring-clay-500/60'
+      : ' ring-2 ring-cream-300 dark:ring-ink-700'
 
   return (
     <motion.div
@@ -45,7 +65,10 @@ export function TimerCard({ timer, bounds, zIndex, onFocus, collapsed, onToggleC
       onPointerDownCapture={onFocus}
       // visibility (not unmount) so the dragged position survives minimize
       style={{ x, y, width, left: BASE.left, top: BASE.top, zIndex, visibility: collapsed ? 'hidden' : 'visible' }}
-      className="absolute select-none rounded-2xl bg-cream-50/95 shadow-panel backdrop-blur-md dark:bg-ink-800/90"
+      className={
+        'absolute select-none rounded-2xl bg-cream-50/95 shadow-panel backdrop-blur-md dark:bg-ink-800/90' +
+        phaseRing
+      }
     >
       <div
         onPointerDown={(e) => dragControls.start(e)}
@@ -65,7 +88,7 @@ export function TimerCard({ timer, bounds, zIndex, onFocus, collapsed, onToggleC
         </svg>
       </button>
       <div className="px-4 pb-4">
-        <TimerPanel timer={timer} />
+        <TimerPanel timer={timer} pauseOnBreak={pauseOnBreak} onSetPauseOnBreak={onSetPauseOnBreak} />
       </div>
       <ResizeGrip onStart={startResize} />
     </motion.div>

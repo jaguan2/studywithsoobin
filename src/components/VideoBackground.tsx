@@ -1,5 +1,9 @@
 import { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
+import { getSavedPosition, savePosition } from '../lib/positions'
+
+// How often to save the playback position for "continue where you left off".
+const SAVE_POSITION_MS = 10_000
 
 export interface CaptionTrack {
   code: string
@@ -62,6 +66,11 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
     // the mount-time id would then play the wrong video.
     const videoIdRef = useRef(videoId)
     videoIdRef.current = videoId
+    const isPlayingRef = useRef(isPlaying)
+    isPlayingRef.current = isPlaying
+    // Which video the saved position has been applied to — one resume per
+    // video, not one per PLAYING event (pause/resume also fires PLAYING).
+    const resumedForRef = useRef<string | null>(null)
     const captionRetryRef = useRef<number | undefined>(undefined)
 
     /** Push the current preference into the player. The tracklist only exists
@@ -167,9 +176,18 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
               },
               onStateChange: (event) => {
                 if (event.data === YT.PlayerState.ENDED) {
+                  // Watched to the end — drop the resume point.
+                  savePosition(videoIdRef.current, 0, 0)
                   onEndedRef.current()
                 } else if (event.data === YT.PlayerState.PLAYING) {
                   onPlayingChangeRef.current(true)
+                  // Continue where you left off: applied once per video, on
+                  // its first PLAYING (pause/resume fires PLAYING again).
+                  if (resumedForRef.current !== videoIdRef.current) {
+                    resumedForRef.current = videoIdRef.current
+                    const saved = getSavedPosition(videoIdRef.current)
+                    if (saved !== null) event.target.seekTo(Math.max(0, saved - 5), true)
+                  }
                   // The tracklist doesn't exist until playback starts, and it's
                   // rebuilt per video — so re-apply the preference here rather
                   // than once on ready.
@@ -201,6 +219,25 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
     useEffect(() => {
       applyCaptions()
     }, [captionLang, applyCaptions])
+
+    // Periodically remember where we are, for "continue where you left off".
+    useEffect(() => {
+      const id = window.setInterval(() => {
+        if (!isPlayingRef.current) return
+        const player = playerRef.current
+        if (!player || typeof player.getDuration !== 'function') return
+        try {
+          const duration = player.getDuration()
+          const current = player.getCurrentTime()
+          if (Number.isFinite(duration) && Number.isFinite(current) && duration > 0) {
+            savePosition(videoIdRef.current, current, duration)
+          }
+        } catch {
+          /* player not ready */
+        }
+      }, SAVE_POSITION_MS)
+      return () => window.clearInterval(id)
+    }, [])
 
     // Swap videos without recreating the player.
     useEffect(() => {

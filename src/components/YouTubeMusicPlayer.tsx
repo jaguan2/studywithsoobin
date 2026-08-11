@@ -44,6 +44,9 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
   // 'api' is the other failure mode: the IFrame API itself didn't load
   // (offline / blocked) — a different problem needing a different message.
   const [error, setError] = useState<'video' | 'api' | null>(null)
+  // In a playlist a single dead track shouldn't kill the station — skip past
+  // it, bounded so a fully-dead list still surfaces the error.
+  const skipsRef = useRef(0)
 
   useEffect(() => {
     let cancelled = false
@@ -74,6 +77,7 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
             onStateChange: (event) => {
               setIsPlaying(event.data === YT.PlayerState.PLAYING)
               if (event.data === YT.PlayerState.PLAYING) {
+                skipsRef.current = 0 // something plays — reset the skip budget
                 try {
                   setIsLive(!!event.target.getVideoData?.()?.isLive)
                 } catch {
@@ -93,7 +97,14 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
                 }
               }
             },
-            onError: () => setError('video'),
+            onError: () => {
+              if (isPlaylist && skipsRef.current < 5) {
+                skipsRef.current += 1
+                window.setTimeout(() => playerRef.current?.nextVideo?.(), 500)
+                return
+              }
+              setError('video')
+            },
           },
         })
       })

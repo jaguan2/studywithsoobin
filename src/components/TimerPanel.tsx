@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { parseTimeInput, type TimerApi } from '../hooks/useTimer'
+import { formatFocusMinutes, getStreakDays, getTodayMinutes } from '../lib/stats'
 import { storageGetJson, storageSetJson } from '../lib/storage'
 
 const PRESETS = [
@@ -26,9 +27,12 @@ function loadPomodoroConfig(): { focus: number; break: number; rounds: number } 
 
 interface TimerPanelProps {
   timer: TimerApi
+  /** Pause the background video during pomodoro breaks (App owns the state). */
+  pauseOnBreak: boolean
+  onSetPauseOnBreak: (value: boolean) => void
 }
 
-export function TimerPanel({ timer }: TimerPanelProps) {
+export function TimerPanel({ timer, pauseOnBreak, onSetPauseOnBreak }: TimerPanelProps) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
   const [showPomodoroForm, setShowPomodoroForm] = useState(false)
@@ -50,6 +54,10 @@ export function TimerPanel({ timer }: TimerPanelProps) {
   }
 
   const pomo = timer.pomodoro
+  // Cheap enough to read per render: the panel re-renders once a second while
+  // the timer runs anyway, and the log is one small object.
+  const todayMinutes = getTodayMinutes()
+  const streak = getStreakDays()
 
   return (
     <div>
@@ -92,6 +100,20 @@ export function TimerPanel({ timer }: TimerPanelProps) {
         </button>
       </div>
 
+      {timer.isRunning && (
+        <div className="mt-1.5 flex items-center gap-1.5">
+          <NudgeButton label="−1:00" onClick={() => timer.nudge(-60)} />
+          <NudgeButton label="+1:00" onClick={() => timer.nudge(60)} />
+        </div>
+      )}
+
+      {(todayMinutes > 0 || streak > 0) && (
+        <p className="mt-2 text-[11px] text-ink-700/70 dark:text-cream-300/60">
+          today {formatFocusMinutes(todayMinutes)}
+          {streak > 1 && <> · 🔥 {streak} day streak</>}
+        </p>
+      )}
+
       {pomo ? (
         <div className="mt-3">
           {pomo.completed ? (
@@ -126,12 +148,22 @@ export function TimerPanel({ timer }: TimerPanelProps) {
               </span>
             </div>
           )}
-          <button
-            onClick={timer.stopPomodoro}
-            className="mt-2 text-[11px] text-ink-700/60 underline-offset-2 hover:underline dark:text-cream-300/60"
-          >
-            exit pomodoro
-          </button>
+          <div className="mt-2 flex items-center gap-3">
+            {!pomo.completed && pomo.phase === 'break' && (
+              <button
+                onClick={timer.skipBreak}
+                className="text-[11px] text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
+              >
+                skip break →
+              </button>
+            )}
+            <button
+              onClick={timer.stopPomodoro}
+              className="text-[11px] text-ink-700/60 underline-offset-2 hover:underline dark:text-cream-300/60"
+            >
+              exit pomodoro
+            </button>
+          </div>
         </div>
       ) : (
         <>
@@ -170,6 +202,15 @@ export function TimerPanel({ timer }: TimerPanelProps) {
                 <NumberField label="Break" value={breakMin} min={1} max={60} onChange={setBreakMin} suffix="min" />
                 <NumberField label="Rounds" value={rounds} min={1} max={12} onChange={setRounds} />
               </div>
+              <label className="flex cursor-pointer items-center gap-2 text-[11px] text-ink-700 dark:text-cream-300">
+                <input
+                  type="checkbox"
+                  checked={pauseOnBreak}
+                  onChange={(e) => onSetPauseOnBreak(e.target.checked)}
+                  className="h-3.5 w-3.5 accent-clay-500"
+                />
+                pause the video during breaks
+              </label>
               <button
                 onClick={() => {
                   storageSetJson('sws.pomodoro', { focus: focusMin, break: breakMin, rounds })
@@ -213,6 +254,17 @@ function NumberField({ label, value, min, max, onChange, suffix }: NumberFieldPr
         {suffix && <span className="text-[10px] opacity-60">{suffix}</span>}
       </span>
     </label>
+  )
+}
+
+function NudgeButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-medium tabular-nums text-ink-700 transition hover:bg-white dark:bg-ink-800/80 dark:text-cream-300 dark:hover:bg-ink-800"
+    >
+      {label}
+    </button>
   )
 }
 

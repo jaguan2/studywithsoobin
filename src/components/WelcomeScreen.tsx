@@ -1,19 +1,71 @@
-import { memo } from 'react'
+import { memo, useMemo, useState } from 'react'
+import type { Theme } from '../App'
 import type { Video } from '../types/playlist'
+import { ThemeSwitcher } from './ThemeSwitcher'
 import { HeartIcon } from './icons'
+
+type SortMode = 'playlist' | 'longest' | 'shortest'
+
+const SORTS: { value: SortMode; label: string }[] = [
+  { value: 'playlist', label: 'playlist order' },
+  { value: 'longest', label: 'longest' },
+  { value: 'shortest', label: 'shortest' },
+]
+
+/** Numeric duration: the snapshot's value when present, else parsed from the
+ *  display string ("1:29:21"). */
+function videoSeconds(video: Video): number {
+  if (typeof video.durationSeconds === 'number') return video.durationSeconds
+  const parts = video.duration.split(':').map(Number)
+  if (parts.length < 2 || parts.some((n) => !Number.isFinite(n))) return 0
+  return parts.reduce((total, n) => total * 60 + n, 0)
+}
 
 interface WelcomeScreenProps {
   videos: Video[]
   favorites: string[]
   /** The video from the previous session (if still playable), for one-click resume. */
   lastVideo: Video | null
+  theme: Theme
+  onSetTheme: (theme: Theme) => void
+  customColor: string
+  onSetCustomColor: (hex: string) => void
   onSelect: (id: string) => void
   onSurprise: () => void
 }
 
-function WelcomeScreenInner({ videos, favorites, lastVideo, onSelect, onSurprise }: WelcomeScreenProps) {
+function WelcomeScreenInner({
+  videos,
+  favorites,
+  lastVideo,
+  theme,
+  onSetTheme,
+  customColor,
+  onSetCustomColor,
+  onSelect,
+  onSurprise,
+}: WelcomeScreenProps) {
+  const [sort, setSort] = useState<SortMode>('playlist')
+
+  const sorted = useMemo(() => {
+    if (sort === 'playlist') return videos
+    const withSeconds = [...videos]
+    withSeconds.sort((a, b) =>
+      sort === 'longest' ? videoSeconds(b) - videoSeconds(a) : videoSeconds(a) - videoSeconds(b),
+    )
+    return withSeconds
+  }, [videos, sort])
+
   return (
     <div className="h-screen w-screen overflow-y-auto bg-cream-50 dark:bg-ink-900">
+      <div className="absolute right-4 top-4">
+        <ThemeSwitcher
+          theme={theme}
+          onSetTheme={onSetTheme}
+          customColor={customColor}
+          onSetCustomColor={onSetCustomColor}
+        />
+      </div>
       <div className="mx-auto max-w-5xl px-6 py-10">
         <header className="text-center">
           <h1 className="text-3xl font-semibold text-ink-900 dark:text-cream-100">
@@ -49,19 +101,38 @@ function WelcomeScreenInner({ videos, favorites, lastVideo, onSelect, onSurprise
           </p>
         )}
 
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {videos.map((video) => (
+        {videos.length > 0 && (
+          <div className="mt-8 flex items-center justify-end gap-1.5">
+            {SORTS.map((s) => (
+              <button
+                key={s.value}
+                onClick={() => setSort(s.value)}
+                className={
+                  'rounded-full px-2.5 py-1 text-xs transition ' +
+                  (sort === s.value
+                    ? 'bg-clay-500 font-medium text-white'
+                    : 'bg-white/80 text-ink-700 hover:bg-white dark:bg-ink-800/80 dark:text-cream-300 dark:hover:bg-ink-800')
+                }
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {sorted.map((video) => (
             <button
               key={video.id}
               onClick={() => onSelect(video.id)}
-              className="group rounded-xl border border-cream-300 bg-white p-2 text-left transition hover:-translate-y-0.5 hover:border-clay-400 hover:shadow-panel dark:border-ink-700 dark:bg-ink-800"
+              className="group rounded-xl border border-cream-300 bg-white p-2 text-left transition hover:-translate-y-0.5 hover:border-clay-400 hover:shadow-panel motion-reduce:transition-none motion-reduce:hover:translate-y-0 dark:border-ink-700 dark:bg-ink-800"
             >
               <div className="relative overflow-hidden rounded-lg">
                 <img
                   src={video.thumbnail}
                   alt=""
                   loading="lazy"
-                  className="aspect-video w-full object-cover transition group-hover:scale-105"
+                  className="aspect-video w-full object-cover transition group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
                 <span className="absolute bottom-1 right-1 rounded bg-black/70 px-1 py-0.5 text-[10px] font-medium text-white">
                   {video.duration}

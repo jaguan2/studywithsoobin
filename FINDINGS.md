@@ -5,14 +5,12 @@
 the reference sibling — several of its libs are the proven, battle-tested versions of
 things this app ports or lacks.*
 
-> **Status (2026-08-08): sections 1–3 are all fixed** (struck through below), verified
-> by `npm test` (48 passing), `npm run build`, and `npm run lint`. A second review
-> pass added section 6 (now fully fixed except 6.5/6.6, which need a manual exe
-> check and a playlist re-fetch respectively) and section 7 (UI/UX suggestions —
-> 7.4 done). From section 4, **A** (timer cues), **J** (persistence: volume,
-> ambience, pomodoro config, panel positions/sizes, last video + unmute chip +
-> welcome-screen timer pill), and **B** (the 7-channel ambience mixer port) are
-> done; the rest remain open.
+> **Status (2026-08-08, third pass): nearly everything here is built** and struck
+> through — all of sections 1–3, all of section 6 except the manual exe check
+> (6.5), all of section 7 except touch targets (7.6 → folded into S), and all of
+> section 4 except **H** (presets), **I** (weather), **S** (mobile), plus the
+> stopwatch/long-break corners of **F**. Verified by `npm test` (58 passing),
+> `npm run build`, and `npm run lint`. Section 5 lists what's left.
 
 ---
 
@@ -110,11 +108,11 @@ it, and bundle size isn't currently a pain point. Revisit only if it becomes one
 |---|---------|--------|--------|-------|
 | ~~**A**~~ | ~~**Timer chime + Web Notification at phase edges**~~ ✅ done | `timer.jsx:146-233` | S | Shipped as `src/lib/cues.ts` with fix 1.2. |
 | ~~**B**~~ | ~~**Ambient mixer upgrade** — 7 layerable channels (rain, storm, snow, wind, fireplace, café, page-turns) with per-channel volume, rain droplet plinks with stereo pan, noise-buffer cache, fade-out + `ctx.suspend()`~~ ✅ done | `lib/audio.js` (368 lines, UI-free) | M | Ported as the new `lib/ambience.ts` + mixer UI in `AmbiencePanel` (old single-mode storage keys migrate). Snow/storm keep this app's softer tuning; the LFO-depth cap is a divergence worth mirroring back to TaskNook. |
-| **C** | **Tasks panel** — to-dos with duration/priority/groups, drag-reorder, daily routines | `TaskPanel.jsx` + `lib/algorithms.js` | M | localStorage-only version is fine here (no backend by design). Pairs naturally with the timer: "what am I focusing on". |
-| **D** | **Focus stats** — log completed focus sessions, daily goal ring, 🔥 streak | `lib/stats.js` (local-day math, tested) | M | The app currently remembers nothing about effort spent. Streaks are the retention feature for a study app. |
-| **E** | **Break nudge** — presence-based "you've been at it 2 hours" toast | `lib/breaks.js` (pure, tested) | S | Works even when no timer is running. |
-| **F** | **Timer QoL** — stopwatch mode, ±1:00 mid-session nudges (with clamped accounting), skip-break, long-break every N rounds | `timer.jsx`, `HudFocusCard.jsx` | S–M | Also: TaskNook guards against resetting phase/round mid-run; `useTimer` here has no such guard. |
-| **G** | **Music player robustness** — bounded auto-skip past broken playlist tracks | `MusicDock.jsx` | S | The API-timeout/retry/error-split parts shipped with 1.5; the auto-skip for the built-in playlist station remains. |
+| ~~**C**~~ | ~~**Tasks panel**~~ ✅ done (simplified) | `TaskPanel.jsx` | M | `TasksCard.tsx`: a draggable/resizable checklist (add, check, delete, clear done), persisted. Deliberately no priorities/groups/routines — a study session wants a short list, not a planner. |
+| ~~**D**~~ | ~~**Focus stats** — log completed focus sessions, 🔥 streak~~ ✅ done | `lib/stats.js` (local-day math, tested) | M | `lib/stats.ts` logs every completed focus block; the timer card shows "today 1h 25m · 🔥 3 day streak". Local-day keys (never `toISOString`), tested. No goal ring (yet). |
+| ~~**E**~~ | ~~**Break nudge** — presence-based "you've been at it 2 hours" toast~~ ✅ done | `lib/breaks.js` | S | `useBreakNudge`: 2 h of visible presence → toast; 5 continuous minutes away counts as the break. Simplified from TaskNook (no timer-running presence signal, no toggle). |
+| **F** | **Timer QoL** — ~~±1:00 mid-session nudges, skip-break~~ ✅ + stopwatch mode and long-break every N rounds still open | `timer.jsx`, `HudFocusCard.jsx` | S–M | Nudges adjust the deadline directly (over-subtracting completes the block); "skip break →" jumps to the next focus round. |
+| ~~**G**~~ | ~~**Music player robustness** — bounded auto-skip past broken playlist tracks~~ ✅ done | `MusicDock.jsx` | S | Up to 5 consecutive dead tracks are skipped; the budget resets whenever something plays. |
 | **H** | **Named presets** — snapshot video + ambience mix + timer config as one-click "study scenes" | `store.jsx` weather presets | M | Maps TaskNook's "weather preset" idea onto this app's trio. |
 | **I** | Real-weather auto-match (keyless Open-Meteo) to drive ambience | `lib/weather.js` | M | Optional flavor; the geolocation-deadline workaround is already written. |
 
@@ -123,28 +121,29 @@ it, and bundle size isn't currently a pain point. Revisit only if it becomes one
 | # | Feature | Effort | Notes |
 |---|---------|--------|-------|
 | ~~**J**~~ | ~~**Persist what's currently forgotten**: video volume, ambience mode+volume, pomodoro config, panel drag positions/sizes, last video~~ ✅ done | S each | All persist now: `sws.volume`, ambience mode+volume, pomodoro config, panel positions (`usePanelPosition`, clamped) + sizes, last video (welcome-screen "continue" button). The control pill's position stays transient by design. |
-| **K** | **"Continue watching"** — store playback position per video every ~10 s; welcome screen gets a resume tile | S–M | These are 1–2 hour vlogs; losing your place is a real cost. |
-| **L** | **Keyboard shortcuts** — space play/pause, ←/→ ±10 s, `F` fullscreen, `M` mute, `T` start/pause timer | S | `disablekb: 1` + `pointer-events: none` mean the app owns every key already; nothing is listening. |
-| **M** | **Countdown in `document.title`** while the timer runs | S | Visible from any other tab — pairs with fix 1.1. |
-| **N** | **Zen mode** — one key/button hides every panel and pill | S | The panels already support `visibility: hidden`; this is a single boolean. |
-| **O** | **Deep links** — read `?v=<id>` on load (skip the welcome screen), write it on video change | S | Makes sessions shareable/bookmarkable; MOA will send each other links. |
-| **P** | **Length-aware picking** — with numeric durations (1.9 ✅), sort/filter the grid by length, or suggest a video at least as long as the focus block | S–M | Needs one `npm run fetch-playlist` re-run first (6.6). |
-| **Q** | Theme picker on the welcome screen (currently buried in the sidebar footer, unreachable before picking a video) | S | |
-| **R** | PWA manifest + icon — installable from the browser on any OS, complementing the Windows-only exe | S | |
-| **S** | Mobile layout pass — panels spawn at fixed `left/top`, sidebar min-width 340 px overflows phones | M | Depends on whether mobile is a target at all. |
-| **T** | Auto-pause/resume video with pomodoro phases (optional toggle: pause video during breaks or play chime only) | S | |
+| ~~**K**~~ | ~~**"Continue watching"** — store playback position per video every ~10 s~~ ✅ done | S–M | `lib/positions.ts` + `VideoBackground`: position saved every 10 s, resumed (minus 5 s) on a video's first PLAYING; cleared near the start/end or on watching to the end. |
+| ~~**L**~~ | ~~**Keyboard shortcuts** — space play/pause, ←/→ ±10 s, `F` fullscreen, `M` mute, `T` start/pause timer~~ ✅ done | S | Plus `Z` for zen and `Esc` to leave it. Skipped while typing or when a control has focus. |
+| ~~**M**~~ | ~~**Countdown in `document.title`** while the timer runs~~ ✅ done | S | `⏱ 24:59 · study with soobin` while running. |
+| ~~**N**~~ | ~~**Zen mode** — one key/button hides every panel and pill~~ ✅ done | S | `Z` key or the 👁 button top-right; `Z`/`Esc` restores. Panel collapse states are untouched underneath. |
+| ~~**O**~~ | ~~**Deep links** — read `?v=<id>` on load, write it on video change~~ ✅ done | S | Invalid/unknown ids fall back to the welcome screen; the param clears when returning to it. |
+| ~~**P**~~ | ~~**Length-aware picking** — sort the grid by length~~ ✅ done | S–M | Welcome-screen sort chips: playlist order / longest / shortest. Falls back to parsing the display duration when a snapshot predates `durationSeconds`. |
+| ~~**Q**~~ | ~~Theme picker on the welcome screen~~ ✅ done | S | `ThemeSwitcher` extracted; now in both the sidebar footer and the welcome screen's top-right. |
+| ~~**R**~~ | ~~PWA manifest + icon — installable from the browser~~ ✅ done | S | `public/manifest.webmanifest` (SVG icon, standalone display) + theme-color meta. No service worker — the app needs YouTube anyway. |
+| **S** | Mobile layout pass — panels spawn at fixed `left/top`, sidebar min-width 340 px overflows phones | M | Depends on whether mobile is a target at all. Fold 7.6 (touch targets) in here. |
+| ~~**T**~~ | ~~Auto-pause/resume video with pomodoro phases~~ ✅ done | S | "pause the video during breaks" checkbox in the pomodoro form, persisted. |
 
 ---
 
-## 5. Suggested order (remaining work)
+## 5. What's still open
 
-1. ~~**J** persistence quick wins — volume, ambience, pomodoro config, panel positions (also closes 6.3).~~ ✅ done
-2. ~~**B** ambience mixer port — the biggest single upgrade left.~~ ✅ done
-3. **L + M + N + O** keyboard shortcuts, title countdown, zen mode, deep links — small, all pure UX surplus.
-4. **D (stats) then C (tasks)** if the app should grow toward TaskNook's "study home" scope.
-5. **G** playlist auto-skip, **K** continue-watching (playback *position* — the video itself now resumes), and the section-7 polish items as they appeal.
+- **H** named presets ("study scenes": video + ambience mix + timer config in one click)
+- **I** real-weather auto-match (Open-Meteo)
+- **S** mobile layout pass (+ 7.6 touch targets)
+- **F leftovers**: stopwatch mode, long-break every N rounds
+- **D leftover**: a daily goal ring, if the stats line ever wants a target
+- **6.5**: manually confirm notifications fire in the packaged exe
 
-*(Done from the original list: the timer correctness bundle, drag constraints, re-render isolation, IFrame-API failure handling, parser reconciliation + first tests, and the J persistence bundle.)*
+Everything else in this file is done and struck through.
 
 ---
 
@@ -167,9 +166,11 @@ it, and bundle size isn't currently a pain point. Revisit only if it becomes one
   requestPermission()` may silently stay `default` — the chime still works, the
   system notification may not. Worth a manual check of `StudyWithSoobin.exe`
   before relying on it.
-- **6.6 `durationSeconds` isn't in the shipped snapshot yet.** The fetch script now
-  emits it, but `playlist.json` predates the change. Next `npm run fetch-playlist`
-  run picks it up (diff the JSON as usual — the playlist itself may have changed).
+- ~~**6.6 `durationSeconds` isn't in the shipped snapshot yet.**~~ ✅ done — the
+  snapshot was refreshed (needed a `youtubei.js` 13 → 17 bump; the old parser no
+  longer matched YouTube's page schema, exactly as CLAUDE.md warns). Note: the
+  refresh is 21 videos, down one — the ZB1 Hanbin vlog (`U8XxnODShmE`) is no
+  longer in the live playlist upstream.
 - ~~**6.7 The timer is invisible from the welcome screen.**~~ ✅ fixed — a running
   timer now shows a bottom-center pill on the welcome screen (with the pomodoro
   phase when applicable), so its chime never comes out of nowhere.
@@ -180,35 +181,22 @@ it, and bundle size isn't currently a pain point. Revisit only if it becomes one
 
 Ordered roughly by value; none are bugs.
 
-1. **Opening the pomodoro form makes the timer card overlap the sidebar.** The
-   sidebar spawns at `top: 232` and the expanded card reaches past it. Cheapest:
-   spawn the sidebar a bit lower (~`top: 280`); nicer: measure the card and stack
-   dynamically, since both panels are draggable anyway.
-2. **Pomodoro phases look identical at a glance.** Focus vs break is one small
-   badge; the time itself doesn't change character. A phase-tinted card accent
-   (clay for focus, cream/green for break) or a thin progress ring around the time
-   would read from across the room — which is how a Pomodoro timer is actually used.
-3. **Keyboard/focus affordances.** Most buttons rely on the browser's default
-   outline, and several inputs use `focus:outline-none` with only a faint ring; the
-   CC menu has no Escape-to-close. Adding consistent `focus-visible` rings (clay,
-   2px) and Escape handling would make the app fully keyboard-friendly — and pairs
-   with feature L.
+1. ~~**Opening the pomodoro form makes the timer card overlap the sidebar.**~~ ✅
+   done — the sidebar now spawns at `top: 300`, clear of the expanded card.
+2. ~~**Pomodoro phases look identical at a glance.**~~ ✅ done — the timer card
+   wears a clay ring while focusing and a quiet one on break.
+3. ~~**Keyboard/focus affordances.**~~ ✅ done — global `:focus-visible` clay
+   outline, Escape closes the CC menu, and the app is keyboard-driven via L.
 4. ~~**Slider inconsistency.**~~ ✅ done — `src/components/Slider.tsx` is now the one
    style for the three plain sliders (video volume, music volume, ambience); the
    seek bars stay on `Scrubber`, which needs its gradient fill.
-5. **The top-right cluster never fades.** The control pill auto-hides for immersion
-   but "Change video / Join MOA! / fullscreen" stay pinned over the video forever.
-   Letting that cluster fade on the same idle timer (any `pointermove` brings it
-   back) would complete the theater effect — with zen mode (N) as the always-hidden
-   version.
+5. ~~**The top-right cluster never fades.**~~ ✅ done — the cluster rides the
+   control pill's idle fade (`onVisibleChange`), and zen mode hides it outright.
 6. **Touch targets run small.** Several controls are 24–28 px (minimize buttons,
    pager chevrons, CC menu items) against the ~44 px touch guideline. Fine for
    mouse-first today, but worth padding via larger hit areas (not larger icons) if
    mobile/touch matters — see feature S.
-7. **Respect `prefers-reduced-motion`.** Thumbnail zooms, hover lifts, and the
-   pill's fade are all unconditional. Tailwind's `motion-reduce:` variant makes
-   this a find-and-annotate pass; TaskNook has an explicit motion mode for the
-   same reason.
-8. **Welcome screen is a dead end for settings.** Theme (Q) and — once durations
-   are in the snapshot — length sorting (P) naturally live there. (The
-   running-timer pill and the continue-last-video button landed with 6.7/J.)
+7. ~~**Respect `prefers-reduced-motion`.**~~ ✅ done — a global reduced-motion rule
+   flattens transitions/animations; drag remains user-driven.
+8. ~~**Welcome screen is a dead end for settings.**~~ ✅ done — theme switcher,
+   length sorting, continue button, and the running-timer pill all live there now.

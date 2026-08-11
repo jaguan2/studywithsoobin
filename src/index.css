@@ -41,6 +41,24 @@ body,
   overscroll-behavior: none;
 }
 
+/* One consistent keyboard-focus affordance everywhere (buttons mostly rely on
+   the browser default otherwise, and several inputs suppress it). */
+:focus-visible {
+  outline: 2px solid rgb(var(--clay-500));
+  outline-offset: 2px;
+}
+
+/* Kill decorative motion for users who asked for less of it. Dragging is
+   user-driven and unaffected. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }

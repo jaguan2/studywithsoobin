@@ -20,6 +20,9 @@ interface VideoControlsProps {
   onTogglePlay: () => void
   captionLang: string | null
   onSetCaptionLang: (code: string | null) => void
+  /** Reports the pill's fade state so other chrome (the top-right cluster)
+   *  can fade on the same idle rhythm. */
+  onVisibleChange?: (visible: boolean) => void
 }
 
 function VideoControlsInner({
@@ -29,6 +32,7 @@ function VideoControlsInner({
   onTogglePlay,
   captionLang,
   onSetCaptionLang,
+  onVisibleChange,
 }: VideoControlsProps) {
   const [current, setCurrent] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -69,9 +73,20 @@ function VideoControlsInner({
     const onDown = (e: PointerEvent) => {
       if (!menuRef.current?.contains(e.target as Node)) setMenuOpen(false)
     }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
     window.addEventListener('pointerdown', onDown)
-    return () => window.removeEventListener('pointerdown', onDown)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('keydown', onKey)
+    }
   }, [menuOpen])
+
+  useEffect(() => {
+    onVisibleChange?.(visible)
+  }, [visible, onVisibleChange])
 
   // Reasons the controls must stay put, mirroring YouTube: a paused video keeps
   // its controls up, and anything the user is currently touching stays.

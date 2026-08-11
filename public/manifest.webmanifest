@@ -1,0 +1,12 @@
+{
+  "name": "study with soobin",
+  "short_name": "study w/ soobin",
+  "description": "A Pomodoro study app with TXT Soobin's vlogs as the backdrop.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FDFBF7",
+  "theme_color": "#D9924F",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ensureNotifyPermission, timerCue } from '../lib/cues'
+import { recordFocusMinutes } from '../lib/stats'
 
 const MIN_SECONDS = 10
 const MAX_SECONDS = 12 * 60 * 60
@@ -25,8 +26,12 @@ export interface TimerApi {
   pause: () => void
   reset: () => void
   setDurationSeconds: (seconds: number) => void
+  /** Add/remove time mid-session (e.g. ±60s) without stopping the clock. */
+  nudge: (deltaSeconds: number) => void
   startPomodoro: (config: PomodoroConfig) => void
   stopPomodoro: () => void
+  /** During a pomodoro break: jump straight into the next focus round. */
+  skipBreak: () => void
 }
 
 export function formatTime(total: number): string {
@@ -90,10 +95,11 @@ export function useTimer(initialMinutes = 25): TimerApi {
       setSecondsLeft(remaining)
       if (remaining <= 0) {
         setIsRunning(false)
-        // Pomodoro phase edges cue from the advancement effect below; a plain
-        // timer has no other place to announce itself.
+        // Pomodoro phase edges cue (and log focus) from the advancement
+        // effect below; a plain timer has no other place to announce itself.
         if (!pomodoroRef.current) {
           timerCue("Time's up", 'Your focus timer finished.')
+          recordFocusMinutes(durationRef.current / 60)
         }
       }
     }
@@ -119,6 +125,7 @@ export function useTimer(initialMinutes = 25): TimerApi {
     if (pomodoro.phase === 'focus' && pomodoro.round >= pomodoro.rounds) {
       setPomodoro({ ...pomodoro, completed: true })
       timerCue('All rounds done! 🎉', `${pomodoro.rounds} focus rounds complete — great work.`)
+      recordFocusMinutes(pomodoro.focusMinutes)
       return
     }
     const nextPhase = pomodoro.phase === 'focus' ? 'break' : 'focus'
@@ -130,6 +137,7 @@ export function useTimer(initialMinutes = 25): TimerApi {
     setIsRunning(true)
     if (nextPhase === 'break') {
       timerCue('Focus round done', `Take a ${pomodoro.breakMinutes} minute break.`)
+      recordFocusMinutes(pomodoro.focusMinutes)
     } else {
       timerCue('Break over', `Round ${nextRound} — ${pomodoro.focusMinutes} minutes of focus.`)
     }
@@ -161,6 +169,28 @@ export function useTimer(initialMinutes = 25): TimerApi {
     setIsRunning(false)
   }, [])
 
+  // The deadline is the source of truth while running, so a nudge adjusts it
+  // directly; the display refreshes from it. Over-subtracting completes the
+  // block naturally on the next tick.
+  const nudge = useCallback((deltaSeconds: number) => {
+    if (endAtRef.current !== null) {
+      endAtRef.current = Math.max(Date.now(), endAtRef.current + deltaSeconds * 1000)
+      setSecondsLeft(Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000)))
+    } else {
+      setSecondsLeft((prev) => Math.max(0, prev + deltaSeconds))
+    }
+  }, [])
+
+  const skipBreak = useCallback(() => {
+    const p = pomodoroRef.current
+    if (!p || p.completed || p.phase !== 'break') return
+    setPomodoro({ ...p, phase: 'focus', round: p.round + 1 })
+    setSecondsLeft(p.focusMinutes * 60)
+    // Already running → the isRunning effect won't re-arm, so re-arm here.
+    if (endAtRef.current !== null) endAtRef.current = Date.now() + p.focusMinutes * 60_000
+    setIsRunning(true)
+  }, [])
+
   const startPomodoro = useCallback((config: PomodoroConfig) => {
     const focusMinutes = Math.min(Math.max(Math.round(config.focusMinutes), 1), 180)
     const breakMinutes = Math.min(Math.max(Math.round(config.breakMinutes), 1), 60)
@@ -186,7 +216,9 @@ export function useTimer(initialMinutes = 25): TimerApi {
     pause,
     reset,
     setDurationSeconds,
+    nudge,
     startPomodoro,
     stopPomodoro,
+    skipBreak,
   }
 }
