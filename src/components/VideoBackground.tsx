@@ -111,11 +111,22 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
     useImperativeHandle(ref, () => ({
       seekBy: (deltaSeconds: number) => {
         const player = playerRef.current
-        if (!player) return
-        player.seekTo(Math.max(0, player.getCurrentTime() + deltaSeconds), true)
+        // Same defensiveness as getProgress: the YT.Player object exists
+        // before its methods are wired up, and an arrow-key seek in that
+        // window would throw.
+        if (!player || typeof player.getCurrentTime !== 'function') return
+        try {
+          player.seekTo(Math.max(0, player.getCurrentTime() + deltaSeconds), true)
+        } catch {
+          /* player not ready */
+        }
       },
       seekTo: (seconds: number) => {
-        playerRef.current?.seekTo(Math.max(0, seconds), true)
+        try {
+          playerRef.current?.seekTo(Math.max(0, seconds), true)
+        } catch {
+          /* player not ready */
+        }
       },
       getProgress: () => {
         const player = playerRef.current
@@ -227,6 +238,12 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
         const player = playerRef.current
         if (!player || typeof player.getDuration !== 'function') return
         try {
+          // Just after loadVideoById the player still reports the previous
+          // video's time while videoIdRef already holds the new id — saving
+          // then would file video A's position under video B's key. Only
+          // save once the player agrees on which video is loaded.
+          const loadedId = player.getVideoData?.()?.video_id
+          if (loadedId && loadedId !== videoIdRef.current) return
           const duration = player.getDuration()
           const current = player.getCurrentTime()
           if (Number.isFinite(duration) && Number.isFinite(current) && duration > 0) {

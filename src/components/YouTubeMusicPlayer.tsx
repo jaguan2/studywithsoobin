@@ -99,10 +99,15 @@ export function YouTubeMusicPlayer({ videoId, isPlaylist }: YouTubeMusicPlayerPr
                 }
               }
             },
-            onError: () => {
-              if (isPlaylist && skipsRef.current < 5) {
+            onError: (event) => {
+              // If the *first* track fails, the constructor may not have
+              // returned yet (playerRef still null) — take the player off the
+              // event instead, or the skip silently no-ops and the panel sits
+              // black with no further events coming.
+              const player = playerRef.current ?? event.target
+              if (isPlaylist && skipsRef.current < 5 && typeof player?.nextVideo === 'function') {
                 skipsRef.current += 1
-                window.setTimeout(() => playerRef.current?.nextVideo?.(), 500)
+                window.setTimeout(() => (playerRef.current ?? player)?.nextVideo?.(), 500)
                 return
               }
               setError('video')

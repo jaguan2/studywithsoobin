@@ -136,10 +136,16 @@ export default function App() {
   }, [volume])
 
   // Remember the last video so the welcome screen can offer to continue it.
+  // Leaving the video also unmounts the player, and its replacement will be
+  // created muted (autoplay policy) — reset here rather than in the "Change
+  // video" button, so every route back to the welcome screen is covered
+  // (e.g. the last playable video turning out to be embed-blocked).
   useEffect(() => {
     if (videoId) {
       storageSet('sws.lastVideo', videoId)
       setLastVideoId(videoId)
+    } else {
+      setMuted(true)
     }
   }, [videoId])
 
@@ -163,11 +169,19 @@ export default function App() {
   }, [tasksCollapsed])
 
   // Optional pomodoro tie-in: the video pauses for breaks, resumes for focus.
+  // Driven by real focus↔break transitions only — the toggle is read from a
+  // ref so flipping the checkbox mid-round doesn't restart a video the user
+  // paused by hand, and entering/leaving pomodoro mode leaves playback alone.
   const pomodoroPhase = timer.pomodoro && !timer.pomodoro.completed ? timer.pomodoro.phase : null
+  const pauseOnBreakRef = useRef(pauseOnBreak)
+  pauseOnBreakRef.current = pauseOnBreak
+  const prevPhaseRef = useRef<'focus' | 'break' | null>(null)
   useEffect(() => {
-    if (!pauseOnBreak || !pomodoroPhase) return
+    const prev = prevPhaseRef.current
+    prevPhaseRef.current = pomodoroPhase
+    if (!pauseOnBreakRef.current || !pomodoroPhase || !prev || prev === pomodoroPhase) return
     setVideoPlaying(pomodoroPhase === 'focus')
-  }, [pauseOnBreak, pomodoroPhase])
+  }, [pomodoroPhase])
 
   const playable = useMemo(
     () => playlist.videos.filter((v) => !blockedIds.includes(v.id)),
@@ -422,12 +436,7 @@ export default function App() {
           {/* Back to the welcome grid. Unmounting the main UI stops the music
               and the ambience, which is what "exit the video" should do. */}
           <button
-            onClick={() => {
-              setVideoId(null)
-              // Returning here unmounts the player; its replacement will be
-              // created muted again (autoplay policy), so track that.
-              setMuted(true)
-            }}
+            onClick={() => setVideoId(null)}
             aria-label="Back to video selection"
             title="Pick a different video"
             className="flex items-center gap-1.5 rounded-full bg-cream-50/90 px-3.5 py-1.5 text-sm font-medium text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"

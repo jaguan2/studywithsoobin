@@ -232,3 +232,67 @@ batches. All fixed:
 - ~~**8.7 Smaller hardening.**~~ ✅ `TasksCard` memoized (was re-rendering every
   timer tick), `crypto.randomUUID` fallback for non-secure contexts, sidebar
   default height accounts for its new spawn point.
+
+---
+
+## 9. Fourth-pass audit (post-stability-patch scan) — ALL FIXED
+
+A fresh read of every integration surface after the last three batches. None
+were shipped-broken in the common path; all were edge-case gaps, and all are
+now fixed and verified.
+
+### Real bugs
+
+- ~~**9.1 Starting a pomodoro while a plain timer is running keeps the old
+  deadline.**~~ ✅ `startPomodoro` set `isRunning(true)` when it was already
+  true, so the arming effect never re-ran and `endAtRef` still held the plain
+  timer's deadline — the first "focus round" inherited whatever the old timer
+  had left. Now re-arms `endAtRef` inline, as `skipBreak` already did.
+  **Confirmed by experiment**: with the fix reverted, a 25-min pomodoro
+  started from a running 15-min timer showed `14:58`; with it, `24:59`. The
+  browser smoke test now covers this path.
+- ~~**9.2 One path back to the welcome screen skipped the muted reset.**~~ ✅
+  Only the "Change video" button reset `muted`; `handleUnplayable` could also
+  land on the welcome screen (last playable video embed-blocked) leaving the
+  UI believing sound was on — the 6.4 bug through a side door. The reset now
+  lives in the `videoId` effect, so every route back is covered.
+- ~~**9.3 Resume positions could cross-contaminate on a video swap.**~~ ✅ The
+  10 s save tick landing right after `loadVideoById` filed the old video's
+  position under the new video's key. It now saves only when the player's
+  own `getVideoData().video_id` agrees with `videoIdRef`.
+
+### Hardening (small)
+
+- ~~**9.4 Double completion cue under extreme tab throttling.**~~ ✅ `endAtRef`
+  is nulled inside the tick before cueing, so a second fire before React
+  clears the interval no-ops instead of chiming and logging twice.
+- ~~**9.5 A playlist station whose *first* track errored went silently
+  black.**~~ ✅ The skip took the player from `playerRef`, still null if the
+  constructor hadn't returned. It now falls back to the player on the error
+  event, and shows the error card when `nextVideo` isn't callable at all.
+- ~~**9.6 `seekBy` could throw in the wiring window.**~~ ✅ Both `seekBy` and
+  `seekTo` are now guarded like `getProgress`.
+- ~~**9.7 Toggling "pause video during breaks" mid-focus force-played a
+  manually paused video.**~~ ✅ The effect keys on real focus↔break
+  transitions and reads the toggle from a ref; entering/leaving pomodoro mode
+  now leaves playback alone too.
+
+### Design notes (fine as-is, listed for awareness)
+
+- Exiting pomodoro during a break (with pause-on-break on) leaves the video
+  paused — one keypress resumes; arguably correct.
+- Editing the time mid-pomodoro exits pomodoro mode (long-documented
+  behavior).
+- Focus accounting credits the nominal block length; ±1:00 nudges and
+  skip-break don't adjust the logged minutes (TaskNook clamps; simplification
+  already noted in the D row).
+- `M` with the volume slider at 0 unmutes into silence.
+
+### Checked and sound
+
+StrictMode double-mount safety across every effect; memo/callback stability
+(no per-second re-renders outside the timer subtree); pomodoro advance-effect
+re-entrancy; storage guards on every read/write; panel clamping on restore
+and resize; deep-link + ambience resume; the all-blocked empty state; streak
+math across month/DST boundaries; playlist-refresh guards; no leftover debug
+code; build/lint/58 tests green on a clean tree.

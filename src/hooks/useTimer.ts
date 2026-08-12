@@ -94,6 +94,10 @@ export function useTimer(initialMinutes = 25): TimerApi {
       const remaining = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000))
       setSecondsLeft(remaining)
       if (remaining <= 0) {
+        // Disarm before cueing: setIsRunning(false) only stops the interval
+        // after React processes it, so a second fire (possible when a
+        // throttled tab catches up) would otherwise chime and log twice.
+        endAtRef.current = null
         setIsRunning(false)
         // Pomodoro phase edges cue (and log focus) from the advancement
         // effect below; a plain timer has no other place to announce itself.
@@ -201,6 +205,11 @@ export function useTimer(initialMinutes = 25): TimerApi {
     ensureNotifyPermission()
     setPomodoro({ focusMinutes, breakMinutes, rounds, phase: 'focus', round: 1, completed: false })
     setSecondsLeft(focusMinutes * 60)
+    // Starting from an already-running plain timer leaves isRunning true, so
+    // the arming effect won't re-run — the old deadline would survive and the
+    // first focus round would inherit its remainder. Re-arm here (same reason
+    // as skipBreak).
+    if (endAtRef.current !== null) endAtRef.current = Date.now() + focusMinutes * 60_000
     setIsRunning(true)
   }, [])
 
