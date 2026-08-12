@@ -14,7 +14,9 @@ const VOLUME_KEY = 'sws.music.volume'
 const DEFAULT_VOLUME = 60
 
 function loadMusicVolume(): number {
-  const stored = Number(storageGet(VOLUME_KEY))
+  const raw = storageGet(VOLUME_KEY)
+  if (raw === null) return DEFAULT_VOLUME // Number(null) is 0 — not a stored value
+  const stored = Number(raw)
   return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : DEFAULT_VOLUME
 }
 

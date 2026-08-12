@@ -46,7 +46,9 @@ function loadCaptionLang(): string | null {
 }
 
 function loadVolume(): number {
-  const stored = Number(storageGet('sws.volume'))
+  const raw = storageGet('sws.volume')
+  if (raw === null) return 40 // Number(null) is 0 — don't let it pass as valid
+  const stored = Number(raw)
   return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : 40
 }
 
@@ -253,11 +255,14 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey) return
       const target = e.target as HTMLElement
-      if (
-        target instanceof HTMLElement &&
-        (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName) ||
-          target.isContentEditable)
-      ) {
+      if (!(target instanceof HTMLElement)) return
+      // Typing fields own every key.
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable) {
+        return
+      }
+      // Buttons/links own only their activation keys — a focused Start button
+      // (focus lingers after any click) shouldn't swallow F/M/T/Z.
+      if (['BUTTON', 'A'].includes(target.tagName) && (e.key === ' ' || e.key === 'Enter')) {
         return
       }
       switch (e.key) {

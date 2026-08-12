@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { motion, useDragControls } from 'framer-motion'
 import { usePanelPosition } from '../hooks/usePanelPosition'
 import { usePanelSize } from '../hooks/usePanelSize'
@@ -15,6 +15,16 @@ export interface Task {
   id: string
   text: string
   done: boolean
+}
+
+/** crypto.randomUUID needs a secure context; 127.0.0.1 qualifies, but don't
+ *  let an exotic serving setup take the whole panel down over an id. */
+function taskId(): string {
+  try {
+    return crypto.randomUUID()
+  } catch {
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  }
 }
 
 function loadTasks(): Task[] {
@@ -41,7 +51,7 @@ interface TasksCardProps {
 /** A cozy checklist — "what am I focusing on" next to the timer. Deliberately
  *  simpler than TaskNook's task system (no priorities/groups/routines): a
  *  study session wants a short list, not a planner. */
-export function TasksCard({ bounds, zIndex, onFocus, collapsed, onToggleCollapsed }: TasksCardProps) {
+function TasksCardInner({ bounds, zIndex, onFocus, collapsed, onToggleCollapsed }: TasksCardProps) {
   const dragControls = useDragControls()
   const { width, startResize } = usePanelSize({
     width: 300,
@@ -61,7 +71,7 @@ export function TasksCard({ bounds, zIndex, onFocus, collapsed, onToggleCollapse
   const addTask = () => {
     const text = draft.trim()
     if (!text) return
-    update([...tasks, { id: crypto.randomUUID(), text, done: false }])
+    update([...tasks, { id: taskId(), text, done: false }])
     setDraft('')
   }
 
@@ -174,3 +184,7 @@ export function TasksCard({ bounds, zIndex, onFocus, collapsed, onToggleCollapse
     </motion.div>
   )
 }
+
+// memo: the timer ticking in App re-renders the tree every second; this
+// card's props only change on focus/minimize interactions.
+export const TasksCard = memo(TasksCardInner)

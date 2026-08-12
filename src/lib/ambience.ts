@@ -388,6 +388,13 @@ export function applyMix(mix: SoundMix) {
   for (const { key } of SOUND_CHANNELS) setChannel(key, mix?.[key] ?? 0)
 }
 
+/** Autoplay policy: a mix restored on page load (deep link skips the welcome
+ *  click) creates the context suspended, and retuning a running channel never
+ *  touches the context — call this from a real user gesture to unstick it. */
+export function resumeAmbience() {
+  if (ctx?.state === 'suspended') void ctx.resume()
+}
+
 export function stopAllAmbience() {
   for (const { key } of SOUND_CHANNELS) stopChannel(key)
 }

@@ -17,8 +17,13 @@ const OUT_PATH = path.join(
 )
 
 function extractTitle(item) {
-  if (typeof item.title === 'string') return item.title
-  return item.title?.text ?? 'Untitled'
+  // youtubei.js ≤13 exposed the title on the item; 17's LockupView nests it
+  // under metadata. Check every shape seen so far.
+  for (const candidate of [item.title, item.metadata?.title]) {
+    if (typeof candidate === 'string' && candidate) return candidate
+    if (candidate?.text) return candidate.text
+  }
+  return 'Untitled'
 }
 
 function extractDuration(item) {
@@ -62,6 +67,14 @@ if (videos.length === 0) {
   throw new Error(
     'Parsed 0 videos — YouTube\'s page schema probably changed. ' +
       'playlist.json was NOT overwritten; fix the field lookups in this script first.',
+  )
+}
+// Same guard for a partial schema break (this exact failure shipped once:
+// ids and durations parsed, every title fell back to "Untitled").
+if (videos.every((v) => v.title === 'Untitled')) {
+  throw new Error(
+    'Every title parsed as "Untitled" — the title field path probably changed. ' +
+      'playlist.json was NOT overwritten; fix extractTitle first.',
   )
 }
 

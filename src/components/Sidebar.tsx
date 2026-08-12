@@ -68,7 +68,9 @@ function SidebarInner({
     width: 340,
     minWidth: 340,
     maxWidth: 560,
-    height: Math.min(560, window.innerHeight - 240),
+    // 316 = the spawn top (300) plus a bottom margin, so the default height
+    // never runs off the bottom of a short window.
+    height: Math.min(560, window.innerHeight - 316),
     minHeight: 320,
     storageKey: 'sws.size.sidebar',
   })

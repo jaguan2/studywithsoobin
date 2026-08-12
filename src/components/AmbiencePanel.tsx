@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   applyMix,
+  resumeAmbience,
   setChannel,
   stopAllAmbience,
   SOUND_CHANNELS,
@@ -45,6 +46,18 @@ export function AmbiencePanel() {
     // subsequent changes go through changeChannel, which retunes one channel
     // instead of reapplying the whole mix
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Deep links skip the welcome click, so the restored mix may have started
+  // against a suspended AudioContext — unstick it on the first real gesture.
+  useEffect(() => {
+    const resume = () => resumeAmbience()
+    window.addEventListener('pointerdown', resume, { once: true })
+    window.addEventListener('keydown', resume, { once: true })
+    return () => {
+      window.removeEventListener('pointerdown', resume)
+      window.removeEventListener('keydown', resume)
+    }
   }, [])
 
   // stop the noise if the panel ever unmounts (e.g. back to welcome screen)

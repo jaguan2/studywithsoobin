@@ -170,14 +170,17 @@ export function useTimer(initialMinutes = 25): TimerApi {
   }, [])
 
   // The deadline is the source of truth while running, so a nudge adjusts it
-  // directly; the display refreshes from it. Over-subtracting completes the
-  // block naturally on the next tick.
+  // directly; the display refreshes from it. Over-subtracting clamps to one
+  // second rather than zero: completion must go through the tick (which
+  // stops the clock and lets the pomodoro effect re-arm the deadline) — a
+  // nudge writing 0 directly would advance the phase against a stale
+  // deadline and cascade through the remaining blocks.
   const nudge = useCallback((deltaSeconds: number) => {
     if (endAtRef.current !== null) {
-      endAtRef.current = Math.max(Date.now(), endAtRef.current + deltaSeconds * 1000)
-      setSecondsLeft(Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000)))
+      endAtRef.current = Math.max(Date.now() + 1000, endAtRef.current + deltaSeconds * 1000)
+      setSecondsLeft(Math.max(1, Math.ceil((endAtRef.current - Date.now()) / 1000)))
     } else {
-      setSecondsLeft((prev) => Math.max(0, prev + deltaSeconds))
+      setSecondsLeft((prev) => Math.max(1, prev + deltaSeconds))
     }
   }, [])
 

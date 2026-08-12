@@ -200,3 +200,35 @@ Ordered roughly by value; none are bugs.
    flattens transitions/animations; drag remains user-driven.
 8. ~~**Welcome screen is a dead end for settings.**~~ ✅ done — theme switcher,
    length sorting, continue button, and the running-timer pill all live there now.
+
+---
+
+## 8. Stability patch (post-build hardening pass)
+
+A code re-review plus a headless-browser smoke test (welcome → main UI → timer
+→ zen → deep link → tasks, screenshots inspected) over the three feature
+batches. All fixed:
+
+- ~~**8.1 Nudge over-subtract cascaded pomodoro phases.**~~ ✅ −1:00 past zero
+  wrote `secondsLeft = 0` without re-arming the deadline; the advance effect
+  then skipped phases against the stale deadline with doubled chimes. Nudges
+  now clamp to 1 s and let the tick complete the block.
+- ~~**8.2 Restored ambience was silent on deep-linked loads.**~~ ✅ `?v=` skips
+  the welcome click, so the AudioContext started suspended and retunes never
+  resumed it. The first real gesture now resumes it.
+- ~~**8.3 A render crash showed a blank window.**~~ ✅ `ErrorBoundary` around the
+  app (friendly reload screen) — the worst case in the exe was a white void.
+- ~~**8.4 Shortcuts died after clicking any button.**~~ ✅ Focus lingers on a
+  clicked button and the guard swallowed every key; buttons now keep only
+  their activation keys (Space/Enter). Found by the smoke test: Z right after
+  clicking Start didn't enter zen.
+- ~~**8.5 Fresh users got volume 0, not 40.**~~ ✅ `Number(storageGet(...))`
+  coerces `null` to `0`, which passed validation — the video and music volume
+  defaults never applied. Found by screenshot: muted icon + slider at zero +
+  no unmute chip on a clean profile.
+- ~~**8.6 Playlist refresh lost every title.**~~ ✅ youtubei.js 17 moved titles
+  to `metadata.title`; all 21 read "Untitled" (screenshot catch). Fixed the
+  extractor and added an all-Untitled guard beside the zero-videos one.
+- ~~**8.7 Smaller hardening.**~~ ✅ `TasksCard` memoized (was re-rendering every
+  timer tick), `crypto.randomUUID` fallback for non-secure contexts, sidebar
+  default height accounts for its new spawn point.
