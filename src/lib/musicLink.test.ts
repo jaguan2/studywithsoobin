@@ -83,6 +83,29 @@ describe('resolveMusicLink — Spotify', () => {
       })
   })
 
+  it('resolves an album URL with a share (?si=) param', () => {
+    const station = resolveMusicLink(
+      'https://open.spotify.com/album/1c5jK2Zo2yKEHGmSedVbwE?si=B76_MZA6RfW3hL5wMjyTCw',
+      LABEL,
+    )
+    expect(station).toEqual({
+      provider: 'spotify',
+      id: '1c5jK2Zo2yKEHGmSedVbwE',
+      kind: 'album',
+      label: LABEL,
+      custom: true,
+    })
+  })
+
+  it('resolves an artist URL (plays that artist\'s popular tracks)', () => {
+    const station = resolveMusicLink(
+      'https://open.spotify.com/artist/7GWyQMjnqJKhsB3hgnUg3q?si=ZTz9UwwRT3CTuxS8TUWosw',
+      LABEL,
+    )
+    expect(station?.kind).toBe('artist')
+    expect(station?.id).toBe('7GWyQMjnqJKhsB3hgnUg3q')
+  })
+
   it('handles the intl-xx locale segment Spotify inserts', () => {
     const station = resolveMusicLink(
       'https://open.spotify.com/intl-de/track/4cOdK2wGLETKBW3PvgPWqT',

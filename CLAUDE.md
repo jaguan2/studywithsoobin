@@ -139,6 +139,13 @@ deliberately no tsconfig.app/node split.
     is logged into Spotify in that same browser — the widget shows a
     "Preview" badge. Nothing in the embed API changes this, so don't try; it's
     also why Spotify keeps its official embed instead of a custom player.
+    `MusicPanel` says so under the embed, or the cut-off reads as a bug. This
+    is the reason a Spotify station never simply *replaces* an equivalent
+    YouTube one: `secret cafe r&b` (a mix video, full audio for everyone) and
+    `meloenvy vol.13` (the same artist's album, with a skippable tracklist)
+    both ship, because neither trade-off is right for every listener.
+    Playlist/album/artist/show embeds get 352px (Spotify's own oEmbed height)
+    so the tracklist is usable; a lone track/episode stays at 152px.
   - `TimerCard` — a floating, draggable, width-resizable card wrapping `TimerPanel`
     (15/30/60-min presets, click-the-time-to-type custom durations, and a 🍅
     Pomodoro mode with configurable focus/break/rounds cycles — all from `useTimer`).

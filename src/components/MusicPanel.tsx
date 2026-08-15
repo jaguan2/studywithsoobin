@@ -31,10 +31,19 @@ const BUILT_IN_STATIONS: Station[] = [
   // gets 30-second previews, and nothing autoplays. That's the widget's
   // behaviour, not something the app can override.
   { provider: 'spotify', id: '5Aa3V6dW5XCkDg2utkZjdE', kind: 'playlist', label: "soobin's recs 🐰" },
+  // The source of the "secret cafe r&b" mix above: meloenvy's vol.13 album,
+  // kept alongside the YouTube mix rather than replacing it. The album gives
+  // a real tracklist (skip, replay, jump around) that a single 1-hour mix
+  // video can't; the mix gives uninterrupted full-length audio to listeners
+  // who aren't signed into Spotify. Different trade-offs, so both stay.
+  { provider: 'spotify', id: '1c5jK2Zo2yKEHGmSedVbwE', kind: 'album', label: 'meloenvy vol.13 ⏭️' },
 ]
 
-// Spotify's embed needs a taller frame for content with a tracklist.
-const SPOTIFY_TALL_KINDS = new Set(['playlist', 'album', 'show'])
+// Spotify's embed needs a taller frame for content with a tracklist — 352 is
+// the height its own oEmbed asks for, and the tracklist is the reason to pick
+// one of these over a mix video, so give it room to actually be scrolled and
+// clicked. A single track/episode has nothing to list and stays compact.
+const SPOTIFY_TALL_KINDS = new Set(['playlist', 'album', 'artist', 'show'])
 
 /** Stored JSON is user-editable and can be from an older app version, so
  *  validate each entry rather than trusting the cast — a station without an
@@ -61,7 +70,7 @@ function loadCustomStations(): Station[] {
 function spotifyEmbedProps(station: Station) {
   return {
     src: `https://open.spotify.com/embed/${station.kind}/${station.id}?utm_source=generator&theme=0`,
-    height: SPOTIFY_TALL_KINDS.has(station.kind ?? '') ? 280 : 152,
+    height: SPOTIFY_TALL_KINDS.has(station.kind ?? '') ? 352 : 152,
     allow: 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture',
   }
 }
@@ -135,16 +144,25 @@ export function MusicPanel() {
               isPlaylist={activeStation.isPlaylist}
             />
           ) : (
-            <div className="overflow-hidden rounded-xl border border-cream-300 dark:border-ink-700">
-              <iframe
-                key={stationKey(activeStation)}
-                title="music player"
-                width="100%"
-                className="block"
-                {...spotifyEmbedProps(activeStation)}
-                allowFullScreen
-              />
-            </div>
+            <>
+              <div className="overflow-hidden rounded-xl border border-cream-300 dark:border-ink-700">
+                <iframe
+                  key={stationKey(activeStation)}
+                  title="music player"
+                  width="100%"
+                  className="block"
+                  {...spotifyEmbedProps(activeStation)}
+                  allowFullScreen
+                />
+              </div>
+              {/* Without this the 30-second cut-off reads as a broken player.
+                  Nothing in the embed API changes it — only being signed in
+                  does. */}
+              <p className="mt-1 text-[10px] leading-snug text-ink-700/60 dark:text-cream-300/50">
+                Spotify plays 30-second previews unless you're signed in to Spotify in this
+                browser — the YouTube stations play in full either way.
+              </p>
+            </>
           )}
         </div>
       )}

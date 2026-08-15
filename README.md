@@ -42,10 +42,11 @@ an internet connection since the videos stream from YouTube.)
   of every focus block and break — the timer keeps perfect time even while
   the tab is in the background
 - 🎵 Music player: built-in lofi stations with their own play/pause, seek and
-  volume, or paste any YouTube or Spotify link to add your own. YouTube
-  playlists work too — they get next/previous track buttons and show which
-  track is playing. (Spotify embeds play 30-second previews unless you're
-  signed into Spotify in the same browser.)
+  volume, or paste any YouTube or Spotify link — track, album, playlist,
+  artist or podcast — to add your own. YouTube playlists work too: they get
+  next/previous track buttons and show which track is playing. (Spotify
+  embeds play 30-second previews unless you're signed into Spotify in the
+  same browser, so the YouTube stations stay for full-length listening.)
 - 🌦️ Ambience mixer: layer rain (with real droplet plinks), storm (thunder),
   snow, wind, fireplace crackle, café murmur, and page turns — each channel
   has its own volume slider, all procedurally generated (no audio files,

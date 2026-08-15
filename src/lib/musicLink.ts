@@ -1,7 +1,9 @@
 // Resolves a pasted link (YouTube or Spotify) into a playable station
 // descriptor. Ported from TaskNook's lib/musicLink.js + youtube.js + spotify.js.
 
-export type SpotifyKind = 'playlist' | 'album' | 'track' | 'show' | 'episode'
+// `artist` is a divergence from TaskNook's parser: an artist embed plays that
+// artist's popular tracks, which makes a reasonable station on its own.
+export type SpotifyKind = 'playlist' | 'album' | 'artist' | 'track' | 'show' | 'episode'
 
 export interface Station {
   provider: 'youtube' | 'spotify'
@@ -20,7 +22,7 @@ const YOUTUBE_PATTERN =
 const YOUTUBE_PLAYLIST_PATTERN = /[?&]list=([\w-]+)/
 
 const SPOTIFY_PATTERN =
-  /open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(playlist|album|track|show|episode)\/([a-zA-Z0-9]+)/
+  /open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(playlist|album|artist|track|show|episode)\/([a-zA-Z0-9]+)/
 
 function extractYouTubeId(input: string): string | null {
   const trimmed = input.trim()
