@@ -1,0 +1,34 @@
+{
+  "_comment": [
+    "Hand-curated Soobin vlogs / VLIVEs that are NOT in the source YouTube",
+    "playlist (see sourceUrl in playlist.json). scripts/fetch-playlist.mjs",
+    "resolves each id against YouTube and appends it to playlist.json, so a",
+    "refresh keeps them instead of wiping them.",
+    "",
+    "Rules for adding here:",
+    "  - solo Soobin only, to match the rest of the playlist (a live he shares",
+    "    with another member is a different thing to study to)",
+    "  - long-form (the shortest entry in the playlist is ~21 min)",
+    "  - one entry per broadcast. The same VLIVE is re-uploaded by several",
+    "    channels under different titles; cross-check the DURATION against the",
+    "    existing entries before adding, not just the video id.",
+    "  - prefer the channels the playlist already draws on (TXT official,",
+    "    Moa's Diary, V Live) over unknown re-uploaders, which are likelier to",
+    "    be taken down or have embedding disabled."
+  ],
+  "videos": [
+    { "id": "0RJ4pvNRKik", "note": "TXT official — TXT-LOG: Soobin's fun-but-exhausting vacation" },
+    { "id": "3-l7ZHISQnc", "note": "TXT official — TXT-LOG: Soobin's not-so-easy trip" },
+    { "id": "AWVaOMjp2b8", "note": "Weverse live — Soobin's birthday, 2022-12-05" },
+    { "id": "xBvSUwZ9CAk", "note": "VLIVE — Soobin's Inside KPOP, 2022-01-21" },
+    { "id": "i8muIfibN8s", "note": "VLIVE — SOOBIN is back!, 2022-07-28" },
+    { "id": "EwUnXiWCMAM", "note": "VLIVE — It's been awhile!, 2022-07-18" },
+    { "id": "OhFEfSqA8iM", "note": "VLIVE — birthday live, 2021-12-05" },
+    { "id": "8hfKIo8cXWo", "note": "VLIVE — Soobin is here, 2020-03-16" },
+    { "id": "3y2sFkrbV8s", "note": "VLIVE — Talk Talk~, 2022-02-16" },
+    { "id": "RQwJF8qvbDQ", "note": "VLIVE — It's Soobin, 2020-02-10" },
+    { "id": "tBxBVKzyenA", "note": "Weverse live — SOOBIN, 2022-09-04" },
+    { "id": "2IiqumyRudo", "note": "VLIVE — Soobin's ASMR, 2019-07-22 (his first solo VLIVE)" },
+    { "id": "EeXyBjRtnuM", "note": "VLIVE — dinner time with Soobin, 2019-12-09" }
+  ]
+}

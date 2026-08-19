@@ -1,20 +1,20 @@
 // Refreshes src/data/playlist.json from the public "Study w/ Soobin" YouTube
-// playlist. Uses youtubei.js (an unofficial InnerTube client) so no Google
-// API key is required. Re-run with `npm run fetch-playlist` whenever new
-// videos are added to the playlist.
-import { writeFile } from 'node:fs/promises'
+// playlist, then appends the hand-curated extras in scripts/extra-videos.json.
+// Uses youtubei.js (an unofficial InnerTube client) so no Google API key is
+// required. Re-run with `npm run fetch-playlist` whenever new videos are added
+// to the playlist (or to extra-videos.json).
+import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { Innertube } from 'youtubei.js'
 
 const PLAYLIST_ID = 'PLwzQP2wCE5w4hRj01BS0zxO2Bu8eaBDWt'
-const OUT_PATH = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '..',
-  'src',
-  'data',
-  'playlist.json',
-)
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url))
+const OUT_PATH = path.join(SCRIPT_DIR, '..', 'src', 'data', 'playlist.json')
+// Soobin vlogs/VLIVEs that aren't in the source playlist. Kept as bare ids and
+// resolved here so a refresh re-derives their metadata instead of dropping
+// them — hand-editing playlist.json would be undone by the next run.
+const EXTRAS_PATH = path.join(SCRIPT_DIR, 'extra-videos.json')
 
 function extractTitle(item) {
   // youtubei.js ≤13 exposed the title on the item; 17's LockupView nests it
@@ -43,6 +43,70 @@ function durationToSeconds(text) {
 function extractThumbnail(item) {
   const url = item.content_image?.image?.[0]?.url
   return url ? url.split('?')[0] : `https://i.ytimg.com/vi/${item.content_id}/hqdefault.jpg`
+}
+
+/** 5361 → "1:29:21", 1272 → "21:12" — the display format the playlist uses. */
+function secondsToDuration(total) {
+  const h = Math.floor(total / 3600)
+  const m = Math.floor((total % 3600) / 60)
+  const s = total % 60
+  const pad = (n) => String(n).padStart(2, '0')
+  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
+}
+
+/** Resolve the curated extras (bare ids) into full video entries.
+ *  A single dead id shouldn't abort a refresh of the other 30-odd videos, so
+ *  failures are reported and skipped rather than thrown. */
+async function fetchExtras(yt, alreadyHave) {
+  let config
+  try {
+    config = JSON.parse(await readFile(EXTRAS_PATH, 'utf-8'))
+  } catch (error) {
+    if (error.code === 'ENOENT') return [] // no curated extras is fine
+    throw error
+  }
+
+  const entries = Array.isArray(config.videos) ? config.videos : []
+  const resolved = []
+  for (const entry of entries) {
+    const id = entry?.id
+    if (typeof id !== 'string' || !id) continue
+    if (alreadyHave.has(id)) {
+      console.warn(`  - ${id}: already in the playlist upstream, skipping the extra`)
+      continue
+    }
+    try {
+      const info = await yt.getBasicInfo(id)
+      const seconds = info.basic_info?.duration ?? 0
+      const title = info.basic_info?.title
+      if (!title || !seconds) {
+        console.warn(`  - ${id}: no title/duration came back, skipping`)
+        continue
+      }
+      resolved.push({
+        id,
+        title,
+        duration: secondsToDuration(seconds),
+        durationSeconds: seconds,
+        // The scraped thumbnail URLs carry expiring query params; the canonical
+        // form is stable and is what the playlist entries already use.
+        thumbnail: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+      })
+    } catch (error) {
+      console.warn(`  - ${id}: could not resolve (${error.message}), skipping`)
+    }
+  }
+
+  // All of them failing means YouTube blocked us or the API shape moved — not
+  // that every curated video died at once. Say so instead of quietly shipping
+  // a shorter playlist.
+  if (entries.length > 0 && resolved.length === 0) {
+    throw new Error(
+      `All ${entries.length} curated extras failed to resolve — refusing to write a ` +
+        'playlist without them. Check connectivity and the ids in extra-videos.json.',
+    )
+  }
+  return resolved
 }
 
 const yt = await Innertube.create()
@@ -78,12 +142,20 @@ if (videos.every((v) => v.title === 'Untitled')) {
   )
 }
 
+// Curated extras go after the playlist so "playlist order" in the UI still
+// means the real playlist's order.
+console.log(`Resolving curated extras from ${path.basename(EXTRAS_PATH)}...`)
+const extras = await fetchExtras(yt, new Set(videos.map((v) => v.id)))
+
 const data = {
   title: playlist.info.title,
   sourceUrl: `https://www.youtube.com/playlist?list=${PLAYLIST_ID}`,
   fetchedAt: new Date().toISOString(),
-  videos,
+  videos: [...videos, ...extras],
 }
 
 await writeFile(OUT_PATH, JSON.stringify(data, null, 2) + '\n', 'utf-8')
-console.log(`Wrote ${videos.length} videos to ${OUT_PATH}`)
+console.log(
+  `Wrote ${data.videos.length} videos to ${OUT_PATH} ` +
+    `(${videos.length} from the playlist + ${extras.length} curated)`,
+)

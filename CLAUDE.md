@@ -44,7 +44,21 @@ deliberately no tsconfig.app/node split.
   editing it by hand. The extraction logic (pulling `content_id` /
   `metadata.title` / thumbnail overlay badge out of YouTube's `LockupView` item shape)
   is brittle by nature — YouTube's internal page schema can change and break the
-  field lookups without notice.
+  field lookups without notice. The same `LockupView` shape backs `getChannel().
+  getVideos()`, if you ever need to enumerate a channel to find more videos.
+- **`playlist.json` is playlist + curated extras.** Not every Soobin vlog/VLIVE is in
+  the source playlist, so `scripts/extra-videos.json` holds extra video **ids**, which
+  `fetch-playlist.mjs` resolves via `getBasicInfo` and appends (after the playlist, so
+  "playlist order" in the UI still means the real order). Ids rather than full entries
+  is the point: a refresh re-derives their titles/durations instead of dropping them,
+  which is exactly what hand-editing `playlist.json` would suffer. One dead extra
+  warns and is skipped; *all* of them failing throws rather than quietly writing a
+  short playlist. When adding: solo Soobin, long-form, and **cross-check the duration
+  against existing entries, not just the id** — the same VLIVE is re-uploaded by
+  several channels under different titles, so id-only dedup will happily add the same
+  two-hour broadcast twice. The playlist currently draws on TXT official, Moa's Diary
+  (the `[TXT VLIVE]` archive) and V Live; prefer those over unknown re-uploaders,
+  which are likelier to vanish or have embedding disabled.
 - `App.tsx` loads `playlist.json` and owns all top-level state: current `videoId`
   (**starts `null`** — a `WelcomeScreen` video-selection grid renders until the user
   picks one; only then does the main UI mount), `volume`, sidebar `collapsed`,

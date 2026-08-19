@@ -105,13 +105,19 @@ npm run lint       # eslint
 ## Refreshing the playlist
 
 The video list lives in `src/data/playlist.json`, a static snapshot (id,
-title, duration, thumbnail) of the YouTube playlist. It's not fetched live —
-this keeps the app free of API keys and rate limits. When new videos are
-added to the source playlist, regenerate it with:
+title, duration, thumbnail) of the YouTube playlist, plus a handful of Soobin
+vlogs/VLIVEs that aren't in that playlist. It's not fetched live — this keeps
+the app free of API keys and rate limits. When new videos are added to the
+source playlist, regenerate it with:
 
 ```
 npm run fetch-playlist
 ```
+
+To add a Soobin video that *isn't* in the source playlist, put its id in
+`scripts/extra-videos.json` and re-run the same command — the script resolves
+each id's title/duration/thumbnail and appends it. Add ids there rather than
+editing `playlist.json` directly, which the next refresh would overwrite.
 
 This uses [`youtubei.js`](https://github.com/LuanRT/YouTube.js) to read the
 playlist server-side (Node-only), so no Google API credentials are needed. To
@@ -154,6 +160,7 @@ studywithsoobin/
 ├── requirements.txt          # product requirements spec (plain language)
 ├── docs/screenshots/         # images used by this README
 ├── scripts/
+│   ├── extra-videos.json     # curated Soobin videos not in the source playlist
 │   └── fetch-playlist.mjs    # refresh src/data/playlist.json from YouTube
 ├── src/
 │   ├── App.tsx               # top-level state: current video, volume, favorites
@@ -198,4 +205,5 @@ studywithsoobin/
   original creators; this project only embeds and links to their public
   YouTube content. The screenshots above are of the app in use and show
   frames from those videos.
-- The bundled `src/data/playlist.json` was last refreshed 2026-07-12.
+- The bundled `src/data/playlist.json` was last refreshed 2026-08-19 (34 videos:
+  21 from the playlist plus 13 curated Soobin vlogs/VLIVEs).
