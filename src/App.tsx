@@ -109,6 +109,7 @@ export default function App() {
   const overlayRef = useRef<HTMLDivElement>(null)
   const noticeTimer = useRef<number | undefined>(undefined)
   const timer = useTimer(25)
+  const setTaskDuration = timer.setDurationSeconds
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
@@ -234,6 +235,15 @@ export default function App() {
   }, [playable])
 
   const handleTogglePlay = useCallback(() => setVideoPlaying((p) => !p), [])
+  const loadTaskDuration = useCallback(
+    (seconds: number) => {
+      setTaskDuration(seconds)
+      setTimerCollapsed(false)
+      setTopPanel('timer')
+      showNotice(`Timer set to ${Math.round(seconds / 60)} minutes — press Start when you’re ready`, 4000)
+    },
+    [setTaskDuration, showNotice],
+  )
   // The slider is an explicit gesture, so it may also unmute (autoplay policy).
   const handleVolumeChange = useCallback((v: number) => {
     setVolume(v)
@@ -377,6 +387,7 @@ export default function App() {
         onFocus={focusTasks}
         collapsed={tasksCollapsed || zen}
         onToggleCollapsed={toggleTasksCollapsed}
+        onUseDuration={loadTaskDuration}
       />
 
       <Sidebar

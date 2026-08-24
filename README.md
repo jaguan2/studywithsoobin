@@ -51,10 +51,11 @@ an internet connection since the videos stream from YouTube.)
   snow, wind, fireplace crackle, café murmur, and page turns — each channel
   has its own volume slider, all procedurally generated (no audio files,
   works offline)
-- 📝 Tasks: a little checklist card for what you're working on — add, check
-  off, clear done, drag it wherever
-- 📊 Focus stats under the timer: minutes studied today and a 🔥 day streak,
-  kept on your device
+- 📝 Study plan: add tasks with a time estimate and priority, arrange them by
+  your order / quick wins / priority, and click one to load its estimate into
+  the focus timer; planned time and completion stay on your device
+- 📊 Focus stats under the timer: minutes studied today, a configurable 1–3h
+  daily goal with progress, and a 🔥 day streak, all kept on your device
 - ⌨️ Keyboard shortcuts: space play/pause · ←/→ skip 10s · F fullscreen ·
   M mute · T start/pause the timer · Z zen mode
 - 🧘 Zen mode (Z or the 👁 button): everything disappears except the video —

@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { parseTimeInput, type TimerApi } from '../hooks/useTimer'
-import { formatFocusMinutes, getStreakDays, getTodayMinutes } from '../lib/stats'
+import {
+  formatFocusMinutes,
+  getFocusGoal,
+  getStreakDays,
+  getTodayMinutes,
+  saveFocusGoal,
+} from '../lib/stats'
 import { storageGetJson, storageSetJson } from '../lib/storage'
 
 const PRESETS = [
@@ -40,6 +46,7 @@ export function TimerPanel({ timer, pauseOnBreak, onSetPauseOnBreak }: TimerPane
   const [focusMin, setFocusMin] = useState(initialConfig.focus)
   const [breakMin, setBreakMin] = useState(initialConfig.break)
   const [rounds, setRounds] = useState(initialConfig.rounds)
+  const [focusGoal, setFocusGoal] = useState(getFocusGoal)
 
   const startEdit = () => {
     timer.pause()
@@ -58,6 +65,12 @@ export function TimerPanel({ timer, pauseOnBreak, onSetPauseOnBreak }: TimerPane
   // the timer runs anyway, and the log is one small object.
   const todayMinutes = getTodayMinutes()
   const streak = getStreakDays()
+  const goalProgress = Math.min(100, (todayMinutes / focusGoal) * 100)
+
+  const chooseFocusGoal = (minutes: number) => {
+    setFocusGoal(minutes)
+    saveFocusGoal(minutes)
+  }
 
   return (
     <div>
@@ -107,12 +120,40 @@ export function TimerPanel({ timer, pauseOnBreak, onSetPauseOnBreak }: TimerPane
         </div>
       )}
 
-      {(todayMinutes > 0 || streak > 0) && (
-        <p className="mt-2 text-[11px] text-ink-700/70 dark:text-cream-300/60">
-          today {formatFocusMinutes(todayMinutes)}
-          {streak > 1 && <> · 🔥 {streak} day streak</>}
-        </p>
-      )}
+      <div className="mt-2 rounded-lg bg-white/45 px-2.5 py-2 dark:bg-ink-700/35">
+        <div className="flex items-center justify-between gap-2 text-[11px] text-ink-700/70 dark:text-cream-300/65">
+          <span>
+            today <strong className="font-semibold text-ink-900 dark:text-cream-100">{formatFocusMinutes(todayMinutes)}</strong>
+            {streak > 1 && <> · 🔥 {streak} days</>}
+          </span>
+          <span>{Math.round(goalProgress)}%</span>
+        </div>
+        <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-cream-300 dark:bg-ink-800">
+          <div
+            className="h-full rounded-full bg-clay-500 transition-[width] duration-500 motion-reduce:transition-none"
+            style={{ width: `${goalProgress}%` }}
+          />
+        </div>
+        <div className="mt-1.5 flex items-center justify-between gap-2">
+          <span className="text-[10px] text-ink-700/55 dark:text-cream-300/50">daily focus goal</span>
+          <div className="flex gap-1">
+            {[60, 120, 180].map((minutes) => (
+              <button
+                key={minutes}
+                onClick={() => chooseFocusGoal(minutes)}
+                className={
+                  'rounded-full px-1.5 py-0.5 text-[9px] font-medium transition ' +
+                  (focusGoal === minutes
+                    ? 'bg-clay-500 text-white'
+                    : 'bg-white/75 text-ink-700 dark:bg-ink-800/70 dark:text-cream-300')
+                }
+              >
+                {minutes / 60}h
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {pomo ? (
         <div className="mt-3">

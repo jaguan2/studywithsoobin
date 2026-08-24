@@ -3,10 +3,12 @@
 // evening sessions into tomorrow east of UTC (rule carried from TaskNook's
 // stats.js).
 
-import { storageGetJson, storageSetJson } from './storage'
+import { storageGet, storageGetJson, storageSet, storageSetJson } from './storage'
 
 const KEY = 'sws.stats'
+const GOAL_KEY = 'sws.focusGoal'
 const KEEP_DAYS = 400
+export const DEFAULT_FOCUS_GOAL = 120
 
 export type DayLog = Record<string, number> // 'YYYY-MM-DD' (local) -> minutes
 
@@ -60,6 +62,22 @@ export function computeStreak(days: DayLog, todayKey: string): number {
 
 export function getStreakDays(now = new Date()): number {
   return computeStreak(loadDays(), localDayKey(now))
+}
+
+export function clampFocusGoal(value: unknown): number {
+  const number = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(number)
+    ? Math.min(12 * 60, Math.max(15, Math.round(number)))
+    : DEFAULT_FOCUS_GOAL
+}
+
+export function getFocusGoal(): number {
+  const stored = storageGet(GOAL_KEY)
+  return stored === null ? DEFAULT_FOCUS_GOAL : clampFocusGoal(stored)
+}
+
+export function saveFocusGoal(minutes: number): void {
+  storageSet(GOAL_KEY, String(clampFocusGoal(minutes)))
 }
 
 /** 85 → "1h 25m", 45 → "45m". */

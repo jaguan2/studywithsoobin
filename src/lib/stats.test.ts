@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeStreak, formatFocusMinutes, localDayKey } from './stats'
+import { clampFocusGoal, computeStreak, formatFocusMinutes, localDayKey } from './stats'
 
 describe('localDayKey', () => {
   it('formats the LOCAL date as YYYY-MM-DD', () => {
@@ -45,5 +45,14 @@ describe('formatFocusMinutes', () => {
     [0, '0m'],
   ])('formats %d as %s', (minutes, expected) => {
     expect(formatFocusMinutes(minutes)).toBe(expected)
+  })
+})
+
+describe('clampFocusGoal', () => {
+  it('keeps a useful persisted goal within sane limits', () => {
+    expect(clampFocusGoal('90')).toBe(90)
+    expect(clampFocusGoal(0)).toBe(15)
+    expect(clampFocusGoal(9999)).toBe(720)
+    expect(clampFocusGoal('bad')).toBe(120)
   })
 })
