@@ -11,6 +11,7 @@ import { MusicPanel } from './MusicPanel'
 import { AmbiencePanel } from './AmbiencePanel'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { HeartIcon } from './icons'
+import type { CatalogFilters } from '../lib/catalog'
 
 const GITHUB_URL = 'https://github.com/jaguan2'
 
@@ -18,6 +19,8 @@ const GITHUB_URL = 'https://github.com/jaguan2'
 const BASE = { left: 16, top: 300 }
 
 interface SidebarProps {
+  filters: CatalogFilters
+  onFiltersChange: (value: CatalogFilters) => void
   collapsed: boolean
   onToggleCollapsed: () => void
   /** Viewport-sized ancestor the panel may be dragged around inside — without
@@ -43,6 +46,8 @@ interface SidebarProps {
 // TaskNook's Drawer: the header is the drag handle, positioned with explicit
 // left/top because framer-motion owns the inline transform.
 function SidebarInner({
+  filters,
+  onFiltersChange,
   collapsed,
   onToggleCollapsed,
   bounds,
@@ -137,6 +142,8 @@ function SidebarInner({
 
       <div className="scrollbar-thin flex flex-1 flex-col gap-5 overflow-y-auto px-4 pb-4">
             <VideoPicker
+              filters={filters}
+              onFiltersChange={onFiltersChange}
               videos={videos}
               selectedId={currentVideo.id}
               onSelect={onSelectVideo}

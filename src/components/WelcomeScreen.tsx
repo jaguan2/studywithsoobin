@@ -3,6 +3,8 @@ import type { Theme } from '../App'
 import type { Video } from '../types/playlist'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { HeartIcon } from './icons'
+import { CatalogFilters } from './CatalogFilters'
+import { filterVideos, videoMetadata, type CatalogFilters as Filters } from '../lib/catalog'
 
 type SortMode = 'playlist' | 'longest' | 'shortest'
 
@@ -22,6 +24,8 @@ function videoSeconds(video: Video): number {
 }
 
 interface WelcomeScreenProps {
+  filters: Filters
+  onFiltersChange: (value: Filters) => void
   videos: Video[]
   favorites: string[]
   /** The video from the previous session (if still playable), for one-click resume. */
@@ -35,6 +39,8 @@ interface WelcomeScreenProps {
 }
 
 function WelcomeScreenInner({
+  filters,
+  onFiltersChange,
   videos,
   favorites,
   lastVideo,
@@ -48,13 +54,14 @@ function WelcomeScreenInner({
   const [sort, setSort] = useState<SortMode>('playlist')
 
   const sorted = useMemo(() => {
-    if (sort === 'playlist') return videos
-    const withSeconds = [...videos]
+    const filtered = filterVideos(videos, filters)
+    if (sort === 'playlist') return filtered
+    const withSeconds = [...filtered]
     withSeconds.sort((a, b) =>
       sort === 'longest' ? videoSeconds(b) - videoSeconds(a) : videoSeconds(a) - videoSeconds(b),
     )
     return withSeconds
-  }, [videos, sort])
+  }, [videos, sort, filters])
 
   return (
     <div className="h-screen w-screen overflow-y-auto bg-cream-50 dark:bg-ink-900">
@@ -72,11 +79,12 @@ function WelcomeScreenInner({
             study with soobin 🐰
           </h1>
           <p className="mt-2 text-sm text-ink-700 dark:text-cream-300">
-            Pick a video to study with today
+            Pick a TXT vlog or live to study with today — all five members are here
           </p>
           <button
             onClick={onSurprise}
-            className="mt-4 rounded-full bg-clay-500 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-clay-600"
+            disabled={sorted.length === 0}
+            className="mt-4 rounded-full bg-clay-500 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-clay-600 disabled:opacity-50"
           >
             🎲 Surprise me
           </button>
@@ -90,6 +98,11 @@ function WelcomeScreenInner({
             </button>
           )}
         </header>
+        <div className="mt-8">
+          <CatalogFilters videos={videos} value={filters} onChange={onFiltersChange} />
+          <p className="mt-2 text-xs text-ink-700 dark:text-cream-300">{sorted.length} of {videos.length} videos</p>
+          {videos.length > 0 && sorted.length === 0 && <p className="mt-4 text-sm text-ink-700 dark:text-cream-300">No videos match these filters. Try another member or release date.</p>}
+        </div>
 
         {/* every video can end up session-blocked (embeds refused at play
             time) — without this the grid is just silently empty */}
@@ -149,6 +162,7 @@ function WelcomeScreenInner({
               >
                 {video.title}
               </p>
+              <p className="mt-1 text-[10px] text-ink-700 dark:text-cream-300">{videoMetadata(video)}</p>
             </button>
           ))}
         </div>

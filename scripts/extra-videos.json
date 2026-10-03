@@ -1,34 +1,2178 @@
 {
   "_comment": [
-    "Hand-curated Soobin vlogs / VLIVEs that are NOT in the source YouTube",
-    "playlist (see sourceUrl in playlist.json). scripts/fetch-playlist.mjs",
-    "resolves each id against YouTube and appends it to playlist.json, so a",
-    "refresh keeps them instead of wiping them.",
-    "",
-    "Rules for adding here:",
-    "  - solo Soobin only, to match the rest of the playlist (a live he shares",
-    "    with another member is a different thing to study to)",
-    "  - long-form (the shortest entry in the playlist is ~21 min)",
-    "  - one entry per broadcast. The same VLIVE is re-uploaded by several",
-    "    channels under different titles; cross-check the DURATION against the",
-    "    existing entries before adding, not just the video id.",
-    "  - prefer the channels the playlist already draws on (TXT official,",
-    "    Moa's Diary, V Live) over unknown re-uploaders, which are likelier to",
-    "    be taken down or have embedding disabled."
+    "Curated TXT vlogs and full live archives for all five members.",
+    "Keep ids and member/broadcast overrides here; fetch-playlist resolves fresh metadata.",
+    "Prefer TXT official, Moa's Diary and V Live; TomorrowByEdits covers newer Weverse lives.",
+    "Vlogs: 10+ minutes; lives: 20+ minutes. Preserve the shorter upstream entries.",
+    "Check original date, participants AND duration to avoid alternate uploads of one broadcast.",
+    "Shared lives are tagged with every named participant; omit ambiguous and multipart clips.",
+    "TomorrowByEdits numeric dates use month/day/year; other archives here use day/month/year."
   ],
   "videos": [
-    { "id": "0RJ4pvNRKik", "note": "TXT official — TXT-LOG: Soobin's fun-but-exhausting vacation" },
-    { "id": "3-l7ZHISQnc", "note": "TXT official — TXT-LOG: Soobin's not-so-easy trip" },
-    { "id": "AWVaOMjp2b8", "note": "Weverse live — Soobin's birthday, 2022-12-05" },
-    { "id": "xBvSUwZ9CAk", "note": "VLIVE — Soobin's Inside KPOP, 2022-01-21" },
-    { "id": "i8muIfibN8s", "note": "VLIVE — SOOBIN is back!, 2022-07-28" },
-    { "id": "EwUnXiWCMAM", "note": "VLIVE — It's been awhile!, 2022-07-18" },
-    { "id": "OhFEfSqA8iM", "note": "VLIVE — birthday live, 2021-12-05" },
-    { "id": "8hfKIo8cXWo", "note": "VLIVE — Soobin is here, 2020-03-16" },
-    { "id": "3y2sFkrbV8s", "note": "VLIVE — Talk Talk~, 2022-02-16" },
-    { "id": "RQwJF8qvbDQ", "note": "VLIVE — It's Soobin, 2020-02-10" },
-    { "id": "tBxBVKzyenA", "note": "Weverse live — SOOBIN, 2022-09-04" },
-    { "id": "2IiqumyRudo", "note": "VLIVE — Soobin's ASMR, 2019-07-22 (his first solo VLIVE)" },
-    { "id": "EeXyBjRtnuM", "note": "VLIVE — dinner time with Soobin, 2019-12-09" }
+    {
+      "id": "0RJ4pvNRKik",
+      "note": "TXT official — TXT-LOG: Soobin's fun-but-exhausting vacation",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null
+    },
+    {
+      "id": "3-l7ZHISQnc",
+      "note": "TXT official — TXT-LOG: Soobin's not-so-easy trip",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null
+    },
+    {
+      "id": "AWVaOMjp2b8",
+      "note": "Weverse live — Soobin's birthday, 2022-12-05",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-12-05"
+    },
+    {
+      "id": "xBvSUwZ9CAk",
+      "note": "VLIVE — Soobin's Inside KPOP, 2022-01-21",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-01-21"
+    },
+    {
+      "id": "i8muIfibN8s",
+      "note": "VLIVE — SOOBIN is back!, 2022-07-28",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-07-28"
+    },
+    {
+      "id": "EwUnXiWCMAM",
+      "note": "VLIVE — It's been awhile!, 2022-07-18",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-07-18"
+    },
+    {
+      "id": "OhFEfSqA8iM",
+      "note": "VLIVE — birthday live, 2021-12-05",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-12-05"
+    },
+    {
+      "id": "8hfKIo8cXWo",
+      "note": "VLIVE — Soobin is here, 2020-03-16",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-03-16"
+    },
+    {
+      "id": "3y2sFkrbV8s",
+      "note": "VLIVE — Talk Talk~, 2022-02-16",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-02-16"
+    },
+    {
+      "id": "RQwJF8qvbDQ",
+      "note": "VLIVE — It's Soobin, 2020-02-10",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-02-10"
+    },
+    {
+      "id": "tBxBVKzyenA",
+      "note": "Weverse live — SOOBIN, 2022-09-04",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-09-04"
+    },
+    {
+      "id": "2IiqumyRudo",
+      "note": "VLIVE — Soobin's ASMR, 2019-07-22 (his first solo VLIVE)",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-07-22"
+    },
+    {
+      "id": "EeXyBjRtnuM",
+      "note": "VLIVE — dinner time with Soobin, 2019-12-09",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-12-09"
+    },
+    {
+      "id": "S54iSmF3hOM",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — 수빈이의 첫 밀라노 방문 | TXT-LOG | TXT (투모로우바이투게더)️"
+    },
+    {
+      "id": "TbGhJsTBFuI",
+      "members": [
+        "soobin",
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-03-21",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun and Soobin's Cotton Candy {21st Mar, 2020}"
+    },
+    {
+      "id": "-TheZlUPKio",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] YEONJUN IN U.S. | 공연부터🎤 힐링🌱까지 연준이가 추억을 기록하는 방법🦊📸"
+    },
+    {
+      "id": "77qeSAIzdnU",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — 연준이랑 프라하하하 | TXT-LOG | TXT (투모로우바이투게더)️"
+    },
+    {
+      "id": "kVqGOcsraMA",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] YEONJUN IN U.S l 연준의 브이로그🦊"
+    },
+    {
+      "id": "Hur99MVVgOY",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — YEONJUN’s Choreography-Making Story | TXT-LOG | TXT (투모로우바이투게더)"
+    },
+    {
+      "id": "FslERuehZok",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-04-18",
+      "note": "V Live — TXT Yeonjun VLive | 04/18/21 | Hi Moa 🦊 (Eng/Indo/Viet Sub)"
+    },
+    {
+      "id": "eFXvGy0JRnI",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-10-15",
+      "note": "V Live — (Eng/Indo Sub)  TXT Yeonjun VLive | 211015 | YEONJUN is here!"
+    },
+    {
+      "id": "2ZN7yFt69yQ",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-12-15",
+      "note": "V Live — (Eng/Indo Sub) TXT Yeonjun VLive | 211215 | 🍦🥭🍯"
+    },
+    {
+      "id": "iByilkSUzxo",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-09-27",
+      "note": "V Live — (Eng/Indo Sub) TXT Yeonjun VLive | 210927 | MOA I Missed You"
+    },
+    {
+      "id": "VhhdZPg9-fI",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-12-19",
+      "note": "Moa's Diary — [TXT VLIVE] Eat Together With Yeonjun {19th Dec, 2020}"
+    },
+    {
+      "id": "Kh8D3BZTems",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-07-21",
+      "note": "V Live — TXT Yeonjun VLive | 210721 | You Waited, Right?🦊 (Eng Sub)"
+    },
+    {
+      "id": "0w4Im5EmB0o",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-03-19",
+      "note": "V Live — TXT Yeonjun VLive | 210319 | This is Yeonjun🦊 (Eng/Indo/Viet Sub)"
+    },
+    {
+      "id": "nYnhHxqQLJ8",
+      "members": [
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-11-17",
+      "note": "V Live — (Eng/Indo Sub) TXT Yeonjun & Taehyun VLive | 211117 | Eat together!!"
+    },
+    {
+      "id": "7-AboFpqbA8",
+      "members": [
+        "soobin",
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-11-04",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN & SOOBIN: Click Clack Craft Time {4th Nov, 2019}"
+    },
+    {
+      "id": "nSRNSINIU4c",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-01-08",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun's Essence of Dancing {08th Jan, 2021}"
+    },
+    {
+      "id": "RUU4eh1muEA",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-11-27",
+      "note": "V Live — (Eng/Indo Sub) TXT Yeonjun VLive | 211127 | 1🦊🦊🦊 !"
+    },
+    {
+      "id": "zD1F-e6KJ40",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-11-02",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun: The Essence of Game ep4 {2nd Nov, 2019}"
+    },
+    {
+      "id": "u9zCpqvUV2Q",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-07-10",
+      "note": "V Live — (ENG/INDO SUB) TXT Yeonjun VLive | 220710 | 🏙"
+    },
+    {
+      "id": "HMQz6GUDxSQ",
+      "members": [
+        "soobin",
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-08-09",
+      "note": "V Live — TXT Beomgyu, Soobin & Yeonjun VLive | 210809 | Choi 3 🦊🐰🐻 (Eng Sub)"
+    },
+    {
+      "id": "pbPP2KypnBw",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-06-17",
+      "note": "V Live — (ENG/INDO SUB) TXT Yeonjun & Beomgyu VLive | 220617 | Make Ju-Gyu Laugh"
+    },
+    {
+      "id": "BI8H9LpqrYI",
+      "members": [
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-10-16",
+      "note": "Moa's Diary — [TXT VLIVE] TXT \"Blue Hour\" Official Teaser - Yeonjun, Taehyun {16th Oct, 2020}"
+    },
+    {
+      "id": "dW-7Kx-x2II",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] BEOMGYU IN ASIA l 범규의 바쁜 일상 속 소소한 행복 찾기🧸💕"
+    },
+    {
+      "id": "HG7FK2C09xw",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] BEOMGYU IN U.S l 범규의 브이로그🧸"
+    },
+    {
+      "id": "0MtPUyNPDfs",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-01-06",
+      "note": "V Live — (ENG/INDO SUB) TXT Beomgyu VLive | 220106 | Thursday Night3 🐻"
+    },
+    {
+      "id": "ZXgkC-TqTfg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-03-13",
+      "note": "V Live — TXT Beomgyu Birthday VLive | 210313 | Birthday 🥳 (Eng/Indo/Viet Sub)"
+    },
+    {
+      "id": "pa9UBRZKFIA",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-07-03",
+      "note": "V Live — TXT Beomgyu VLive | 210703 | Beginning of Monsoon (Eng/Indo/Thai/Viet Sub)"
+    },
+    {
+      "id": "XA8zpa8V4DY",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-04-04",
+      "note": "V Live — (ENG/INDO SUB) TXT Beomgyu VLive | 220404 | Beomgyu's Radio"
+    },
+    {
+      "id": "zHYDZYP_NI4",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-04-16",
+      "note": "V Live — TXT Beomgyu VLive | 210416 | Chicken Killer Choi Beomgyu🍗 (Eng/Indo Sub)"
+    },
+    {
+      "id": "urM0f0_WbKQ",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-01-11",
+      "note": "Moa's Diary — [TXT VLIVE] Beomgyu's Studio {11th Jan, 2020}"
+    },
+    {
+      "id": "XG6HZ2i41ec",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-06-30",
+      "note": "Moa's Diary — [TXT VLIVE] Beomgyu's ASMR {30th June, 2020}"
+    },
+    {
+      "id": "YhHC5FodvPc",
+      "members": [
+        "beomgyu",
+        "taehyun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": null,
+      "note": "V Live — TXT Beomgyu, Hueningkai & Taehyun VLive | Shinhan Lims in Hallym 🐻🐧🐿 (Eng/Indo/Viet Sub)"
+    },
+    {
+      "id": "c9yXdfAHm9c",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-08-23",
+      "note": "Moa's Diary — [TXT VLIVE] BEOMGYU is here to see you!!!!✨ {23rd Aug, 2019}"
+    },
+    {
+      "id": "SRRPq0GEEgg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-03-13",
+      "note": "Moa's Diary — [TXT VLIVE] Happy Birthday Beomgyu❣️{13th Mar, 2020}"
+    },
+    {
+      "id": "LgTj5dDbfss",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-11-18",
+      "note": "V Live — (Eng/Indo Sub) TXT Beomgyu VLive | 211118 | Thursday Night"
+    },
+    {
+      "id": "iSsE29qe8_k",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-09-24",
+      "note": "V Live — (Eng Sub) TXT Taehyun & Beomgyu VLive | 210924 | Break Universe Radio: Revised?!"
+    },
+    {
+      "id": "jWlKDW_N8E8",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-10-27",
+      "note": "V Live — (Eng/Indo Sub) TXT Beomgyu VLive | 211027 | Sorry...."
+    },
+    {
+      "id": "UyboDClgY5M",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] TAEHYUN IN U.S. l 끊임없는 식사와 토크가 공존하는 태현이의 브이로그 🐿️✨"
+    },
+    {
+      "id": "baK4wexJcAA",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] TAEHYUN IN U.S l 태현의 브이로그🐿️"
+    },
+    {
+      "id": "K0-buMCX79U",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-03-18",
+      "note": "V Live — TXT Taehyun VLive | 210318 | I'm here in a carefree way (Eng/Indo Sub)"
+    },
+    {
+      "id": "LmQTMmPDRpk",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-07-09",
+      "note": "V Live — TXT Taehyun VLive | 210709 | Did you receive the gift well? 🐿 (Eng Sub)"
+    },
+    {
+      "id": "n64GcqVMA3c",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-01-16",
+      "note": "Moa's Diary — [TXT VLIVE] Kang Taehyun's Magic Island🔮 {16th Jan, 2020}"
+    },
+    {
+      "id": "T4ksmFx6s-s",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-08-06",
+      "note": "V Live — TXT Taehyun VLive | 210806 | We said we should see each other... (Eng Sub)"
+    },
+    {
+      "id": "rzyKe7VvYzE",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-07-18",
+      "note": "Moa's Diary — [TXT VLIVE] Taehyun: It's been a while! {18th July, 2019}"
+    },
+    {
+      "id": "6gdqW5PghLU",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": null,
+      "note": "V Live — TXT Taehyun VLive | TALK X TODAY : Season 5 Teaser - TXT (Eng/Indo/Viet Sub)"
+    },
+    {
+      "id": "CMvFQq_xcyQ",
+      "members": [
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-03-22",
+      "note": "V Live — (ENG/INDO SUB) TXT Yeonjun & Taehyun VLive | 220322 | 🦊🐿🥖🥐🥯🍞"
+    },
+    {
+      "id": "Q2gbFm0xaGY",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-02-05",
+      "note": "Moa's Diary — [TXT VLIVE] TAEHYUN'S Birthday❣️ {05th Feb, 2020}"
+    },
+    {
+      "id": "ukfSCe5AESQ",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-11-25",
+      "note": "V Live — (Eng/Indo Sub) TXT Taehyun VLive | 211125 | 🚨Urgent Announcement🚨"
+    },
+    {
+      "id": "34h9Nq-FowI",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-01-18",
+      "note": "V Live — (ENG/INDO SUB) TXT Taehyun VLive | 220118 | Come On"
+    },
+    {
+      "id": "bGFccQABRkI",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-04-15",
+      "note": "V Live — (ENG/INDO SUB) TXT Taehyun VLive | 220415 | TXT(투모로우바이투게더) minisode 2: Friday's Child"
+    },
+    {
+      "id": "PD60-t3U2tw",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-05-17",
+      "note": "Moa's Diary — [TXT VLIVE] Beomgyu & Taehyun: Smash the Universe Radio ep2 (17th May, 2019)"
+    },
+    {
+      "id": "eqFJRihruoA",
+      "members": [
+        "soobin",
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-05-29",
+      "note": "V Live — (ENG/INDO SUB) TXT Soobin, Beomgyu & Taehyun VLive | 220529 | The Essence of Games🎮"
+    },
+    {
+      "id": "mKDuB1tqQpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-05-07",
+      "note": "V Live — TXT Taehyun VLive | 210507 | Delicious Lunch With Taehyun🐿(Eng Sub)"
+    },
+    {
+      "id": "OP8ncpO2Vtw",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-06-19",
+      "note": "V Live — (ENG/INDO SUB) TXT Soobin & Taehyun VLive | 220619 | Trustz"
+    },
+    {
+      "id": "-sYF-27DSc8",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-02-07",
+      "note": "V Live — (ENG/INDO SUB) TXT Taehyun Birthday VLive | 220207 | You waited for a long time🎂🐿🥳"
+    },
+    {
+      "id": "wkyXOClBf7I",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-01-26",
+      "note": "V Live — (ENG/INDO SUB) TXT Soobin & Taehyun VLive | 220126 | Strawberry, let's play🍓"
+    },
+    {
+      "id": "BjhV4VZGoLI",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-11-19",
+      "note": "Moa's Diary — [TXT VLIVE] SOOBIN and TAEHYUN will answer your questions! {19th Nov, 2019}"
+    },
+    {
+      "id": "lKqZB8PcLDs",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — HUENINGKAI in Shanghai 🇨🇳 | TXT-LOG | TXT (투모로우바이투게더)"
+    },
+    {
+      "id": "1Bo885R_PLg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] HUENINGKAI IN U.S l 휴닝카이의 브이로그🐧"
+    },
+    {
+      "id": "wD16qH1B6N0",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] HUENINGKAI IN JAPAN l 투어 기간에는 무엇을 할까? 휴닝카이의 모든 일상 대공개🐧✨"
+    },
+    {
+      "id": "ujWyDnIjHoo",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — TXT-LOG Huening's Chinese Challenge"
+    },
+    {
+      "id": "n1hx82U1XIc",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-08-14",
+      "note": "Moa's Diary — [TXT VLIVE] Hueningkai's First Birthday {14th Aug, 2020}"
+    },
+    {
+      "id": "6TfJEp7u0T4",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-07-29",
+      "note": "Moa's Diary — [TXT VLIVE] 휴닝's 브이앱 / Huening Kai's V LIVE! {29th July, 2019}"
+    },
+    {
+      "id": "zi9vk_QQE3I",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-06-15",
+      "note": "V Live — (ENG/INDO SUB) TXT Hueningkai & Soobin VLive | 220615 | Gumz🐰🐧🫒🍉🍎🍋"
+    },
+    {
+      "id": "ExiD-zbWzxo",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-03-24",
+      "note": "V Live — (ENG/INDO SUB) TXT Hueningkai VLive | 220324 | HUE-ranghae💖"
+    },
+    {
+      "id": "veTEQ03hZCk",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-05-19",
+      "note": "Moa's Diary — [TXT VLIVE] Hueningkai: Nap of a Star {19th May, 2019}"
+    },
+    {
+      "id": "s5Aq8SYXtrQ",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-02-24",
+      "note": "V Live — (ENG/INDO SUB) TXT Hueningkai VLive | 220224 | Sk8er Boi appears🛹"
+    },
+    {
+      "id": "_bTyIvVR0k4",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-01-05",
+      "note": "V Live — (ENG/INDO SUB) TXT Hueningkai VLive | 220105 | Roar HUENING is here🐯"
+    },
+    {
+      "id": "dOeAfWxLg8I",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-04-02",
+      "note": "V Live — TXT Hueningkai VLive | 210402 | Typical Interaction Time🐧 (Eng Sub)"
+    },
+    {
+      "id": "zfl5lHhS0KA",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-02-25",
+      "note": "Moa's Diary — [TXT VLIVE] Fun Huening Kai Logic 🤗{25th Feb 2020}"
+    },
+    {
+      "id": "U_MS_lkp-Cc",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-03-10",
+      "note": "V Live — TXT Hueningkai VLive | 210310 (Eng/Viet Sub)"
+    },
+    {
+      "id": "RHMoSmcy8dk",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-08-14",
+      "note": "V Live — TXT Hueningkai Birthday VLive | 210814 | 20-year old HUENING 🐧 (Eng/Indo/Thai/Viet Sub)"
+    },
+    {
+      "id": "j_tpmHmOyH4",
+      "members": [
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-01-25",
+      "note": "V Live — (ENG/INDO SUB) TXT Hueningkai & Yeonjun VLive | 220125 | This House Gives Good Fortune"
+    },
+    {
+      "id": "8ITQPRFbcsE",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-04-03",
+      "note": "Moa's Diary — [TXT VLIVE] Huening's Interactive Time🎸 {3rd April, 2020}"
+    },
+    {
+      "id": "stknqB6qzbA",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2023-08-14",
+      "note": "Moa's Diary — [TXT WEVERSE LIVE] Hello. This is Huening 🐧🎂🎉 {2023.08.14}"
+    },
+    {
+      "id": "-O4G-LQKlwc",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2023-03-13",
+      "note": "Moa's Diary — [TXT WEVERSE LIVE] Beomgyu's Birthday {2023.03.13}"
+    },
+    {
+      "id": "-7w4qZL3OLI",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-10-18",
+      "note": "Moa's Diary — [TXT WEVERSE LIVE] Beomgyu in America {2022.10.18}"
+    },
+    {
+      "id": "shkGt21rDys",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-10-20",
+      "note": "Moa's Diary — [TXT WEVERSE LIVE] When is Huening coming? {2022.10.20}"
+    },
+    {
+      "id": "bATdlzFBD28",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-09-06",
+      "note": "Moa's Diary — [TXT WEVERSE LIVE] Beomgyu in Japan {06th Sep, 2022}"
+    },
+    {
+      "id": "rlebXRSdTGk",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-08-26",
+      "note": "Moa's Diary — [TXT WEVERSE LIVE] Beomgyu and Children {26th Aug, 2022}"
+    },
+    {
+      "id": "8mSbn2Xv8CI",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-06-12",
+      "note": "Moa's Diary — [TXT VLIVE] BEOMGYU and TAEHYUN's Gobble Up Bunsik Radio {12th Jun, 2022}"
+    },
+    {
+      "id": "-PqeOR0aJT4",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-02-25",
+      "note": "Moa's Diary — [TXT VLIVE] Ask Beomgyu 🐻 {25th Feb, 2022}"
+    },
+    {
+      "id": "HhB3Lan0u34",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-11-22",
+      "note": "Moa's Diary — [TXT VLIVE] Again✏ HUENINGKAI's Math Class {22nd Nov, 2021}"
+    },
+    {
+      "id": "mhd7i4NIiYc",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-09-13",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN's Birthday 🦊 (BEOMGYU's Birthday 🥳🥳) {13th Sep, 2021}"
+    },
+    {
+      "id": "-KudKCmzHz8",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-09-04",
+      "note": "Moa's Diary — [TXT VLIVE] HUENINGKAI is Here {04th Sep, 2021}"
+    },
+    {
+      "id": "qRvtWDJFxfw",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-05-21",
+      "note": "Moa's Diary — [TXT VLIVE] The Return of HUENINGKAI's the Essence of Instruments 🐧🎹 {21st May, 2021}"
+    },
+    {
+      "id": "lCgEgCWyaDk",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-02-14",
+      "note": "Moa's Diary — [TXT VLIVE] Huening's math puzzle time has returned {14th Feb, 2021}"
+    },
+    {
+      "id": "1ECxtE_nsqw",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-02-21",
+      "note": "Moa's Diary — [TXT VLIVE] It's Yeonjun 2 {21st Feb, 2021}"
+    },
+    {
+      "id": "pyFzST2kqYo",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-01-27",
+      "note": "Moa's Diary — [TXT VLIVE] HUENINGKAI's Piano V LIVE 🐧 {27th Jan, 2021}"
+    },
+    {
+      "id": "BOR3NnDz8wM",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-01-08",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun's Essence of Dancing 2 {08th Jan, 2021}"
+    },
+    {
+      "id": "qYhVY1f6P8I",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-12-17",
+      "note": "Moa's Diary — [TXT VLIVE] Thursday Afternoon, HUENINGKAI is... {17th Dec, 2020}"
+    },
+    {
+      "id": "9lf9ltaeK4Q",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-10-10",
+      "note": "Moa's Diary — [TXT VLIVE] Soobin & Hueningkai : Comeback of Handcraft Time {10th Oct, 2020}"
+    },
+    {
+      "id": "kXamZJeY1rY",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-09-03",
+      "note": "Moa's Diary — [TXT VLIVE] SOOBIN&TAEHYUN's Dinner Time 🐰🐿️ {03rd Sep, 2020}"
+    },
+    {
+      "id": "GY6XoF5aXEk",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-09-10",
+      "note": "Moa's Diary — [TXT VLIVE] Beomgyu's Dinner Time {10th Sep, 2020}"
+    },
+    {
+      "id": "pxKjVe4WryQ",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-08-24",
+      "note": "Moa's Diary — [TXT VLIVE] Chatting Time with Taehyun {24th Aug, 2020}"
+    },
+    {
+      "id": "xV9lq0Nh5II",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-08-07",
+      "note": "Moa's Diary — [TXT VLIVE] Talk with Beomgyu {07th Aug, 2020}"
+    },
+    {
+      "id": "Vbg5E4FGf7M",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-07-14",
+      "note": "Moa's Diary — [TXT VLIVE] Huening Kai's Hand Craft Time {14th July 2020}"
+    },
+    {
+      "id": "mhz7yyKUE9Y",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-07-19",
+      "note": "Moa's Diary — [TXT VLIVE] Soobin&Beomgyu's Tea Time 🥑🍍{19th July, 2020}"
+    },
+    {
+      "id": "_j7S4dqr7JE",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-06-16",
+      "note": "Moa's Diary — [TXT VLIVE] Soobin & Hueningkai: Craft Time {16th June, 2020}"
+    },
+    {
+      "id": "Jd4VDfaokd8",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-04-20",
+      "note": "Moa's Diary — [TXT VLIVE] Soobin & Hueningkai: Handcraft Time {20th April, 2020}"
+    },
+    {
+      "id": "f3kgjdO2AGI",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-04-07",
+      "note": "Moa's Diary — [TXT VLIVE] Today Is the Day That Beomgyu Beats Yeonjun {7th April, 2020}"
+    },
+    {
+      "id": "81XwriJTM3g",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-03-28",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun's Interactive Bread Broadcast🍞🥐 {28th Mar, 2020}"
+    },
+    {
+      "id": "Hzyn-2fWC9w",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-03-25",
+      "note": "Moa's Diary — [TXT VLIVE] Beomgyu is here🌰 2 {25th Mar, 2020}"
+    },
+    {
+      "id": "A7DKwzMxKhw",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-03-02",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun's Save the Dinosaur {02nd Mar, 2020}"
+    },
+    {
+      "id": "0iInrPbvljo",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-02-13",
+      "note": "Moa's Diary — [TXT VLIVE] Choi Beomgyu {13th Feb 2020}"
+    },
+    {
+      "id": "hmRfkN2mZd0",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-02-19",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN's Communication Mukbang {19th Feb, 2020}"
+    },
+    {
+      "id": "jk3i7gBp99Y",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-02-22",
+      "note": "Moa's Diary — [TXT VLIVE] Taehyun's Councelling Center 2 {22nd Feb, 2020}"
+    },
+    {
+      "id": "hSFECD7rskE",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2030-01-27",
+      "note": "Moa's Diary — [TXT VLIVE] Sweet Taehyun makes something sweet {27th Jan, 2030}"
+    },
+    {
+      "id": "lpsEds3ImtY",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-01-17",
+      "note": "Moa's Diary — [TXT VLIVE] Choi Beomgyu's Starry Night✨ {17th Jan, 2020}"
+    },
+    {
+      "id": "p6WUdNoAIxA",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2020-01-05",
+      "note": "Moa's Diary — [TXT VLIVE] Who wants to do a number puzzle with HUENINGKAI? {05th Jan, 2020}"
+    },
+    {
+      "id": "MYiDF20kj4s",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-12-21",
+      "note": "Moa's Diary — [TXT VLIVE] TAEHYUN'S Counselling center {21st Dec, 2019}"
+    },
+    {
+      "id": "3AEfDZWXbYc",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-12-18",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN: The Classic of Dance {18th Dec, 2019}"
+    },
+    {
+      "id": "CJIZxPjgE2k",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-12-14",
+      "note": "Moa's Diary — [TXT VLIVE] BEOMGYU & TAEHYUN: Smash the Universe Radio 🥰 ep5 {14th Dec, 2019}"
+    },
+    {
+      "id": "7KwZ1VR66TY",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-12-07",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN: The Essence of Game ep6 {7th Dec, 2019}"
+    },
+    {
+      "id": "njUUeNgPqZw",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-11-22",
+      "note": "Moa's Diary — [TXT VLIVE] SOOBIN & HUENINGKAI's \"Click Clack Craft Class\" {22nd Nov, 2019}"
+    },
+    {
+      "id": "iA9ZjQ9REXQ",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-11-13",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN: The Essence of Game ep5 {13th Nov, 2019}"
+    },
+    {
+      "id": "FuqjY6z5qxE",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-10-23",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN & BEOMGYU's Handcraft Time {23rd Oct, 2019}"
+    },
+    {
+      "id": "M4SAH_tBSAU",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-10-19",
+      "note": "Moa's Diary — [TXT VLIVE] Soobin & HUENINGKAI: Break the Universe Radio! {19th Oct, 2019}"
+    },
+    {
+      "id": "mDSXDGzuwAk",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-09-22",
+      "note": "Moa's Diary — [TXT VLIVE] SOOBIN & HUENINGKAI : Fun handcraft time {22nd Sep, 2019}"
+    },
+    {
+      "id": "4j4MOO0hNY8",
+      "members": [
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-09-18",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN&HUENINGKAI's behind story {18th Sep, 2019}"
+    },
+    {
+      "id": "4qMLkrlLRMY",
+      "members": [
+        "beomgyu",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-09-27",
+      "note": "Moa's Diary — [TXT VLIVE] BEOMGYU & HUENINGKAI eating Tteokbokki pt2 {27th Sep, 2019}"
+    },
+    {
+      "id": "fckOrM_lilo",
+      "members": [
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-09-10",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun&Taehyun's \"TALK X TODAY\" Behind the Scenes Stories! {10th Sep, 2019}"
+    },
+    {
+      "id": "X334Dm3hlBk",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-08-30",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN: Essence of Game ep3 {30th Aug, 2019}"
+    },
+    {
+      "id": "hHPcZ1A2CSU",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-07-25",
+      "note": "Moa's Diary — [TXT VLIVE] YEONJUN's Real Tea Time {25th July, 2019}"
+    },
+    {
+      "id": "SN2uvCJS4N0",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-05-31",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun: The standard of the game ep2 (M.P.A.!!!) {31st May, 2019}"
+    },
+    {
+      "id": "51C_FBCmUrU",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-05-30",
+      "note": "Moa's Diary — [TXT VLIVE] Beomgyu & Taehyun: Smash the Universe Radio ep3 (30th May, 2019)"
+    },
+    {
+      "id": "t_rYme_Uvno",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-05-29",
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun: Nap of a Star (29th May, 2019)"
+    },
+    {
+      "id": "MMNf3Gqshnc",
+      "members": [
+        "yeonjun",
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": null,
+      "note": "Moa's Diary — [TXT VLIVE] Yeonjun: The essence of Game ep1 (with Beomgyu & Taehyun)"
+    },
+    {
+      "id": "Y4UgCd3pPhM",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2019-05-09",
+      "note": "Moa's Diary — [TXT VLIVE] Soobin & Hueningkai: Tick Tock Tick Tock Worktime (9th May, 2019)"
+    },
+    {
+      "id": "LgI7KLXDo1k",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-07-28",
+      "note": "V Live — (ENG/INDO SUB) TXT Soobin VLive | 220728 | Back again, again, again"
+    },
+    {
+      "id": "dglYg117v1M",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-07-28",
+      "note": "V Live — (ENG/INDO SUB) TXT Soobin VLive | 220728 | Back again, again"
+    },
+    {
+      "id": "mvuy_sXWKvI",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-07-27",
+      "note": "V Live — (ENG/INDO SUB) Kep1er Bahiyyih Birthday VLive | 220727 | 🎉HAPPY HUENING BAHIYYIH DAY💜"
+    },
+    {
+      "id": "o_EP7eDYAjM",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-07-22",
+      "note": "V Live — (ENG/INDO SUB) TXT Beomgyu VLive | 220722 | It's been a while☺️"
+    },
+    {
+      "id": "3zIjGW_0PnY",
+      "members": [
+        "soobin",
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-06-09",
+      "note": "V Live — (ENG/INDO SUB) TXT Soobin & Yeonjun VLive | 220609 | The Hyungz🦊🐰"
+    },
+    {
+      "id": "yNn3uo1-N6c",
+      "members": [
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-05-25",
+      "note": "V Live — (ENG/INDO SUB) TXT Yeonjun & Hueningkai VLive | 220525 | Tattoo On Top of Fourth Finger"
+    },
+    {
+      "id": "7VSB_NXrW4w",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-05-01",
+      "note": "V Live — (ENG/INDO SUB) TXT Yeonjun VLive | 220501 | Hello! This is top 3😎"
+    },
+    {
+      "id": "M-t1mEAQtmc",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-03-28",
+      "note": "V Live — (ENG/INDO SUB) TXT Taehyun VLive | 220328 | Did you eat?"
+    },
+    {
+      "id": "0uzlwFnAQ8U",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-03-26",
+      "note": "V Live — (ENG/INDO SUB) TXT Soobin & Hueningkai VLive | 220326 | Glued🍓🍌🥭🍊🫐"
+    },
+    {
+      "id": "8UaDZrEw0mM",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-03-20",
+      "note": "V Live — (ENG/INDO SUB) TXT Beomgyu Birthday VLive | 220320 | 🧸🎉🎂"
+    },
+    {
+      "id": "KvisiHv_W3w",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-03-16",
+      "note": "V Live — (ENG/INDO SUB) TXT Yeonjun VLive | 220316 | Dancer is Back!🕺"
+    },
+    {
+      "id": "eSFPFAz8ahc",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-03-09",
+      "note": "V Live — (ENG/INDO SUB) TXT Beomgyu & Soobin VLive | 220309 | Best Buds for the First Time in a While🐰🐻"
+    },
+    {
+      "id": "17c2AHZbSW4",
+      "members": [
+        "soobin",
+        "beomgyu",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-02-14",
+      "note": "V Live — (ENG/INDO SUB) TXT Hueningkai, Soobin & Beomgyu VLive | 220214 | 🐟Bungeoppang Wari Wari🐟"
+    },
+    {
+      "id": "No1FogwLxN4",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-02-11",
+      "note": "V Live — (ENG/INDO SUB) TXT Yeonjun  VLive | 220211 | 💚"
+    },
+    {
+      "id": "6AB_oHET6zQ",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-01-28",
+      "note": "V Live — (ENG/INDO SUB) TXT Hueningkai VLive | 220128 | Are you all ready to enjoy Lunar New Year?"
+    },
+    {
+      "id": "SYIS_bHsIeE",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2022-01-17",
+      "note": "V Live — (ENG/INDO SUB) TXT Yeonjun VLive | 220117 | 🦊"
+    },
+    {
+      "id": "imP3LMbYJvw",
+      "members": [
+        "soobin",
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-12-30",
+      "note": "V Live — (Eng/Indo Sub) TXT Soobin, Hueningkai & Yeonjun VLive | 211230 | One more day left!!!!!!!!!!!"
+    },
+    {
+      "id": "z3Bzs6uUWiw",
+      "members": [
+        "beomgyu",
+        "taehyun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-12-27",
+      "note": "V Live — (Eng/Indo Sub) TXT Beomgyu, Taehyun & Hueningkai VLive | 211227 | The last week of 2021"
+    },
+    {
+      "id": "gwyjDkvB8DA",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-12-12",
+      "note": "V Live — (Eng/Indo Sub) TXT Hueningkai VLive | 211212 | Kkyu🐧🦄"
+    },
+    {
+      "id": "iHshLr-Vc60",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-12-02",
+      "note": "V Live — (Eng/Indo Sub) TXT Beomgyu VLive | 211202 | Thursday Night2"
+    },
+    {
+      "id": "dQ0vQcNLkW0",
+      "members": [
+        "soobin",
+        "beomgyu",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-11-15",
+      "note": "V Live — (Eng/Indo Sub) TXT Hueningkai, Soobin & Beomgyu VLive | 211115 | It's a first🐰🐻🐧"
+    },
+    {
+      "id": "sry4ZtJPcWU",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-10-25",
+      "note": "V Live — (Eng/Indo Sub) TXT Hueningkai VLive | 211025 | Hi 🐧"
+    },
+    {
+      "id": "iUuJ9FJIWCg",
+      "members": [
+        "soobin",
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-10-19",
+      "note": "V Live — (Eng/Indo Sub) TXT Yeonjun, Taehyun & Soobin VLive | 211019 | Combination You See For The First Time"
+    },
+    {
+      "id": "a7ZpUAgk0SA",
+      "members": [
+        "beomgyu",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-10-12",
+      "note": "V Live — (Eng/Indo Sub) TXT Beomgyu & Hueningkai VLive | 211012 | GYUNING's Q&A😊"
+    },
+    {
+      "id": "Wz1cIKl3O-c",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-09-22",
+      "note": "V Live — (Eng/Indo Sub) TXT Soobin & Hueningkai VLive | 210922 | It's Been A While We Have Done a Workplace🐰🐧"
+    },
+    {
+      "id": "DX7e6njU9NQ",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-08-13",
+      "note": "V Live — TXT Yeonjun VLive | 210813 | 🦊 (Eng/Indo Sub)"
+    },
+    {
+      "id": "6nw2thZLg9Q",
+      "members": [
+        "taehyun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-08-01",
+      "note": "V Live — TXT Taehyun & Hueningkai VLive | 210801 | While August Starts (Eng Sub)"
+    },
+    {
+      "id": "zy62ix-vHRM",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-07-18",
+      "note": "V Live — TXT Soobin VLive | 210718 | This Time Real Talk!!! (Eng Sub)"
+    },
+    {
+      "id": "yZaMw1wNfxI",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-07-08",
+      "note": "V Live — TXT Hueningkai VLive | 210708 | I'm revealing it🐧 (Eng Sub)"
+    },
+    {
+      "id": "ziNRDKRgi9Q",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-06-30",
+      "note": "V Live — TXT Taehyun VLive | 210630 | It's Hot, Right? (Eng/Indo Sub)"
+    },
+    {
+      "id": "JIs75C-SURg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-06-26",
+      "note": "V Live — TXT Yeonjun VLive | 210626 | COMEBACK (Rule of Dance) | Eng Sub"
+    },
+    {
+      "id": "VbvLjZ2MSMI",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-05-28",
+      "note": "V Live — TXT Beomgyu VLive | 210528 | Long time, no see😊 (Eng/Indo Sub)"
+    },
+    {
+      "id": "O8ynK4hrpAg",
+      "members": [
+        "taehyun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-05-23",
+      "note": "V Live — TXT Taehyun & Hueningkai VLive | 210523 | 🌹Who knows how to make perfume~🐿🐧🌹 (Eng Sub)"
+    },
+    {
+      "id": "LimjqjJlse8",
+      "members": [
+        "soobin",
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-05-13",
+      "note": "V Live — TXT Soobin, Yeonjun & Beomgyu VLive | 210513 | Choi Choi Choi🧊 (Eng Sub)"
+    },
+    {
+      "id": "ZJpDKnK9hrE",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2021-04-30",
+      "note": "V Live — TXT Taehyun & Beomgyu VLive | 210430 | (Eng Sub)"
+    },
+    {
+      "id": "lY8NcWvXU8o",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-08-16",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.08.16) | SOOBIN LIVE (MUSIC PARTY FULL)"
+    },
+    {
+      "id": "2U6Fkbsz6zI",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-01-20",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.01.20) | SOOBIN LIVE"
+    },
+    {
+      "id": "YAxq8eGkhgI",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-03-20",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.03.20) | SOOBIN LIVE"
+    },
+    {
+      "id": "_W_hVNPA5Gg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-12-05",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.12.05) | SOOBIN BIRTHDAY LIVE 🎂"
+    },
+    {
+      "id": "_D0KIhlr3fw",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-12-15",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (12/15/2025) | SOOBIN LIVE"
+    },
+    {
+      "id": "psmN87WPgcA",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-09-22",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (09/22/2025) | SOOBIN & TAEHYUN LIVE"
+    },
+    {
+      "id": "euZQd5CtX7o",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-28",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.05.28) | SOOBIN LIVE"
+    },
+    {
+      "id": "5YFtfDmmq9k",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-06-20",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (06/20/2026) | SOOBIN LIVE"
+    },
+    {
+      "id": "akpjTD2go_A",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-19",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/19/2026) | SOOBIN LIVE"
+    },
+    {
+      "id": "3jCGIvGC_GM",
+      "members": [
+        "soobin",
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-04-30",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.04.30) | SOOBIN & YEONJUN LIVE"
+    },
+    {
+      "id": "3gsJ8vroYx8",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-12-28",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.12.28) | SOOBIN LIVE"
+    },
+    {
+      "id": "XIY32i3_JSg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-04-28",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.04.28) | SOOBIN LIVE"
+    },
+    {
+      "id": "QfA51I8hE0s",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-08-31",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (08/31/2026) | SOOBIN LIVE"
+    },
+    {
+      "id": "KiVo1AyC6bc",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-10-06",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.10.06) | SOOBIN LIVE"
+    },
+    {
+      "id": "PkEox9R3sMQ",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "vlog",
+      "broadcastDate": null,
+      "note": "TOMORROW X TOGETHER OFFICIAL — [TXT-LOG] TXT IN PARIS✈️ feat.연준캠🦊+범규캠🧸+카이캠🐧 | 패션쇼🕺도 보고 에펠탑 앞에서 찰칵📸✨"
+    },
+    {
+      "id": "yN3C244n4kg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-09-28",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.09.28) | YEONJUN LIVE"
+    },
+    {
+      "id": "2gIZzQXs5es",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-23",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/23/2026) | YEONJUN LIVE"
+    },
+    {
+      "id": "slQJe4MUn1c",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-02-08",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (02/08/2026) | YEONJUN LIVE"
+    },
+    {
+      "id": "yk8fkVGbHS4",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-08-16",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.08.16) | YEONJUN LIVE"
+    },
+    {
+      "id": "hDsPxPc7N0M",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-03-04",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (03/04/2026) | YEONJUN LIVE (7TH DEBUT ANNIVERSARY)"
+    },
+    {
+      "id": "v47K3lRZ1xg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-09-13",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.09.13) | YEONJUN BIRTHDAY LIVE 🎂"
+    },
+    {
+      "id": "npTYetke9lQ",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-12-18",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.12.18) | BEOMGYU LIVE"
+    },
+    {
+      "id": "ZlYdKe4MlyQ",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-29",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/29/2026) | BEOMGYU LIVE"
+    },
+    {
+      "id": "-ebUxwViDbc",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-18",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/18/2026) | SOOBIN & BEOMGYU LIVE (PLAYING GAMES)"
+    },
+    {
+      "id": "YvSq2GeYSLs",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-09-19",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.09.19) | BEOMGYU LIVE"
+    },
+    {
+      "id": "kiYRhjfWVhs",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-04-26",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (04.26.2025) | TAEHYUN & BEOMGYU LIVE"
+    },
+    {
+      "id": "3xd97W2pNoI",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-12-07",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (12/07/2025) | TAEHYUN LIVE"
+    },
+    {
+      "id": "fDPCEnD1LWg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-01-18",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (01/18/2026) | TAEHYUN LIVE"
+    },
+    {
+      "id": "jbm-bWsw7XQ",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-27",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/27/2026) | TAEHYUN LIVE"
+    },
+    {
+      "id": "h_HLXwg9aQA",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-10-22",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (10.22.2025) | KAI LIVE"
+    },
+    {
+      "id": "jTek-EKJgpU",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-24",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/24/2026) | HUENING KAI LIVE"
+    },
+    {
+      "id": "_tpiUiHlB20",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-09-17",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.09.17) | SOOBIN LIVE"
+    },
+    {
+      "id": "eqbPXQwXKT0",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-10-21",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (10/21/2025) | SOOBIN LIVE"
+    },
+    {
+      "id": "LJXuZSdZKW0",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-10-21",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.10.21) | BEOMGYU & SOOBIN LIVE"
+    },
+    {
+      "id": "SPaSluvZpSg",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-08-01",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (08/01/2026) | BEOMGYU & SOOBIN LIVE"
+    },
+    {
+      "id": "xGvItQByFUs",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-02-13",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.02.13) | SOOBIN LIVE"
+    },
+    {
+      "id": "qzmVkJgC3jM",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-05-11",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.05.11) | SOOBIN LIVE"
+    },
+    {
+      "id": "k87RlVEnT7U",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-10-27",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.10.27) | SOOBIN LIVE"
+    },
+    {
+      "id": "pgZQbfki7f0",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-09-13",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (09/13/2026) | YEONJUN LIVE"
+    },
+    {
+      "id": "CM6n0fAO0Ys",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-07-04",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.07.04) | YEONJUN LIVE"
+    },
+    {
+      "id": "4TI1cpxjCA0",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-05-17",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/17/2025) | YEONJUN LIVE"
+    },
+    {
+      "id": "iLrbY4DS36U",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-04-02",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (04/02/2025) | YEONJUN LIVE"
+    },
+    {
+      "id": "cHV0Nr9Qucc",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-06-24",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (06/24/2026) | BEOMGYU LIVE"
+    },
+    {
+      "id": "bTgPJUYRECI",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-01-22",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.01.22) | BEOMGYU LIVE"
+    },
+    {
+      "id": "ENDzVINrriw",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-09-21",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.09.21) | BEOMGYU LIVE"
+    },
+    {
+      "id": "x0TUDo9cRLs",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-11",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.05.11) | TAEHYUN LIVE"
+    },
+    {
+      "id": "bxn__RjXHWs",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-08-29",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2025.08.29) | TAEHYUN LIVE"
+    },
+    {
+      "id": "eghKdqOGZmo",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-06-17",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.06.17) | TAEHYUN LIVE"
+    },
+    {
+      "id": "gu33StEY-PU",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-06-16",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.06.16) | HUENING KAI LIVE"
+    },
+    {
+      "id": "5ivUxeCBuqY",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-11-16",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (11/16/2025) | KAI LIVE"
+    },
+    {
+      "id": "HzbHnJdbRAo",
+      "members": [
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-06-20",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (06/20/2026) | YEONJUN & KAI LIVE (PLAYING OVERWATCH)"
+    },
+    {
+      "id": "bBBWvynYrSU",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-05-04",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/04/2026) | HUENING KAI LIVE"
+    },
+    {
+      "id": "f8MJk1MoYgg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-09-05",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (09/05/2026) | HUENING KAI LIVE"
+    },
+    {
+      "id": "rdzaApmi5YE",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-04-12",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (04/12/2025) | KAI LIVE"
+    },
+    {
+      "id": "4KUklL414KM",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2025-05-10",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (05/10/2025) | KAI LIVE"
+    },
+    {
+      "id": "wiUiOvTG5T0",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "broadcastDate": "2026-08-15",
+      "note": "TomorrowByEdits — [MULTI SUB] TXT WEVERSE LIVE (2026.08.15) | HUENING KAI BIRTHDAY LIVE 🎂"
+    }
   ]
 }

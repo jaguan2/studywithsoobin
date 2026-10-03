@@ -1,23 +1,28 @@
 import { useState } from 'react'
 import type { Video } from '../types/playlist'
 import { HeartIcon } from './icons'
+import { CatalogFilters } from './CatalogFilters'
+import { filterVideos, videoMetadata, type CatalogFilters as Filters } from '../lib/catalog'
 
 const PAGE_SIZE = 8 // 4 columns x 2 rows, matching the LifeAt scenery grid
 
 interface VideoPickerProps {
+  filters: Filters
+  onFiltersChange: (value: Filters) => void
   videos: Video[]
   selectedId: string
   onSelect: (id: string) => void
   favorites: string[]
 }
 
-export function VideoPicker({ videos, selectedId, onSelect, favorites }: VideoPickerProps) {
+export function VideoPicker({ videos, selectedId, onSelect, favorites, filters, onFiltersChange }: VideoPickerProps) {
   const [page, setPage] = useState(0)
-  const pageCount = Math.max(1, Math.ceil(videos.length / PAGE_SIZE))
+  const filtered = filterVideos(videos, filters)
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   // the list can shrink at runtime (embed-blocked videos get filtered out)
   const safePage = Math.min(page, pageCount - 1)
   const start = safePage * PAGE_SIZE
-  const visible = videos.slice(start, start + PAGE_SIZE)
+  const visible = filtered.slice(start, start + PAGE_SIZE)
 
   const goPrev = () => setPage((safePage - 1 + pageCount) % pageCount)
   const goNext = () => setPage((safePage + 1) % pageCount)
@@ -26,7 +31,7 @@ export function VideoPicker({ videos, selectedId, onSelect, favorites }: VideoPi
     <div>
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-ink-800 dark:text-cream-200">
-          Shuffle your video
+          Study companions
         </h2>
         <div className="flex gap-0.5 text-ink-700 dark:text-cream-300">
           <button
@@ -45,6 +50,11 @@ export function VideoPicker({ videos, selectedId, onSelect, favorites }: VideoPi
           </button>
         </div>
       </div>
+      <div className="mt-2">
+        <CatalogFilters videos={videos} value={filters} onChange={value => { setPage(0); onFiltersChange(value) }} />
+        <p className="mt-2 text-xs text-ink-700 dark:text-cream-300">{filtered.length} videos · Page {safePage + 1} of {pageCount}</p>
+        {filtered.length === 0 && <p className="mt-2 text-xs text-ink-700 dark:text-cream-300">No videos match. Try changing or clearing the filters.</p>}
+      </div>
 
       <div className="mt-2 grid grid-cols-4 gap-2">
         {visible.map((video) => {
@@ -53,7 +63,7 @@ export function VideoPicker({ videos, selectedId, onSelect, favorites }: VideoPi
             <button
               key={video.id}
               onClick={() => onSelect(video.id)}
-              title={video.title}
+              title={`${video.title} · ${videoMetadata(video)}`}
               className={
                 'relative aspect-square rounded-xl border p-1 transition ' +
                 (selected

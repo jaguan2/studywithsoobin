@@ -11,6 +11,7 @@ import { TimerCard } from './components/TimerCard'
 import { WelcomeScreen } from './components/WelcomeScreen'
 import { applyCustomTheme, clearCustomTheme, DEFAULT_CUSTOM_COLOR } from './lib/theme'
 import { storageGet, storageGetJson, storageRemove, storageSet, storageSetJson } from './lib/storage'
+import { EMPTY_FILTERS, filterVideos, type CatalogFilters } from './lib/catalog'
 
 const playlist = playlistData as Playlist
 
@@ -76,6 +77,7 @@ export default function App() {
     return v && playlist.videos.some((video) => video.id === v) ? v : null
   })
   const [volume, setVolume] = useState(loadVolume)
+  const [catalogFilters, setCatalogFilters] = useState<CatalogFilters>(EMPTY_FILTERS)
   // Autoplay policy forces every freshly-created player to start muted, and
   // unmuting must come from an explicit user gesture — this tracks whether
   // that gesture (volume slider or the unmute chip) has happened for the
@@ -193,6 +195,7 @@ export default function App() {
     () => playlist.videos.find((v) => v.id === videoId) ?? playlist.videos[0],
     [videoId],
   )
+  const filteredVideos = useMemo(() => filterVideos(playable, catalogFilters), [playable, catalogFilters])
 
   const lastVideo = useMemo(
     () => playable.find((v) => v.id === lastVideoId) ?? null,
@@ -219,20 +222,20 @@ export default function App() {
     if (!videoId || blockedIds.includes(videoId)) return
     setBlockedIds((prev) => [...prev, videoId])
     showNotice("That video won't play embedded — skipped to another one")
-    setVideoId(pickRandom(playable.filter((v) => v.id !== videoId)))
-  }, [videoId, blockedIds, playable, showNotice])
+    setVideoId(pickRandom(filteredVideos.filter((v) => v.id !== videoId)))
+  }, [videoId, blockedIds, filteredVideos, showNotice])
 
   const handleApiUnavailable = useCallback(() => {
     showNotice('Couldn’t reach YouTube — check your internet connection, then pick a video to retry', 8000)
   }, [showNotice])
 
   const handleEnded = useCallback(() => {
-    setVideoId((prev) => pickRandom(playable, prev ?? undefined))
-  }, [playable])
+    setVideoId((prev) => pickRandom(filteredVideos, prev ?? undefined))
+  }, [filteredVideos])
 
   const handleSurprise = useCallback(() => {
-    setVideoId(pickRandom(playable))
-  }, [playable])
+    setVideoId(pickRandom(filteredVideos))
+  }, [filteredVideos])
 
   const handleTogglePlay = useCallback(() => setVideoPlaying((p) => !p), [])
   const loadTaskDuration = useCallback(
@@ -332,6 +335,8 @@ export default function App() {
     return (
       <>
         <WelcomeScreen
+          filters={catalogFilters}
+          onFiltersChange={setCatalogFilters}
           videos={playable}
           favorites={favorites}
           lastVideo={lastVideo}
@@ -391,6 +396,8 @@ export default function App() {
       />
 
       <Sidebar
+        filters={catalogFilters}
+        onFiltersChange={setCatalogFilters}
         collapsed={collapsed || zen}
         onToggleCollapsed={toggleSidebarCollapsed}
         bounds={rootRef}

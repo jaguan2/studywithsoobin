@@ -1,161 +1,109 @@
-// Refreshes src/data/playlist.json from the public "Study w/ Soobin" YouTube
-// playlist, then appends the hand-curated extras in scripts/extra-videos.json.
-// Uses youtubei.js (an unofficial InnerTube client) so no Google API key is
-// required. Re-run with `npm run fetch-playlist` whenever new videos are added
-// to the playlist (or to extra-videos.json).
-import { readFile, writeFile } from 'node:fs/promises'
+// Refresh the source playlist plus curated TXT links; no runtime API or API key.
+import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { Innertube } from 'youtubei.js'
+import { membersFromTitle, broadcastDateFromTitle, kindFromTitle, validDate, sameBroadcast } from './catalog-metadata.mjs'
 
 const PLAYLIST_ID = 'PLwzQP2wCE5w4hRj01BS0zxO2Bu8eaBDWt'
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url))
 const OUT_PATH = path.join(SCRIPT_DIR, '..', 'src', 'data', 'playlist.json')
-// Soobin vlogs/VLIVEs that aren't in the source playlist. Kept as bare ids and
-// resolved here so a refresh re-derives their metadata instead of dropping
-// them — hand-editing playlist.json would be undone by the next run.
 const EXTRAS_PATH = path.join(SCRIPT_DIR, 'extra-videos.json')
+const LINKS_PATH = path.join(SCRIPT_DIR, '..', 'docs', 'video-catalog.md')
 
-function extractTitle(item) {
-  // youtubei.js ≤13 exposed the title on the item; 17's LockupView nests it
-  // under metadata. Check every shape seen so far.
-  for (const candidate of [item.title, item.metadata?.title]) {
-    if (typeof candidate === 'string' && candidate) return candidate
-    if (candidate?.text) return candidate.text
-  }
-  return 'Untitled'
+async function readJson(file, fallback) {
+  try { return JSON.parse(await readFile(file, 'utf8')) }
+  catch (error) { if (error.code === 'ENOENT') return fallback; throw error }
 }
-
-function extractDuration(item) {
-  const overlay = item.content_image?.overlays?.find(
-    (o) => o.type === 'ThumbnailBottomOverlayView',
-  )
-  return overlay?.badges?.[0]?.text ?? ''
-}
-
-/** "1:29:21" → 5361; returns 0 for anything unparseable (e.g. "LIVE"). */
-function durationToSeconds(text) {
-  const parts = text.split(':').map(Number)
-  if (parts.length < 2 || parts.length > 3 || parts.some((n) => !Number.isFinite(n))) return 0
-  return parts.reduce((total, n) => total * 60 + n, 0)
-}
-
-function extractThumbnail(item) {
-  const url = item.content_image?.image?.[0]?.url
-  return url ? url.split('?')[0] : `https://i.ytimg.com/vi/${item.content_id}/hqdefault.jpg`
-}
-
-/** 5361 → "1:29:21", 1272 → "21:12" — the display format the playlist uses. */
 function secondsToDuration(total) {
   const h = Math.floor(total / 3600)
-  const m = Math.floor((total % 3600) / 60)
-  const s = total % 60
-  const pad = (n) => String(n).padStart(2, '0')
-  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
+  const m = Math.floor(total % 3600 / 60)
+  const s = String(total % 60).padStart(2, '0')
+  return h ? `${h}:${String(m).padStart(2, '0')}:${s}` : `${m}:${s}`
 }
-
-/** Resolve the curated extras (bare ids) into full video entries.
- *  A single dead id shouldn't abort a refresh of the other 30-odd videos, so
- *  failures are reported and skipped rather than thrown. */
-async function fetchExtras(yt, alreadyHave) {
-  let config
-  try {
-    config = JSON.parse(await readFile(EXTRAS_PATH, 'utf-8'))
-  } catch (error) {
-    if (error.code === 'ENOENT') return [] // no curated extras is fine
-    throw error
+const config = await readJson(EXTRAS_PATH, { videos: [] })
+if (!Array.isArray(config.videos)) throw new Error('extra-videos.json must contain a videos array')
+const overrides = new Map()
+for (const entry of config.videos) {
+  if (!/^[\w-]{11}$/.test(entry.id) || overrides.has(entry.id)) throw new Error(`Invalid or duplicate curated id: ${entry.id}`)
+  if (!entry.members?.length || entry.members.some(m => !['soobin', 'yeonjun', 'beomgyu', 'taehyun', 'hueningkai'].includes(m))) throw new Error(`Missing or invalid members: ${entry.id}`)
+  if (entry.broadcastDate && !validDate(entry.broadcastDate)) throw new Error(`Invalid broadcast date: ${entry.id}`)
+  overrides.set(entry.id, entry)
+}
+const previous = await readJson(OUT_PATH, { videos: [] })
+const cached = new Map(previous.videos.map(v => [v.id, v]))
+const yt = await Innertube.create()
+let playlist = await yt.getPlaylist(PLAYLIST_ID)
+const title = playlist.info.title
+const upstream = []
+while (true) {
+  for (const item of playlist.items) {
+    const id = item.content_id ?? item.id
+    if (id && !upstream.includes(id)) upstream.push(id)
   }
-
-  const entries = Array.isArray(config.videos) ? config.videos : []
-  const resolved = []
-  for (const entry of entries) {
-    const id = entry?.id
-    if (typeof id !== 'string' || !id) continue
-    if (alreadyHave.has(id)) {
-      console.warn(`  - ${id}: already in the playlist upstream, skipping the extra`)
-      continue
-    }
+  if (!playlist.has_continuation) break
+  playlist = await playlist.getContinuation()
+}
+if (!upstream.length) throw new Error('Parsed 0 videos — refusing to overwrite the catalog. Check the YouTube playlist schema.')
+const ids = [...new Set([...upstream, ...overrides.keys()])]
+console.log(`Resolving ${ids.length} videos (titles, durations, channels and release dates)...`)
+let cursor = 0
+let successes = 0
+let extraSuccesses = 0
+let failures = 0
+const results = new Array(ids.length)
+await Promise.all(Array.from({ length: 4 }, async () => {
+  while (cursor < ids.length) {
+    const index = cursor++
+    const id = ids[index]
+    const override = overrides.get(id)
     try {
       const info = await yt.getBasicInfo(id)
-      const seconds = info.basic_info?.duration ?? 0
-      const title = info.basic_info?.title
-      if (!title || !seconds) {
-        console.warn(`  - ${id}: no title/duration came back, skipping`)
-        continue
-      }
-      resolved.push({
-        id,
-        title,
-        duration: secondsToDuration(seconds),
-        durationSeconds: seconds,
-        // The scraped thumbnail URLs carry expiring query params; the canonical
-        // form is stable and is what the playlist entries already use.
+      const basic = info.basic_info
+      if (!basic.title || !basic.duration) throw new Error('No title/duration returned')
+      const micro = info.page[0].microformat
+      const inferred = membersFromTitle(basic.title)
+      results[index] = {
+        id, title: basic.title,
+        duration: secondsToDuration(basic.duration), durationSeconds: basic.duration,
         thumbnail: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
-      })
+        members: override?.members ?? (inferred.length ? inferred : ['soobin']),
+        kind: override?.kind ?? kindFromTitle(basic.title),
+        publishedAt: validDate(micro?.publish_date) ?? cached.get(id)?.publishedAt ?? null,
+        broadcastDate: override?.broadcastDate ?? broadcastDateFromTitle(basic.title),
+        channel: basic.author ?? basic.channel?.name ?? '',
+      }
+      successes++
+      if (override) extraSuccesses++
     } catch (error) {
-      console.warn(`  - ${id}: could not resolve (${error.message}), skipping`)
+      failures++
+      console.warn(`  ${id}: ${error.message}${cached.has(id) ? ' — keeping last verified metadata' : ' — skipping'}`)
+      results[index] = cached.get(id)
     }
+    if ((index + 1) % 25 === 0) console.log(`  ${index + 1}/${ids.length} checked`)
   }
-
-  // All of them failing means YouTube blocked us or the API shape moved — not
-  // that every curated video died at once. Say so instead of quietly shipping
-  // a shorter playlist.
-  if (entries.length > 0 && resolved.length === 0) {
-    throw new Error(
-      `All ${entries.length} curated extras failed to resolve — refusing to write a ` +
-        'playlist without them. Check connectivity and the ids in extra-videos.json.',
-    )
-  }
-  return resolved
+}))
+if (!successes || (overrides.size && !extraSuccesses) || failures > ids.length / 4) {
+  throw new Error('Too many metadata lookups failed — previous catalog was NOT overwritten. Check connectivity/YouTube schema.')
 }
-
-const yt = await Innertube.create()
-const playlist = await yt.getPlaylist(PLAYLIST_ID)
-
-const videos = playlist.items
-  .filter((item) => item.content_id)
-  .map((item) => {
-    const duration = extractDuration(item)
-    return {
-      id: item.content_id,
-      title: extractTitle(item),
-      duration,
-      durationSeconds: durationToSeconds(duration),
-      thumbnail: extractThumbnail(item),
-    }
-  })
-
-// The extraction paths above depend on YouTube's internal page schema, which
-// shifts without notice. Refuse to clobber a good snapshot with a bad scrape.
-if (videos.length === 0) {
-  throw new Error(
-    'Parsed 0 videos — YouTube\'s page schema probably changed. ' +
-      'playlist.json was NOT overwritten; fix the field lookups in this script first.',
-  )
+const videos = []
+for (const video of results.filter(Boolean)) {
+  const duplicate = videos.find(v => sameBroadcast(v, video))
+  if (duplicate) { console.warn(`  ${video.id}: duplicate broadcast of ${duplicate.id}, omitted`); continue }
+  videos.push(video)
 }
-// Same guard for a partial schema break (this exact failure shipped once:
-// ids and durations parsed, every title fell back to "Untitled").
-if (videos.every((v) => v.title === 'Untitled')) {
-  throw new Error(
-    'Every title parsed as "Untitled" — the title field path probably changed. ' +
-      'playlist.json was NOT overwritten; fix extractTitle first.',
-  )
+const data = { title, sourceUrl: `https://www.youtube.com/playlist?list=${PLAYLIST_ID}`, fetchedAt: new Date().toISOString(), videos }
+await writeFile(OUT_PATH, JSON.stringify(data, null, 2) + '\n', 'utf8')
+const escape = text => text.replaceAll('|', '\\|').replaceAll('\n', ' ')
+let links = '# TXT video catalog\n\n'
+links += `Verified metadata at ${data.fetchedAt} (UTC). ${videos.length} videos. Refresh with \`npm run fetch-playlist\`.\n\n`
+links += 'Sources: [Study w/ Soobin playlist](' + data.sourceUrl + '), [TXT official](https://www.youtube.com/@TXT_bighit), [Moa\'s Diary](https://www.youtube.com/channel/UC2JQbysBeEG5KmbEuxrSWDw), [V Live archive](https://www.youtube.com/channel/UC2fPZ1O4sXfOVVzdVvN_v5g), [TomorrowByEdits](https://www.youtube.com/channel/UC7m6u7W7QM1zv1hlPXbSPQA).\n\n'
+links += 'Release is the YouTube publication date; original live dates are listed separately when explicitly supplied by the archive title. Shared lives appear under each participant. Metadata verification cannot guarantee runtime embedding; the app skips blocked embeds. This is a curated collection, not a complete archive.\n'
+for (const member of ['soobin', 'yeonjun', 'beomgyu', 'taehyun', 'hueningkai']) {
+  const entries = videos.filter(v => v.members.includes(member))
+  links += `\n## ${member[0].toUpperCase() + member.slice(1)} (${entries.length})\n\n| Video | Type | Duration | Release | Original live | Channel |\n| --- | --- | --- | --- | --- | --- |\n`
+  for (const v of entries) links += `| [${escape(v.title)}](https://www.youtube.com/watch?v=${v.id}) | ${v.kind} | ${v.duration} | ${v.publishedAt ?? 'Unknown'} | ${v.broadcastDate ?? '—'} | ${escape(v.channel)} |\n`
 }
-
-// Curated extras go after the playlist so "playlist order" in the UI still
-// means the real playlist's order.
-console.log(`Resolving curated extras from ${path.basename(EXTRAS_PATH)}...`)
-const extras = await fetchExtras(yt, new Set(videos.map((v) => v.id)))
-
-const data = {
-  title: playlist.info.title,
-  sourceUrl: `https://www.youtube.com/playlist?list=${PLAYLIST_ID}`,
-  fetchedAt: new Date().toISOString(),
-  videos: [...videos, ...extras],
-}
-
-await writeFile(OUT_PATH, JSON.stringify(data, null, 2) + '\n', 'utf-8')
-console.log(
-  `Wrote ${data.videos.length} videos to ${OUT_PATH} ` +
-    `(${videos.length} from the playlist + ${extras.length} curated)`,
-)
+await mkdir(path.dirname(LINKS_PATH), { recursive: true })
+await writeFile(LINKS_PATH, links, 'utf8')
+console.log(`Wrote ${videos.length} videos and docs/video-catalog.md (${successes} fresh metadata lookups, ${failures} failures).`)

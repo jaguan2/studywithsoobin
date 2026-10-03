@@ -1,5 +1,6 @@
 node_modules/
 dist/
+scripts/research-results.json
 *.tsbuildinfo
 
 # PyInstaller (desktop .exe packaging) — build artifacts only;

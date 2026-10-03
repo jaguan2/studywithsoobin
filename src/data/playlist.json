@@ -1,245 +1,3631 @@
 {
   "title": "Study w/ Soobin",
   "sourceUrl": "https://www.youtube.com/playlist?list=PLwzQP2wCE5w4hRj01BS0zxO2Bu8eaBDWt",
-  "fetchedAt": "2026-08-19T20:14:09.848Z",
+  "fetchedAt": "2026-10-03T01:44:23.806Z",
   "videos": [
     {
       "id": "Zgcmu8Wpsdc",
       "title": "[TXT-LOG] SOOBIN IN U.S l 수빈의 브이로그🐰",
       "duration": "21:12",
       "durationSeconds": 1272,
-      "thumbnail": "https://i.ytimg.com/vi/Zgcmu8Wpsdc/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/Zgcmu8Wpsdc/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2022-11-17",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
     },
     {
       "id": "eqfYyTEak8w",
       "title": "[TXT-LOG] SOOBIN IN JAPAN | 수빈만의 말랑 감성으로 가득한 하루🐰💖",
-      "duration": "44:15",
-      "durationSeconds": 2655,
-      "thumbnail": "https://i.ytimg.com/vi/eqfYyTEak8w/hqdefault.jpg"
+      "duration": "44:14",
+      "durationSeconds": 2654,
+      "thumbnail": "https://i.ytimg.com/vi/eqfYyTEak8w/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2023-07-17",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
     },
     {
       "id": "EWRjRcNfrrs",
       "title": "[TXT-LOG] 수빈이의 첫 일본 여행 VLOG🐰✈️ l 버킷리스트🗒를 위한 ISFP의 J형 여행 도전기🚌💦",
-      "duration": "31:50",
-      "durationSeconds": 1910,
-      "thumbnail": "https://i.ytimg.com/vi/EWRjRcNfrrs/hqdefault.jpg"
+      "duration": "31:49",
+      "durationSeconds": 1909,
+      "thumbnail": "https://i.ytimg.com/vi/EWRjRcNfrrs/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2023-05-05",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
     },
     {
       "id": "_YjRPbg5ZRA",
-      "title": "A new friend for the rabbit-face has appeared! It was super effective! 「Chae’s Castaway」 Episode 8",
-      "duration": "33:40",
-      "durationSeconds": 2020,
-      "thumbnail": "https://i.ytimg.com/vi/_YjRPbg5ZRA/hqdefault.jpg"
+      "title": "토끼상의 새 친구(이)가 나타났다! 효과는 굉장했다!   「채씨표류기」 8화",
+      "duration": "33:39",
+      "durationSeconds": 2019,
+      "thumbnail": "https://i.ytimg.com/vi/_YjRPbg5ZRA/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "other",
+      "publishedAt": "2023-10-20",
+      "broadcastDate": null,
+      "channel": "채씨표류기"
     },
     {
       "id": "wB57ZVKJfzY",
       "title": "(ENG/INDO SUB) TXT Soobin VLive | 220728 | I'm here!",
-      "duration": "1:29:21",
-      "durationSeconds": 5361,
-      "thumbnail": "https://i.ytimg.com/vi/wB57ZVKJfzY/hqdefault.jpg"
+      "duration": "1:29:20",
+      "durationSeconds": 5360,
+      "thumbnail": "https://i.ytimg.com/vi/wB57ZVKJfzY/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-07-28",
+      "broadcastDate": "2022-07-28",
+      "channel": "V Live"
     },
     {
       "id": "5Phvt3sZMrU",
       "title": "[MULTI SUB] TXT WEVERSE LIVE (27.04.2024) | 🫠 - SOOBIN LIVE",
       "duration": "52:46",
       "durationSeconds": 3166,
-      "thumbnail": "https://i.ytimg.com/vi/5Phvt3sZMrU/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/5Phvt3sZMrU/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2024-04-26",
+      "broadcastDate": "2024-04-27",
+      "channel": "S.M. KDrama & Kpop"
     },
     {
       "id": "sJY1FU3DrIE",
       "title": "TXT Soobin VLive | 210408 (Eng/Indo/Thai/Viet Sub)",
-      "duration": "40:22",
-      "durationSeconds": 2422,
-      "thumbnail": "https://i.ytimg.com/vi/sJY1FU3DrIE/hqdefault.jpg"
+      "duration": "40:21",
+      "durationSeconds": 2421,
+      "thumbnail": "https://i.ytimg.com/vi/sJY1FU3DrIE/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-04-08",
+      "broadcastDate": "2021-04-08",
+      "channel": "V Live"
     },
     {
       "id": "SIw3MrFw7aM",
       "title": "[TXT VLIVE] Soobin Painting 🎨 {02nd April, 2022}",
-      "duration": "1:15:28",
-      "durationSeconds": 4528,
-      "thumbnail": "https://i.ytimg.com/vi/SIw3MrFw7aM/hqdefault.jpg"
+      "duration": "1:15:27",
+      "durationSeconds": 4527,
+      "thumbnail": "https://i.ytimg.com/vi/SIw3MrFw7aM/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-11-04",
+      "broadcastDate": "2022-04-02",
+      "channel": "Moa's Diary"
     },
     {
       "id": "-Ai3yNCsx-A",
       "title": "[TXT VLIVE] Soobin's Tea Time {02nd Mar, 2022}",
       "duration": "1:01:16",
       "durationSeconds": 3676,
-      "thumbnail": "https://i.ytimg.com/vi/-Ai3yNCsx-A/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/-Ai3yNCsx-A/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-11-02",
+      "broadcastDate": "2022-03-02",
+      "channel": "Moa's Diary"
     },
     {
       "id": "IfLOfgWsiD0",
       "title": "[TXT VLIVE] SOOBIN 🐰 {19th Nov, 2021}",
-      "duration": "1:31:37",
-      "durationSeconds": 5497,
-      "thumbnail": "https://i.ytimg.com/vi/IfLOfgWsiD0/hqdefault.jpg"
+      "duration": "1:31:36",
+      "durationSeconds": 5496,
+      "thumbnail": "https://i.ytimg.com/vi/IfLOfgWsiD0/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-25",
+      "broadcastDate": "2021-11-19",
+      "channel": "Moa's Diary"
     },
     {
       "id": "jUYDePh5C3s",
       "title": "[TXT VLIVE] It's SOOBIN 🐰 {08th Oct, 2021}",
       "duration": "2:01:41",
       "durationSeconds": 7301,
-      "thumbnail": "https://i.ytimg.com/vi/jUYDePh5C3s/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/jUYDePh5C3s/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-24",
+      "broadcastDate": "2021-10-08",
+      "channel": "Moa's Diary"
     },
     {
       "id": "VunEd9bKxd8",
       "title": "[TXT VLIVE] This is SOOBIN {07th Sep, 2021}",
       "duration": "1:06:36",
       "durationSeconds": 3996,
-      "thumbnail": "https://i.ytimg.com/vi/VunEd9bKxd8/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/VunEd9bKxd8/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-22",
+      "broadcastDate": "2021-09-07",
+      "channel": "Moa's Diary"
     },
     {
       "id": "D_f7uw3cTv0",
       "title": "[TXT VLIVE] CHOI SOOBIN Updates + K-Pop Talk 🐰🎤 {28th June, 2021}",
-      "duration": "1:03:34",
-      "durationSeconds": 3814,
-      "thumbnail": "https://i.ytimg.com/vi/D_f7uw3cTv0/hqdefault.jpg"
+      "duration": "1:03:33",
+      "durationSeconds": 3813,
+      "thumbnail": "https://i.ytimg.com/vi/D_f7uw3cTv0/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-18",
+      "broadcastDate": "2021-06-28",
+      "channel": "Moa's Diary"
     },
     {
       "id": "Z8VXjBVmHxE",
       "title": "[TXT VLIVE] SOOBIN {03rd Mar, 2021}",
-      "duration": "31:00",
-      "durationSeconds": 1860,
-      "thumbnail": "https://i.ytimg.com/vi/Z8VXjBVmHxE/hqdefault.jpg"
+      "duration": "30:59",
+      "durationSeconds": 1859,
+      "thumbnail": "https://i.ytimg.com/vi/Z8VXjBVmHxE/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-13",
+      "broadcastDate": "2021-03-03",
+      "channel": "Moa's Diary"
     },
     {
       "id": "KcVfzVcI1v0",
       "title": "[TXT VLIVE] Soobin 🐰 {16th Feb, 2021}",
-      "duration": "1:35:48",
-      "durationSeconds": 5748,
-      "thumbnail": "https://i.ytimg.com/vi/KcVfzVcI1v0/hqdefault.jpg"
+      "duration": "1:35:47",
+      "durationSeconds": 5747,
+      "thumbnail": "https://i.ytimg.com/vi/KcVfzVcI1v0/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-13",
+      "broadcastDate": "2021-02-16",
+      "channel": "Moa's Diary"
     },
     {
       "id": "35v2M9C2Wvo",
       "title": "[TXT VLIVE] Soobin's First V LIVE of the New Year {11th Jan, 2021}",
       "duration": "1:01:29",
       "durationSeconds": 3689,
-      "thumbnail": "https://i.ytimg.com/vi/35v2M9C2Wvo/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/35v2M9C2Wvo/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-10",
+      "broadcastDate": "2021-01-11",
+      "channel": "Moa's Diary"
     },
     {
       "id": "WOc-dwg4Osw",
       "title": "[TXT VLIVE] First Snow and I Came {13th Dec, 2020}",
       "duration": "41:40",
       "durationSeconds": 2500,
-      "thumbnail": "https://i.ytimg.com/vi/WOc-dwg4Osw/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/WOc-dwg4Osw/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-08",
+      "broadcastDate": "2020-12-13",
+      "channel": "Moa's Diary"
     },
     {
       "id": "CjeIyNlziVk",
       "title": "[TXT VLIVE] My Birthday ❤ {05th Dec, 2020}",
-      "duration": "1:03:07",
-      "durationSeconds": 3787,
-      "thumbnail": "https://i.ytimg.com/vi/CjeIyNlziVk/hqdefault.jpg"
+      "duration": "1:03:06",
+      "durationSeconds": 3786,
+      "thumbnail": "https://i.ytimg.com/vi/CjeIyNlziVk/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-07",
+      "broadcastDate": "2020-12-05",
+      "channel": "Moa's Diary"
     },
     {
       "id": "Ax7OvRLqZQs",
       "title": "[TXT VLIVE] Soobin's Talking Mukbang 🐰 {23rd Aug, 2020}",
       "duration": "1:03:20",
       "durationSeconds": 3800,
-      "thumbnail": "https://i.ytimg.com/vi/Ax7OvRLqZQs/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/Ax7OvRLqZQs/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-21",
+      "broadcastDate": "2020-08-23",
+      "channel": "Moa's Diary"
     },
     {
       "id": "XlaN27d0x5k",
       "title": "[TXT VLIVE] Comeback Soobin {24th June, 2020}",
       "duration": "56:45",
       "durationSeconds": 3405,
-      "thumbnail": "https://i.ytimg.com/vi/XlaN27d0x5k/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/XlaN27d0x5k/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-18",
+      "broadcastDate": "2020-06-24",
+      "channel": "Moa's Diary"
     },
     {
       "id": "dmzYIzW4DJA",
       "title": "[TXT VLIVE] Soobin's Face Painting {9th April, 2020}",
-      "duration": "1:07:30",
-      "durationSeconds": 4050,
-      "thumbnail": "https://i.ytimg.com/vi/dmzYIzW4DJA/hqdefault.jpg"
+      "duration": "1:07:29",
+      "durationSeconds": 4049,
+      "thumbnail": "https://i.ytimg.com/vi/dmzYIzW4DJA/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-11",
+      "broadcastDate": "2020-04-09",
+      "channel": "Moa's Diary"
     },
     {
       "id": "0RJ4pvNRKik",
       "title": "수빈이의 넘 즐겁고 넘 힘든 휴가 | TXT-LOG | TXT (투모로우바이투게더)️",
       "duration": "35:43",
       "durationSeconds": 2143,
-      "thumbnail": "https://i.ytimg.com/vi/0RJ4pvNRKik/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/0RJ4pvNRKik/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2026-04-01",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
     },
     {
       "id": "3-l7ZHISQnc",
       "title": "수빈이의 쉽지 않은 여행 | TXT-LOG | TXT (투모로우바이투게더)️",
       "duration": "28:39",
       "durationSeconds": 1719,
-      "thumbnail": "https://i.ytimg.com/vi/3-l7ZHISQnc/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/3-l7ZHISQnc/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2025-12-16",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
     },
     {
       "id": "AWVaOMjp2b8",
       "title": "[TXT WEVERSE LIVE] Soobin's Birthday 🐰🎉 {2022.12.05}",
       "duration": "1:57:54",
       "durationSeconds": 7074,
-      "thumbnail": "https://i.ytimg.com/vi/AWVaOMjp2b8/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/AWVaOMjp2b8/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2024-03-06",
+      "broadcastDate": "2022-12-05",
+      "channel": "Moa's Diary"
     },
     {
       "id": "xBvSUwZ9CAk",
       "title": "[TXT VLIVE] Soobin's inside KPOP 🐰🎵 {21st Jan, 2022}",
       "duration": "1:25:28",
       "durationSeconds": 5128,
-      "thumbnail": "https://i.ytimg.com/vi/xBvSUwZ9CAk/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/xBvSUwZ9CAk/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-31",
+      "broadcastDate": "2022-01-21",
+      "channel": "Moa's Diary"
     },
     {
       "id": "i8muIfibN8s",
       "title": "[TXT VLIVE] SOOBIN is back! {28th Jul, 2022}",
       "duration": "1:22:35",
       "durationSeconds": 4955,
-      "thumbnail": "https://i.ytimg.com/vi/i8muIfibN8s/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/i8muIfibN8s/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-11-06",
+      "broadcastDate": "2022-07-28",
+      "channel": "Moa's Diary"
     },
     {
       "id": "EwUnXiWCMAM",
       "title": "(ENG/INDO SUB) TXT Soobin VLive | 220718 | It's been awhile!!!",
       "duration": "1:21:50",
       "durationSeconds": 4910,
-      "thumbnail": "https://i.ytimg.com/vi/EwUnXiWCMAM/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/EwUnXiWCMAM/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-07-17",
+      "broadcastDate": "2022-07-18",
+      "channel": "V Live"
     },
     {
       "id": "OhFEfSqA8iM",
       "title": "(Eng/Indo Sub) TXT Soobin Birthday VLive | 211205 | 🎂My Birthday🐰🎂",
       "duration": "1:13:34",
       "durationSeconds": 4414,
-      "thumbnail": "https://i.ytimg.com/vi/OhFEfSqA8iM/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/OhFEfSqA8iM/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-12-05",
+      "broadcastDate": "2021-12-05",
+      "channel": "V Live"
     },
     {
       "id": "8hfKIo8cXWo",
       "title": "[TXT VLIVE] Soobin is here {16th Mar, 2020}",
       "duration": "1:01:18",
       "durationSeconds": 3678,
-      "thumbnail": "https://i.ytimg.com/vi/8hfKIo8cXWo/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/8hfKIo8cXWo/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-07",
+      "broadcastDate": "2020-03-16",
+      "channel": "Moa's Diary"
     },
     {
       "id": "3y2sFkrbV8s",
       "title": "(ENG/INDO SUB) TXT Soobin VLive | 220216 | Talk Talk~",
       "duration": "56:36",
       "durationSeconds": 3396,
-      "thumbnail": "https://i.ytimg.com/vi/3y2sFkrbV8s/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/3y2sFkrbV8s/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-02-16",
+      "broadcastDate": "2022-02-16",
+      "channel": "V Live"
     },
     {
       "id": "RQwJF8qvbDQ",
       "title": "[TXT VLIVE] It's Soobin {10th Feb, 2020}",
       "duration": "56:57",
       "durationSeconds": 3417,
-      "thumbnail": "https://i.ytimg.com/vi/RQwJF8qvbDQ/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/RQwJF8qvbDQ/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-02",
+      "broadcastDate": "2020-02-10",
+      "channel": "Moa's Diary"
     },
     {
       "id": "tBxBVKzyenA",
       "title": "[TXT WEVERSE LIVE] SOOBIN {04th Sep, 2022}",
       "duration": "56:12",
       "durationSeconds": 3372,
-      "thumbnail": "https://i.ytimg.com/vi/tBxBVKzyenA/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/tBxBVKzyenA/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2023-03-10",
+      "broadcastDate": "2022-09-04",
+      "channel": "Moa's Diary"
     },
     {
       "id": "2IiqumyRudo",
       "title": "[TXT VLIVE] Soobin's ASMR {22nd July, 2019}",
       "duration": "51:35",
       "durationSeconds": 3095,
-      "thumbnail": "https://i.ytimg.com/vi/2IiqumyRudo/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/2IiqumyRudo/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-08",
+      "broadcastDate": "2019-07-22",
+      "channel": "Moa's Diary"
     },
     {
       "id": "EeXyBjRtnuM",
       "title": "[TXT VLIVE] Nom nom, dinner time with Soobin {9th Dec, 2019}",
       "duration": "49:20",
       "durationSeconds": 2960,
-      "thumbnail": "https://i.ytimg.com/vi/EeXyBjRtnuM/hqdefault.jpg"
+      "thumbnail": "https://i.ytimg.com/vi/EeXyBjRtnuM/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-18",
+      "broadcastDate": "2019-12-09",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "S54iSmF3hOM",
+      "title": "수빈이의 첫 밀라노 방문 | TXT-LOG | TXT (투모로우바이투게더)️",
+      "duration": "11:59",
+      "durationSeconds": 719,
+      "thumbnail": "https://i.ytimg.com/vi/S54iSmF3hOM/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2026-08-11",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "TbGhJsTBFuI",
+      "title": "[TXT VLIVE] Yeonjun and Soobin's Cotton Candy {21st Mar, 2020}",
+      "duration": "40:40",
+      "durationSeconds": 2440,
+      "thumbnail": "https://i.ytimg.com/vi/TbGhJsTBFuI/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-09",
+      "broadcastDate": "2020-03-21",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "-TheZlUPKio",
+      "title": "[TXT-LOG] YEONJUN IN U.S. | 공연부터🎤 힐링🌱까지 연준이가 추억을 기록하는 방법🦊📸",
+      "duration": "38:35",
+      "durationSeconds": 2315,
+      "thumbnail": "https://i.ytimg.com/vi/-TheZlUPKio/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2023-07-24",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "77qeSAIzdnU",
+      "title": "연준이랑 프라하하하 | TXT-LOG | TXT (투모로우바이투게더)️",
+      "duration": "16:52",
+      "durationSeconds": 1012,
+      "thumbnail": "https://i.ytimg.com/vi/77qeSAIzdnU/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2026-08-29",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "kVqGOcsraMA",
+      "title": "[TXT-LOG] YEONJUN IN U.S l 연준의 브이로그🦊",
+      "duration": "18:37",
+      "durationSeconds": 1117,
+      "thumbnail": "https://i.ytimg.com/vi/kVqGOcsraMA/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2022-10-20",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "Hur99MVVgOY",
+      "title": "YEONJUN’s Choreography-Making Story | TXT-LOG | TXT (투모로우바이투게더)",
+      "duration": "13:09",
+      "durationSeconds": 789,
+      "thumbnail": "https://i.ytimg.com/vi/Hur99MVVgOY/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2025-08-08",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "FslERuehZok",
+      "title": "TXT Yeonjun VLive | 210418 | Hi Moa 🦊 (Eng/Indo/Viet Sub)",
+      "duration": "52:06",
+      "durationSeconds": 3126,
+      "thumbnail": "https://i.ytimg.com/vi/FslERuehZok/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-04-18",
+      "broadcastDate": "2021-04-18",
+      "channel": "V Live"
+    },
+    {
+      "id": "eFXvGy0JRnI",
+      "title": "(Eng/Indo Sub)  TXT Yeonjun VLive | 211015 | YEONJUN is here!",
+      "duration": "47:29",
+      "durationSeconds": 2849,
+      "thumbnail": "https://i.ytimg.com/vi/eFXvGy0JRnI/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-10-15",
+      "broadcastDate": "2021-10-15",
+      "channel": "V Live"
+    },
+    {
+      "id": "2ZN7yFt69yQ",
+      "title": "(Eng/Indo Sub) TXT Yeonjun VLive | 211215 | 🍦🥭🍯",
+      "duration": "48:42",
+      "durationSeconds": 2922,
+      "thumbnail": "https://i.ytimg.com/vi/2ZN7yFt69yQ/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-12-15",
+      "broadcastDate": "2021-12-15",
+      "channel": "V Live"
+    },
+    {
+      "id": "iByilkSUzxo",
+      "title": "(Eng/Indo Sub) TXT Yeonjun VLive | 210927 | MOA I Missed You",
+      "duration": "54:03",
+      "durationSeconds": 3243,
+      "thumbnail": "https://i.ytimg.com/vi/iByilkSUzxo/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-09-27",
+      "broadcastDate": "2021-09-27",
+      "channel": "V Live"
+    },
+    {
+      "id": "VhhdZPg9-fI",
+      "title": "[TXT VLIVE] Eat Together With Yeonjun {19th Dec, 2020}",
+      "duration": "50:29",
+      "durationSeconds": 3029,
+      "thumbnail": "https://i.ytimg.com/vi/VhhdZPg9-fI/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-09",
+      "broadcastDate": "2020-12-19",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "Kh8D3BZTems",
+      "title": "TXT Yeonjun VLive | 210721 | You Waited, Right?🦊 (Eng Sub)",
+      "duration": "52:09",
+      "durationSeconds": 3129,
+      "thumbnail": "https://i.ytimg.com/vi/Kh8D3BZTems/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-07-21",
+      "broadcastDate": "2021-07-21",
+      "channel": "V Live"
+    },
+    {
+      "id": "0w4Im5EmB0o",
+      "title": "TXT Yeonjun VLive | 210319 | This is Yeonjun🦊 (Eng/Indo/Viet Sub)",
+      "duration": "47:36",
+      "durationSeconds": 2856,
+      "thumbnail": "https://i.ytimg.com/vi/0w4Im5EmB0o/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-03-19",
+      "broadcastDate": "2021-03-19",
+      "channel": "V Live"
+    },
+    {
+      "id": "nYnhHxqQLJ8",
+      "title": "(Eng/Indo Sub) TXT Yeonjun & Taehyun VLive | 211117 | Eat together!!",
+      "duration": "46:55",
+      "durationSeconds": 2815,
+      "thumbnail": "https://i.ytimg.com/vi/nYnhHxqQLJ8/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-11-17",
+      "broadcastDate": "2021-11-17",
+      "channel": "V Live"
+    },
+    {
+      "id": "7-AboFpqbA8",
+      "title": "[TXT VLIVE] YEONJUN & SOOBIN: Click Clack Craft Time {4th Nov, 2019}",
+      "duration": "54:38",
+      "durationSeconds": 3278,
+      "thumbnail": "https://i.ytimg.com/vi/7-AboFpqbA8/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-14",
+      "broadcastDate": "2019-11-04",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "nSRNSINIU4c",
+      "title": "[TXT VLIVE] Yeonjun's Essence of Dancing {08th Jan, 2021}",
+      "duration": "30:45",
+      "durationSeconds": 1845,
+      "thumbnail": "https://i.ytimg.com/vi/nSRNSINIU4c/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-10",
+      "broadcastDate": "2021-01-08",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "RUU4eh1muEA",
+      "title": "(Eng/Indo Sub) TXT Yeonjun VLive | 211127 | 1🦊🦊🦊 !",
+      "duration": "54:22",
+      "durationSeconds": 3262,
+      "thumbnail": "https://i.ytimg.com/vi/RUU4eh1muEA/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-11-27",
+      "broadcastDate": "2021-11-27",
+      "channel": "V Live"
+    },
+    {
+      "id": "zD1F-e6KJ40",
+      "title": "[TXT VLIVE] Yeonjun: The Essence of Game ep4 {2nd Nov, 2019}",
+      "duration": "32:11",
+      "durationSeconds": 1931,
+      "thumbnail": "https://i.ytimg.com/vi/zD1F-e6KJ40/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-14",
+      "broadcastDate": "2019-11-02",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "u9zCpqvUV2Q",
+      "title": "(ENG/INDO SUB) TXT Yeonjun VLive | 220710 | 🏙",
+      "duration": "34:40",
+      "durationSeconds": 2080,
+      "thumbnail": "https://i.ytimg.com/vi/u9zCpqvUV2Q/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-07-09",
+      "broadcastDate": "2022-07-10",
+      "channel": "V Live"
+    },
+    {
+      "id": "HMQz6GUDxSQ",
+      "title": "TXT Beomgyu, Soobin & Yeonjun VLive | 210809 | Choi 3 🦊🐰🐻 (Eng Sub)",
+      "duration": "40:59",
+      "durationSeconds": 2459,
+      "thumbnail": "https://i.ytimg.com/vi/HMQz6GUDxSQ/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-08-10",
+      "broadcastDate": "2021-08-09",
+      "channel": "V Live"
+    },
+    {
+      "id": "pbPP2KypnBw",
+      "title": "(ENG/INDO SUB) TXT Yeonjun & Beomgyu VLive | 220617 | Make Ju-Gyu Laugh",
+      "duration": "40:55",
+      "durationSeconds": 2455,
+      "thumbnail": "https://i.ytimg.com/vi/pbPP2KypnBw/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-06-17",
+      "broadcastDate": "2022-06-17",
+      "channel": "V Live"
+    },
+    {
+      "id": "BI8H9LpqrYI",
+      "title": "[TXT VLIVE] TXT \"Blue Hour\" Official Teaser - Yeonjun, Taehyun {16th Oct, 2020}",
+      "duration": "29:56",
+      "durationSeconds": 1796,
+      "thumbnail": "https://i.ytimg.com/vi/BI8H9LpqrYI/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-03",
+      "broadcastDate": "2020-10-16",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "dW-7Kx-x2II",
+      "title": "[TXT-LOG] BEOMGYU IN ASIA l 범규의 바쁜 일상 속 소소한 행복 찾기🧸💕",
+      "duration": "21:37",
+      "durationSeconds": 1297,
+      "thumbnail": "https://i.ytimg.com/vi/dW-7Kx-x2II/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2023-07-03",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "HG7FK2C09xw",
+      "title": "[TXT-LOG] BEOMGYU IN U.S l 범규의 브이로그🧸",
+      "duration": "11:22",
+      "durationSeconds": 682,
+      "thumbnail": "https://i.ytimg.com/vi/HG7FK2C09xw/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2022-10-13",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "0MtPUyNPDfs",
+      "title": "(ENG/INDO SUB) TXT Beomgyu VLive | 220106 | Thursday Night3 🐻",
+      "duration": "33:25",
+      "durationSeconds": 2005,
+      "thumbnail": "https://i.ytimg.com/vi/0MtPUyNPDfs/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-01-06",
+      "broadcastDate": "2022-01-06",
+      "channel": "V Live"
+    },
+    {
+      "id": "ZXgkC-TqTfg",
+      "title": "TXT Beomgyu Birthday VLive | 210313 | Birthday 🥳 (Eng/Indo/Viet Sub)",
+      "duration": "1:05:34",
+      "durationSeconds": 3934,
+      "thumbnail": "https://i.ytimg.com/vi/ZXgkC-TqTfg/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-03-13",
+      "broadcastDate": "2021-03-13",
+      "channel": "V Live"
+    },
+    {
+      "id": "pa9UBRZKFIA",
+      "title": "TXT Beomgyu VLive | 210703 | Beginning of Monsoon (Eng/Indo/Thai/Viet Sub)",
+      "duration": "54:25",
+      "durationSeconds": 3265,
+      "thumbnail": "https://i.ytimg.com/vi/pa9UBRZKFIA/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-07-03",
+      "broadcastDate": "2021-07-03",
+      "channel": "V Live"
+    },
+    {
+      "id": "XA8zpa8V4DY",
+      "title": "(ENG/INDO SUB) TXT Beomgyu VLive | 220404 | Beomgyu's Radio",
+      "duration": "36:48",
+      "durationSeconds": 2208,
+      "thumbnail": "https://i.ytimg.com/vi/XA8zpa8V4DY/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-04-04",
+      "broadcastDate": "2022-04-04",
+      "channel": "V Live"
+    },
+    {
+      "id": "zHYDZYP_NI4",
+      "title": "TXT Beomgyu VLive | 210416 | Chicken Killer Choi Beomgyu🍗 (Eng/Indo Sub)",
+      "duration": "52:58",
+      "durationSeconds": 3178,
+      "thumbnail": "https://i.ytimg.com/vi/zHYDZYP_NI4/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-04-16",
+      "broadcastDate": "2021-04-16",
+      "channel": "V Live"
+    },
+    {
+      "id": "urM0f0_WbKQ",
+      "title": "[TXT VLIVE] Beomgyu's Studio {11th Jan, 2020}",
+      "duration": "1:00:47",
+      "durationSeconds": 3647,
+      "thumbnail": "https://i.ytimg.com/vi/urM0f0_WbKQ/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-28",
+      "broadcastDate": "2020-01-11",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "XG6HZ2i41ec",
+      "title": "[TXT VLIVE] Beomgyu's ASMR {30th June, 2020}",
+      "duration": "41:51",
+      "durationSeconds": 2511,
+      "thumbnail": "https://i.ytimg.com/vi/XG6HZ2i41ec/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-17",
+      "broadcastDate": "2020-06-30",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "YhHC5FodvPc",
+      "title": "TXT Beomgyu, Hueningkai & Taehyun VLive | Shinhan Lims in Hallym 🐻🐧🐿 (Eng/Indo/Viet Sub)",
+      "duration": "31:23",
+      "durationSeconds": 1883,
+      "thumbnail": "https://i.ytimg.com/vi/YhHC5FodvPc/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-02-01",
+      "broadcastDate": null,
+      "channel": "V Live"
+    },
+    {
+      "id": "c9yXdfAHm9c",
+      "title": "[TXT VLIVE] BEOMGYU is here to see you!!!!✨ {23rd Aug, 2019}",
+      "duration": "24:57",
+      "durationSeconds": 1497,
+      "thumbnail": "https://i.ytimg.com/vi/c9yXdfAHm9c/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-10",
+      "broadcastDate": "2019-08-23",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "SRRPq0GEEgg",
+      "title": "[TXT VLIVE] Happy Birthday Beomgyu❣️{13th Mar, 2020}",
+      "duration": "1:02:26",
+      "durationSeconds": 3746,
+      "thumbnail": "https://i.ytimg.com/vi/SRRPq0GEEgg/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-07",
+      "broadcastDate": "2020-03-13",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "LgTj5dDbfss",
+      "title": "(Eng/Indo Sub) TXT Beomgyu VLive | 211118 | Thursday Night",
+      "duration": "1:02:39",
+      "durationSeconds": 3759,
+      "thumbnail": "https://i.ytimg.com/vi/LgTj5dDbfss/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-11-18",
+      "broadcastDate": "2021-11-18",
+      "channel": "V Live"
+    },
+    {
+      "id": "iSsE29qe8_k",
+      "title": "(Eng Sub) TXT Taehyun & Beomgyu VLive | 210924 | Break Universe Radio: Revised?!",
+      "duration": "43:38",
+      "durationSeconds": 2618,
+      "thumbnail": "https://i.ytimg.com/vi/iSsE29qe8_k/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-09-24",
+      "broadcastDate": "2021-09-24",
+      "channel": "V Live"
+    },
+    {
+      "id": "jWlKDW_N8E8",
+      "title": "(Eng/Indo Sub) TXT Beomgyu VLive | 211027 | Sorry....",
+      "duration": "51:36",
+      "durationSeconds": 3096,
+      "thumbnail": "https://i.ytimg.com/vi/jWlKDW_N8E8/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-10-27",
+      "broadcastDate": "2021-10-27",
+      "channel": "V Live"
+    },
+    {
+      "id": "UyboDClgY5M",
+      "title": "[TXT-LOG] TAEHYUN IN U.S. l 끊임없는 식사와 토크가 공존하는 태현이의 브이로그 🐿️✨",
+      "duration": "36:17",
+      "durationSeconds": 2177,
+      "thumbnail": "https://i.ytimg.com/vi/UyboDClgY5M/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2023-07-31",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "baK4wexJcAA",
+      "title": "[TXT-LOG] TAEHYUN IN U.S l 태현의 브이로그🐿️",
+      "duration": "16:36",
+      "durationSeconds": 996,
+      "thumbnail": "https://i.ytimg.com/vi/baK4wexJcAA/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2022-11-10",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "K0-buMCX79U",
+      "title": "TXT Taehyun VLive | 210318 | I'm here in a carefree way (Eng/Indo Sub)",
+      "duration": "51:09",
+      "durationSeconds": 3069,
+      "thumbnail": "https://i.ytimg.com/vi/K0-buMCX79U/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-03-18",
+      "broadcastDate": "2021-03-18",
+      "channel": "V Live"
+    },
+    {
+      "id": "LmQTMmPDRpk",
+      "title": "TXT Taehyun VLive | 210709 | Did you receive the gift well? 🐿 (Eng Sub)",
+      "duration": "37:31",
+      "durationSeconds": 2251,
+      "thumbnail": "https://i.ytimg.com/vi/LmQTMmPDRpk/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-07-09",
+      "broadcastDate": "2021-07-09",
+      "channel": "V Live"
+    },
+    {
+      "id": "n64GcqVMA3c",
+      "title": "[TXT VLIVE] Kang Taehyun's Magic Island🔮 {16th Jan, 2020}",
+      "duration": "1:01:13",
+      "durationSeconds": 3673,
+      "thumbnail": "https://i.ytimg.com/vi/n64GcqVMA3c/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-28",
+      "broadcastDate": "2020-01-16",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "T4ksmFx6s-s",
+      "title": "TXT Taehyun VLive | 210806 | We said we should see each other... (Eng Sub)",
+      "duration": "47:26",
+      "durationSeconds": 2846,
+      "thumbnail": "https://i.ytimg.com/vi/T4ksmFx6s-s/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-08-06",
+      "broadcastDate": "2021-08-06",
+      "channel": "V Live"
+    },
+    {
+      "id": "rzyKe7VvYzE",
+      "title": "[TXT VLIVE] Taehyun: It's been a while! {18th July, 2019}",
+      "duration": "39:56",
+      "durationSeconds": 2396,
+      "thumbnail": "https://i.ytimg.com/vi/rzyKe7VvYzE/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-08",
+      "broadcastDate": "2019-07-18",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "6gdqW5PghLU",
+      "title": "TXT Taehyun VLive | TALK X TODAY : Season5 Teaser - TXT (Eng/Indo/Viet Sub)",
+      "duration": "59:38",
+      "durationSeconds": 3578,
+      "thumbnail": "https://i.ytimg.com/vi/6gdqW5PghLU/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-01-21",
+      "broadcastDate": null,
+      "channel": "V Live"
+    },
+    {
+      "id": "CMvFQq_xcyQ",
+      "title": "(ENG/INDO SUB) TXT Yeonjun & Taehyun VLive | 220322 | 🦊🐿🥖🥐🥯🍞",
+      "duration": "52:16",
+      "durationSeconds": 3136,
+      "thumbnail": "https://i.ytimg.com/vi/CMvFQq_xcyQ/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-03-22",
+      "broadcastDate": "2022-03-22",
+      "channel": "V Live"
+    },
+    {
+      "id": "Q2gbFm0xaGY",
+      "title": "[TXT VLIVE] TAEHYUN'S Birthday❣️ {05th Feb, 2020}",
+      "duration": "57:21",
+      "durationSeconds": 3441,
+      "thumbnail": "https://i.ytimg.com/vi/Q2gbFm0xaGY/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-30",
+      "broadcastDate": "2020-02-05",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "ukfSCe5AESQ",
+      "title": "(Eng/Indo Sub) TXT Taehyun VLive | 211125 | 🚨Urgent Announcement🚨",
+      "duration": "1:06:59",
+      "durationSeconds": 4019,
+      "thumbnail": "https://i.ytimg.com/vi/ukfSCe5AESQ/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-11-25",
+      "broadcastDate": "2021-11-25",
+      "channel": "V Live"
+    },
+    {
+      "id": "34h9Nq-FowI",
+      "title": "(ENG/INDO SUB) TXT Taehyun VLive | 220118 | Come On",
+      "duration": "48:37",
+      "durationSeconds": 2917,
+      "thumbnail": "https://i.ytimg.com/vi/34h9Nq-FowI/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-01-18",
+      "broadcastDate": "2022-01-18",
+      "channel": "V Live"
+    },
+    {
+      "id": "bGFccQABRkI",
+      "title": "(ENG/INDO SUB) TXT Taehyun VLive | 220415 | TXT(투모로우바이투게더) minisode 2: Friday's Child",
+      "duration": "48:36",
+      "durationSeconds": 2916,
+      "thumbnail": "https://i.ytimg.com/vi/bGFccQABRkI/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-04-15",
+      "broadcastDate": "2022-04-15",
+      "channel": "V Live"
+    },
+    {
+      "id": "PD60-t3U2tw",
+      "title": "[TXT VLIVE] Beomgyu & Taehyun: Smash the Universe Radio ep2 (17th May, 2019)",
+      "duration": "41:11",
+      "durationSeconds": 2471,
+      "thumbnail": "https://i.ytimg.com/vi/PD60-t3U2tw/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-06",
+      "broadcastDate": "2019-05-17",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "eqFJRihruoA",
+      "title": "(ENG/INDO SUB) TXT Soobin, Beomgyu & Taehyun VLive | 220529 | The Essence of Games🎮",
+      "duration": "44:50",
+      "durationSeconds": 2690,
+      "thumbnail": "https://i.ytimg.com/vi/eqFJRihruoA/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-05-29",
+      "broadcastDate": "2022-05-29",
+      "channel": "V Live"
+    },
+    {
+      "id": "mKDuB1tqQpg",
+      "title": "TXT Taehyun VLive | 210507 | Delicious Lunch With Taehyun🐿(Eng Sub)",
+      "duration": "41:06",
+      "durationSeconds": 2466,
+      "thumbnail": "https://i.ytimg.com/vi/mKDuB1tqQpg/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-05-07",
+      "broadcastDate": "2021-05-07",
+      "channel": "V Live"
+    },
+    {
+      "id": "OP8ncpO2Vtw",
+      "title": "(ENG/INDO SUB) TXT Soobin & Taehyun VLive | 220619 | Trustz",
+      "duration": "1:09:24",
+      "durationSeconds": 4164,
+      "thumbnail": "https://i.ytimg.com/vi/OP8ncpO2Vtw/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-06-19",
+      "broadcastDate": "2022-06-19",
+      "channel": "V Live"
+    },
+    {
+      "id": "-sYF-27DSc8",
+      "title": "(ENG/INDO SUB) TXT Taehyun Birthday VLive | 220207 | You waited for a long time🎂🐿🥳",
+      "duration": "52:58",
+      "durationSeconds": 3178,
+      "thumbnail": "https://i.ytimg.com/vi/-sYF-27DSc8/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-02-07",
+      "broadcastDate": "2022-02-07",
+      "channel": "V Live"
+    },
+    {
+      "id": "wkyXOClBf7I",
+      "title": "(ENG/INDO SUB) TXT Soobin & Taehyun VLive | 220126 | Strawberry, let's play🍓",
+      "duration": "1:13:49",
+      "durationSeconds": 4429,
+      "thumbnail": "https://i.ytimg.com/vi/wkyXOClBf7I/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-01-26",
+      "broadcastDate": "2022-01-26",
+      "channel": "V Live"
+    },
+    {
+      "id": "BjhV4VZGoLI",
+      "title": "[TXT VLIVE] SOOBIN and TAEHYUN will answer your questions! {19th Nov, 2019}",
+      "duration": "22:59",
+      "durationSeconds": 1379,
+      "thumbnail": "https://i.ytimg.com/vi/BjhV4VZGoLI/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-15",
+      "broadcastDate": "2019-11-19",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "lKqZB8PcLDs",
+      "title": "HUENINGKAI in Shanghai 🇨🇳 | TXT-LOG | TXT (투모로우바이투게더)",
+      "duration": "23:13",
+      "durationSeconds": 1393,
+      "thumbnail": "https://i.ytimg.com/vi/lKqZB8PcLDs/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2025-07-12",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "1Bo885R_PLg",
+      "title": "[TXT-LOG] HUENINGKAI IN U.S l 휴닝카이의 브이로그🐧",
+      "duration": "16:23",
+      "durationSeconds": 983,
+      "thumbnail": "https://i.ytimg.com/vi/1Bo885R_PLg/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2022-10-27",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "wD16qH1B6N0",
+      "title": "[TXT-LOG] HUENINGKAI IN JAPAN l 투어 기간에는 무엇을 할까? 휴닝카이의 모든 일상 대공개🐧✨",
+      "duration": "28:13",
+      "durationSeconds": 1693,
+      "thumbnail": "https://i.ytimg.com/vi/wD16qH1B6N0/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2023-07-10",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "ujWyDnIjHoo",
+      "title": "중국어는 너무 어려워 #1 | TXT-LOG | TXT (투모로우바이투게더)️",
+      "duration": "17:34",
+      "durationSeconds": 1054,
+      "thumbnail": "https://i.ytimg.com/vi/ujWyDnIjHoo/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2026-01-29",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "n1hx82U1XIc",
+      "title": "[TXT VLIVE] Hueningkai's First Birthday {14th Aug, 2020}",
+      "duration": "42:29",
+      "durationSeconds": 2549,
+      "thumbnail": "https://i.ytimg.com/vi/n1hx82U1XIc/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-20",
+      "broadcastDate": "2020-08-14",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "6TfJEp7u0T4",
+      "title": "[TXT VLIVE] 휴닝's 브이앱 / Huening Kai's V LIVE! {29th July, 2019}",
+      "duration": "41:17",
+      "durationSeconds": 2477,
+      "thumbnail": "https://i.ytimg.com/vi/6TfJEp7u0T4/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-09",
+      "broadcastDate": "2019-07-29",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "zi9vk_QQE3I",
+      "title": "(ENG/INDO SUB) TXT Hueningkai & Soobin VLive | 220615 | Gumz🐰🐧🫒🍉🍎🍋",
+      "duration": "52:39",
+      "durationSeconds": 3159,
+      "thumbnail": "https://i.ytimg.com/vi/zi9vk_QQE3I/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-06-15",
+      "broadcastDate": "2022-06-15",
+      "channel": "V Live"
+    },
+    {
+      "id": "ExiD-zbWzxo",
+      "title": "(ENG/INDO SUB) TXT Hueningkai VLive | 220324 | HUE-ranghae💖",
+      "duration": "50:33",
+      "durationSeconds": 3033,
+      "thumbnail": "https://i.ytimg.com/vi/ExiD-zbWzxo/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-03-24",
+      "broadcastDate": "2022-03-24",
+      "channel": "V Live"
+    },
+    {
+      "id": "veTEQ03hZCk",
+      "title": "[TXT VLIVE] Hueningkai: Nap of a Star {19th May, 2019}",
+      "duration": "20:13",
+      "durationSeconds": 1213,
+      "thumbnail": "https://i.ytimg.com/vi/veTEQ03hZCk/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-10",
+      "broadcastDate": "2019-05-19",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "s5Aq8SYXtrQ",
+      "title": "(ENG/INDO SUB) TXT Hueningkai VLive | 220224 | Sk8er Boi appears🛹",
+      "duration": "35:30",
+      "durationSeconds": 2130,
+      "thumbnail": "https://i.ytimg.com/vi/s5Aq8SYXtrQ/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-02-24",
+      "broadcastDate": "2022-02-24",
+      "channel": "V Live"
+    },
+    {
+      "id": "_bTyIvVR0k4",
+      "title": "(ENG/INDO SUB) TXT Hueningkai VLive | 220105 | Roar HUENING is here🐯",
+      "duration": "45:03",
+      "durationSeconds": 2703,
+      "thumbnail": "https://i.ytimg.com/vi/_bTyIvVR0k4/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-01-05",
+      "broadcastDate": "2022-01-05",
+      "channel": "V Live"
+    },
+    {
+      "id": "dOeAfWxLg8I",
+      "title": "TXT Hueningkai VLive | 210402 | Typical Interaction Time🐧 (Eng Sub)",
+      "duration": "38:35",
+      "durationSeconds": 2315,
+      "thumbnail": "https://i.ytimg.com/vi/dOeAfWxLg8I/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-04-02",
+      "broadcastDate": "2021-04-02",
+      "channel": "V Live"
+    },
+    {
+      "id": "zfl5lHhS0KA",
+      "title": "[TXT VLIVE] Fun Huening Kai Logic 🤗{25th Feb 2020}",
+      "duration": "55:09",
+      "durationSeconds": 3309,
+      "thumbnail": "https://i.ytimg.com/vi/zfl5lHhS0KA/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-04",
+      "broadcastDate": "2020-02-25",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "U_MS_lkp-Cc",
+      "title": "TXT Hueningkai VLive | 210310 (Eng/Viet Sub)",
+      "duration": "42:40",
+      "durationSeconds": 2560,
+      "thumbnail": "https://i.ytimg.com/vi/U_MS_lkp-Cc/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-03-10",
+      "broadcastDate": "2021-03-10",
+      "channel": "V Live"
+    },
+    {
+      "id": "RHMoSmcy8dk",
+      "title": "TXT Hueningkai Birthday VLive | 210814 | 20-year old HUENING 🐧 (Eng/Indo/Thai/Viet Sub)",
+      "duration": "44:03",
+      "durationSeconds": 2643,
+      "thumbnail": "https://i.ytimg.com/vi/RHMoSmcy8dk/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-08-14",
+      "broadcastDate": "2021-08-14",
+      "channel": "V Live"
+    },
+    {
+      "id": "j_tpmHmOyH4",
+      "title": "(ENG/INDO SUB) TXT Hueningkai & Yeonjun VLive | 220125 | This House Gives Good Fortune",
+      "duration": "52:36",
+      "durationSeconds": 3156,
+      "thumbnail": "https://i.ytimg.com/vi/j_tpmHmOyH4/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-01-25",
+      "broadcastDate": "2022-01-25",
+      "channel": "V Live"
+    },
+    {
+      "id": "8ITQPRFbcsE",
+      "title": "[TXT VLIVE] Huening's Interactive Time🎸 {3rd April, 2020}",
+      "duration": "42:12",
+      "durationSeconds": 2532,
+      "thumbnail": "https://i.ytimg.com/vi/8ITQPRFbcsE/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-10",
+      "broadcastDate": "2020-04-03",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "stknqB6qzbA",
+      "title": "[TXT WEVERSE LIVE] Hello. This is Huening 🐧🎂🎉 {2023.08.14}",
+      "duration": "58:43",
+      "durationSeconds": 3523,
+      "thumbnail": "https://i.ytimg.com/vi/stknqB6qzbA/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2024-03-19",
+      "broadcastDate": "2023-08-14",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "-O4G-LQKlwc",
+      "title": "[TXT WEVERSE LIVE] Beomgyu's Birthday {2023.03.13}",
+      "duration": "45:23",
+      "durationSeconds": 2723,
+      "thumbnail": "https://i.ytimg.com/vi/-O4G-LQKlwc/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2024-03-13",
+      "broadcastDate": "2023-03-13",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "-7w4qZL3OLI",
+      "title": "[TXT WEVERSE LIVE] Beomgyu in America {2022.10.18}",
+      "duration": "1:11:15",
+      "durationSeconds": 4275,
+      "thumbnail": "https://i.ytimg.com/vi/-7w4qZL3OLI/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2024-03-05",
+      "broadcastDate": "2022-10-18",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "shkGt21rDys",
+      "title": "[TXT WEVERSE LIVE] When is Huening coming? {2022.10.20}",
+      "duration": "42:12",
+      "durationSeconds": 2532,
+      "thumbnail": "https://i.ytimg.com/vi/shkGt21rDys/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2024-03-05",
+      "broadcastDate": "2022-10-20",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "bATdlzFBD28",
+      "title": "[TXT WEVERSE LIVE] Beomgyu in Japan {06th Sep, 2022}",
+      "duration": "46:51",
+      "durationSeconds": 2811,
+      "thumbnail": "https://i.ytimg.com/vi/bATdlzFBD28/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2023-03-11",
+      "broadcastDate": "2022-09-06",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "rlebXRSdTGk",
+      "title": "[TXT WEVERSE LIVE] Beomgyu and Children {26th Aug, 2022}",
+      "duration": "37:46",
+      "durationSeconds": 2266,
+      "thumbnail": "https://i.ytimg.com/vi/rlebXRSdTGk/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2023-01-23",
+      "broadcastDate": "2022-08-26",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "8mSbn2Xv8CI",
+      "title": "[TXT VLIVE] BEOMGYU and TAEHYUN's Gobble Up Bunsik Radio {12th Jun, 2022}",
+      "duration": "41:51",
+      "durationSeconds": 2511,
+      "thumbnail": "https://i.ytimg.com/vi/8mSbn2Xv8CI/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-11-05",
+      "broadcastDate": "2022-06-12",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "-PqeOR0aJT4",
+      "title": "[TXT VLIVE] Ask Beomgyu 🐻 {25th Feb, 2022}",
+      "duration": "50:11",
+      "durationSeconds": 3011,
+      "thumbnail": "https://i.ytimg.com/vi/-PqeOR0aJT4/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-11-02",
+      "broadcastDate": "2022-02-25",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "HhB3Lan0u34",
+      "title": "[TXT VLIVE] Again✏ HUENINGKAI's Math Class {22nd Nov, 2021}",
+      "duration": "1:00:15",
+      "durationSeconds": 3615,
+      "thumbnail": "https://i.ytimg.com/vi/HhB3Lan0u34/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-26",
+      "broadcastDate": "2021-11-22",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "mhd7i4NIiYc",
+      "title": "[TXT VLIVE] YEONJUN's Birthday 🦊 (BEOMGYU's Birthday 🥳🥳) {13th Sep, 2021}",
+      "duration": "58:45",
+      "durationSeconds": 3525,
+      "thumbnail": "https://i.ytimg.com/vi/mhd7i4NIiYc/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-22",
+      "broadcastDate": "2021-09-13",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "-KudKCmzHz8",
+      "title": "[TXT VLIVE] HUENINGKAI is Here {04th Sep, 2021}",
+      "duration": "21:22",
+      "durationSeconds": 1282,
+      "thumbnail": "https://i.ytimg.com/vi/-KudKCmzHz8/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-22",
+      "broadcastDate": "2021-09-04",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "qRvtWDJFxfw",
+      "title": "[TXT VLIVE] The Return of HUENINGKAI's the Essence of Instruments 🐧🎹 {21st May, 2021}",
+      "duration": "49:30",
+      "durationSeconds": 2970,
+      "thumbnail": "https://i.ytimg.com/vi/qRvtWDJFxfw/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-17",
+      "broadcastDate": "2021-05-21",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "lCgEgCWyaDk",
+      "title": "[TXT VLIVE] Huening's math puzzle time has returned {14th Feb, 2021}",
+      "duration": "1:03:36",
+      "durationSeconds": 3816,
+      "thumbnail": "https://i.ytimg.com/vi/lCgEgCWyaDk/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-13",
+      "broadcastDate": "2021-02-14",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "1ECxtE_nsqw",
+      "title": "[TXT VLIVE] It's Yeonjun 2 {21st Feb, 2021}",
+      "duration": "23:23",
+      "durationSeconds": 1403,
+      "thumbnail": "https://i.ytimg.com/vi/1ECxtE_nsqw/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-12",
+      "broadcastDate": "2021-02-21",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "pyFzST2kqYo",
+      "title": "[TXT VLIVE] HUENINGKAI's Piano V LIVE 🐧 {27th Jan, 2021}",
+      "duration": "52:07",
+      "durationSeconds": 3127,
+      "thumbnail": "https://i.ytimg.com/vi/pyFzST2kqYo/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-11",
+      "broadcastDate": "2021-01-27",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "BOR3NnDz8wM",
+      "title": "[TXT VLIVE] Yeonjun's Essence of Dancing 2 {08th Jan, 2021}",
+      "duration": "47:33",
+      "durationSeconds": 2853,
+      "thumbnail": "https://i.ytimg.com/vi/BOR3NnDz8wM/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-09",
+      "broadcastDate": "2021-01-08",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "qYhVY1f6P8I",
+      "title": "[TXT VLIVE] Thursday Afternoon, HUENINGKAI is... {17th Dec, 2020}",
+      "duration": "44:22",
+      "durationSeconds": 2662,
+      "thumbnail": "https://i.ytimg.com/vi/qYhVY1f6P8I/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-09",
+      "broadcastDate": "2020-12-17",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "9lf9ltaeK4Q",
+      "title": "[TXT VLIVE] Soobin & Hueningkai : Comeback of Handcraft Time {10th Oct, 2020}",
+      "duration": "55:20",
+      "durationSeconds": 3320,
+      "thumbnail": "https://i.ytimg.com/vi/9lf9ltaeK4Q/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-10-01",
+      "broadcastDate": "2020-10-10",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "kXamZJeY1rY",
+      "title": "[TXT VLIVE] SOOBIN&TAEHYUN's Dinner Time 🐰🐿️ {03rd Sep, 2020}",
+      "duration": "49:10",
+      "durationSeconds": 2950,
+      "thumbnail": "https://i.ytimg.com/vi/kXamZJeY1rY/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-24",
+      "broadcastDate": "2020-09-03",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "GY6XoF5aXEk",
+      "title": "[TXT VLIVE] Beomgyu's Dinner Time {10th Sep, 2020}",
+      "duration": "43:24",
+      "durationSeconds": 2604,
+      "thumbnail": "https://i.ytimg.com/vi/GY6XoF5aXEk/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-24",
+      "broadcastDate": "2020-09-10",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "pxKjVe4WryQ",
+      "title": "[TXT VLIVE] Chatting Time with Taehyun {24th Aug, 2020}",
+      "duration": "40:21",
+      "durationSeconds": 2421,
+      "thumbnail": "https://i.ytimg.com/vi/pxKjVe4WryQ/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-21",
+      "broadcastDate": "2020-08-24",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "xV9lq0Nh5II",
+      "title": "[TXT VLIVE] Talk with Beomgyu {07th Aug, 2020}",
+      "duration": "38:18",
+      "durationSeconds": 2298,
+      "thumbnail": "https://i.ytimg.com/vi/xV9lq0Nh5II/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-20",
+      "broadcastDate": "2020-08-07",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "Vbg5E4FGf7M",
+      "title": "[TXT VLIVE] Huening Kai's Hand Craft Time {14th July 2020}",
+      "duration": "47:21",
+      "durationSeconds": 2841,
+      "thumbnail": "https://i.ytimg.com/vi/Vbg5E4FGf7M/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-18",
+      "broadcastDate": "2020-07-14",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "mhz7yyKUE9Y",
+      "title": "[TXT VLIVE] Soobin&Beomgyu's Tea Time 🥑🍍{19th July, 2020}",
+      "duration": "37:46",
+      "durationSeconds": 2266,
+      "thumbnail": "https://i.ytimg.com/vi/mhz7yyKUE9Y/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-18",
+      "broadcastDate": "2020-07-19",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "_j7S4dqr7JE",
+      "title": "[TXT VLIVE] Soobin & Hueningkai: Craft Time {16th June, 2020}",
+      "duration": "43:15",
+      "durationSeconds": 2595,
+      "thumbnail": "https://i.ytimg.com/vi/_j7S4dqr7JE/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-17",
+      "broadcastDate": "2020-06-16",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "Jd4VDfaokd8",
+      "title": "[TXT VLIVE] Soobin & Hueningkai: Handcraft Time {20th April, 2020}",
+      "duration": "58:48",
+      "durationSeconds": 3528,
+      "thumbnail": "https://i.ytimg.com/vi/Jd4VDfaokd8/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-11",
+      "broadcastDate": "2020-04-20",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "f3kgjdO2AGI",
+      "title": "[TXT VLIVE] Today Is the Day That Beomgyu Beats Yeonjun {7th April, 2020}",
+      "duration": "46:44",
+      "durationSeconds": 2804,
+      "thumbnail": "https://i.ytimg.com/vi/f3kgjdO2AGI/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-10",
+      "broadcastDate": "2020-04-07",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "81XwriJTM3g",
+      "title": "[TXT VLIVE] Yeonjun's Interactive Bread Broadcast🍞🥐 {28th Mar, 2020}",
+      "duration": "44:02",
+      "durationSeconds": 2642,
+      "thumbnail": "https://i.ytimg.com/vi/81XwriJTM3g/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-09",
+      "broadcastDate": "2020-03-28",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "Hzyn-2fWC9w",
+      "title": "[TXT VLIVE] Beomgyu is here🌰 2 {25th Mar, 2020}",
+      "duration": "35:24",
+      "durationSeconds": 2124,
+      "thumbnail": "https://i.ytimg.com/vi/Hzyn-2fWC9w/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-09",
+      "broadcastDate": "2020-03-25",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "A7DKwzMxKhw",
+      "title": "[TXT VLIVE] Yeonjun's Save the Dinosaur {02nd Mar, 2020}",
+      "duration": "42:20",
+      "durationSeconds": 2540,
+      "thumbnail": "https://i.ytimg.com/vi/A7DKwzMxKhw/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-05",
+      "broadcastDate": "2020-03-02",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "0iInrPbvljo",
+      "title": "[TXT VLIVE] Choi Beomgyu {13th Feb 2020}",
+      "duration": "58:18",
+      "durationSeconds": 3498,
+      "thumbnail": "https://i.ytimg.com/vi/0iInrPbvljo/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-02",
+      "broadcastDate": "2020-02-13",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "hmRfkN2mZd0",
+      "title": "[TXT VLIVE] YEONJUN's Communication Mukbang {19th Feb, 2020}",
+      "duration": "45:55",
+      "durationSeconds": 2755,
+      "thumbnail": "https://i.ytimg.com/vi/hmRfkN2mZd0/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-02",
+      "broadcastDate": "2020-02-19",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "jk3i7gBp99Y",
+      "title": "[TXT VLIVE] Taehyun's Councelling Center 2 {22nd Feb, 2020}",
+      "duration": "37:42",
+      "durationSeconds": 2262,
+      "thumbnail": "https://i.ytimg.com/vi/jk3i7gBp99Y/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-09-02",
+      "broadcastDate": "2020-02-22",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "hSFECD7rskE",
+      "title": "[TXT VLIVE] Sweet Taehyun makes something sweet {27th Jan, 2030}",
+      "duration": "53:26",
+      "durationSeconds": 3206,
+      "thumbnail": "https://i.ytimg.com/vi/hSFECD7rskE/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-30",
+      "broadcastDate": "2030-01-27",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "lpsEds3ImtY",
+      "title": "[TXT VLIVE] Choi Beomgyu's Starry Night✨ {17th Jan, 2020}",
+      "duration": "1:15:17",
+      "durationSeconds": 4517,
+      "thumbnail": "https://i.ytimg.com/vi/lpsEds3ImtY/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-28",
+      "broadcastDate": "2020-01-17",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "p6WUdNoAIxA",
+      "title": "[TXT VLIVE] Who wants to do a number puzzle with HUENINGKAI? {05th Jan, 2020}",
+      "duration": "56:45",
+      "durationSeconds": 3405,
+      "thumbnail": "https://i.ytimg.com/vi/p6WUdNoAIxA/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-27",
+      "broadcastDate": "2020-01-05",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "MYiDF20kj4s",
+      "title": "[TXT VLIVE] TAEHYUN'S Counselling center {21st Dec, 2019}",
+      "duration": "1:00:40",
+      "durationSeconds": 3640,
+      "thumbnail": "https://i.ytimg.com/vi/MYiDF20kj4s/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-20",
+      "broadcastDate": "2019-12-21",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "3AEfDZWXbYc",
+      "title": "[TXT VLIVE] YEONJUN: The Classic of Dance {18th Dec, 2019}",
+      "duration": "58:01",
+      "durationSeconds": 3481,
+      "thumbnail": "https://i.ytimg.com/vi/3AEfDZWXbYc/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-19",
+      "broadcastDate": "2019-12-18",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "CJIZxPjgE2k",
+      "title": "[TXT VLIVE] BEOMGYU & TAEHYUN: Smash the Universe Radio 🥰 ep5 {14th Dec, 2019}",
+      "duration": "38:32",
+      "durationSeconds": 2312,
+      "thumbnail": "https://i.ytimg.com/vi/CJIZxPjgE2k/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-18",
+      "broadcastDate": "2019-12-14",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "7KwZ1VR66TY",
+      "title": "[TXT VLIVE] YEONJUN: The Essence of Game ep6 {7th Dec, 2019}",
+      "duration": "58:33",
+      "durationSeconds": 3513,
+      "thumbnail": "https://i.ytimg.com/vi/7KwZ1VR66TY/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-17",
+      "broadcastDate": "2019-12-07",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "njUUeNgPqZw",
+      "title": "[TXT VLIVE] SOOBIN & HUENINGKAI's \"Click Clack Craft Class\" {22nd Nov, 2019}",
+      "duration": "52:28",
+      "durationSeconds": 3148,
+      "thumbnail": "https://i.ytimg.com/vi/njUUeNgPqZw/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-15",
+      "broadcastDate": "2019-11-22",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "iA9ZjQ9REXQ",
+      "title": "[TXT VLIVE] YEONJUN: The Essence of Game ep5 {13th Nov, 2019}",
+      "duration": "37:49",
+      "durationSeconds": 2269,
+      "thumbnail": "https://i.ytimg.com/vi/iA9ZjQ9REXQ/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-15",
+      "broadcastDate": "2019-11-13",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "FuqjY6z5qxE",
+      "title": "[TXT VLIVE] YEONJUN & BEOMGYU's Handcraft Time {23rd Oct, 2019}",
+      "duration": "34:13",
+      "durationSeconds": 2053,
+      "thumbnail": "https://i.ytimg.com/vi/FuqjY6z5qxE/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-13",
+      "broadcastDate": "2019-10-23",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "M4SAH_tBSAU",
+      "title": "[TXT VLIVE] Soobin & HUENINGKAI: Break the Universe Radio! {19th Oct, 2019}",
+      "duration": "31:58",
+      "durationSeconds": 1918,
+      "thumbnail": "https://i.ytimg.com/vi/M4SAH_tBSAU/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-13",
+      "broadcastDate": "2019-10-19",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "mDSXDGzuwAk",
+      "title": "[TXT VLIVE] SOOBIN & HUENINGKAI : Fun handcraft time {22nd Sep, 2019}",
+      "duration": "43:41",
+      "durationSeconds": 2621,
+      "thumbnail": "https://i.ytimg.com/vi/mDSXDGzuwAk/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-11",
+      "broadcastDate": "2019-09-22",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "4j4MOO0hNY8",
+      "title": "[TXT VLIVE] YEONJUN&HUENINGKAI's behind story {18th Sep, 2019}",
+      "duration": "36:54",
+      "durationSeconds": 2214,
+      "thumbnail": "https://i.ytimg.com/vi/4j4MOO0hNY8/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-11",
+      "broadcastDate": "2019-09-18",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "4qMLkrlLRMY",
+      "title": "[TXT VLIVE] BEOMGYU & HUENINGKAI eating Tteokbokki pt2 {27th Sep, 2019}",
+      "duration": "31:36",
+      "durationSeconds": 1896,
+      "thumbnail": "https://i.ytimg.com/vi/4qMLkrlLRMY/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-11",
+      "broadcastDate": "2019-09-27",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "fckOrM_lilo",
+      "title": "[TXT VLIVE] Yeonjun&Taehyun's \"TALK X TODAY\" Behind the Scenes Stories! {10th Sep, 2019}",
+      "duration": "30:50",
+      "durationSeconds": 1850,
+      "thumbnail": "https://i.ytimg.com/vi/fckOrM_lilo/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-10",
+      "broadcastDate": "2019-09-10",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "X334Dm3hlBk",
+      "title": "[TXT VLIVE] YEONJUN: Essence of Game ep3 {30th Aug, 2019}",
+      "duration": "39:43",
+      "durationSeconds": 2383,
+      "thumbnail": "https://i.ytimg.com/vi/X334Dm3hlBk/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-10",
+      "broadcastDate": "2019-08-30",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "hHPcZ1A2CSU",
+      "title": "[TXT VLIVE] YEONJUN's Real Tea Time {25th July, 2019}",
+      "duration": "42:43",
+      "durationSeconds": 2563,
+      "thumbnail": "https://i.ytimg.com/vi/hHPcZ1A2CSU/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-09",
+      "broadcastDate": "2019-07-25",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "SN2uvCJS4N0",
+      "title": "[TXT VLIVE] Yeonjun: The standard of the game ep2 (M.P.A.!!!) {31st May, 2019}",
+      "duration": "1:01:01",
+      "durationSeconds": 3661,
+      "thumbnail": "https://i.ytimg.com/vi/SN2uvCJS4N0/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-07",
+      "broadcastDate": "2019-05-31",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "51C_FBCmUrU",
+      "title": "[TXT VLIVE] Beomgyu & Taehyun: Smash the Universe Radio ep3 (30th May, 2019)",
+      "duration": "44:43",
+      "durationSeconds": 2683,
+      "thumbnail": "https://i.ytimg.com/vi/51C_FBCmUrU/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-06",
+      "broadcastDate": "2019-05-30",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "t_rYme_Uvno",
+      "title": "[TXT VLIVE] Yeonjun: Nap of a Star (29th May, 2019)",
+      "duration": "22:33",
+      "durationSeconds": 1353,
+      "thumbnail": "https://i.ytimg.com/vi/t_rYme_Uvno/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-06",
+      "broadcastDate": "2019-05-29",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "MMNf3Gqshnc",
+      "title": "[TXT VLIVE] Yeonjun: The essence of Game ep1 (with Beomgyu & Taehyun)",
+      "duration": "44:42",
+      "durationSeconds": 2682,
+      "thumbnail": "https://i.ytimg.com/vi/MMNf3Gqshnc/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-06",
+      "broadcastDate": null,
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "Y4UgCd3pPhM",
+      "title": "[TXT VLIVE] Soobin & Hueningkai: Tick Tock Tick Tock Worktime (9th May, 2019)",
+      "duration": "44:20",
+      "durationSeconds": 2660,
+      "thumbnail": "https://i.ytimg.com/vi/Y4UgCd3pPhM/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-08-06",
+      "broadcastDate": "2019-05-09",
+      "channel": "Moa's Diary"
+    },
+    {
+      "id": "LgI7KLXDo1k",
+      "title": "(ENG/INDO SUB) TXT Soobin VLive | 220728 | Back again, again, again",
+      "duration": "22:55",
+      "durationSeconds": 1375,
+      "thumbnail": "https://i.ytimg.com/vi/LgI7KLXDo1k/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-07-28",
+      "broadcastDate": "2022-07-28",
+      "channel": "V Live"
+    },
+    {
+      "id": "dglYg117v1M",
+      "title": "(ENG/INDO SUB) TXT Soobin VLive | 220728 | Back again, again",
+      "duration": "35:11",
+      "durationSeconds": 2111,
+      "thumbnail": "https://i.ytimg.com/vi/dglYg117v1M/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-07-28",
+      "broadcastDate": "2022-07-28",
+      "channel": "V Live"
+    },
+    {
+      "id": "mvuy_sXWKvI",
+      "title": "(ENG/INDO SUB) Kep1er Bahiyyih Birthday VLive | 220727 | 🎉HAPPY HUENING BAHIYYIH DAY💜",
+      "duration": "34:50",
+      "durationSeconds": 2090,
+      "thumbnail": "https://i.ytimg.com/vi/mvuy_sXWKvI/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-07-27",
+      "broadcastDate": "2022-07-27",
+      "channel": "V Live"
+    },
+    {
+      "id": "o_EP7eDYAjM",
+      "title": "(ENG/INDO SUB) TXT Beomgyu VLive | 220722 | It's been a while☺️",
+      "duration": "48:39",
+      "durationSeconds": 2919,
+      "thumbnail": "https://i.ytimg.com/vi/o_EP7eDYAjM/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-07-22",
+      "broadcastDate": "2022-07-22",
+      "channel": "V Live"
+    },
+    {
+      "id": "3zIjGW_0PnY",
+      "title": "(ENG/INDO SUB) TXT Soobin & Yeonjun VLive | 220609 | The Hyungz🦊🐰",
+      "duration": "39:10",
+      "durationSeconds": 2350,
+      "thumbnail": "https://i.ytimg.com/vi/3zIjGW_0PnY/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-06-09",
+      "broadcastDate": "2022-06-09",
+      "channel": "V Live"
+    },
+    {
+      "id": "yNn3uo1-N6c",
+      "title": "(ENG/INDO SUB) TXT Yeonjun & Hueningkai VLive | 220525 | Tattoo On Top of Fourth Finger",
+      "duration": "30:34",
+      "durationSeconds": 1834,
+      "thumbnail": "https://i.ytimg.com/vi/yNn3uo1-N6c/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-05-25",
+      "broadcastDate": "2022-05-25",
+      "channel": "V Live"
+    },
+    {
+      "id": "7VSB_NXrW4w",
+      "title": "(ENG/INDO SUB) TXT Yeonjun VLive | 220501 | Hello! This is top 3😎",
+      "duration": "35:51",
+      "durationSeconds": 2151,
+      "thumbnail": "https://i.ytimg.com/vi/7VSB_NXrW4w/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-05-01",
+      "broadcastDate": "2022-05-01",
+      "channel": "V Live"
+    },
+    {
+      "id": "M-t1mEAQtmc",
+      "title": "(ENG/INDO SUB) TXT Taehyun VLive | 220328 | Did you eat?",
+      "duration": "41:01",
+      "durationSeconds": 2461,
+      "thumbnail": "https://i.ytimg.com/vi/M-t1mEAQtmc/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-03-28",
+      "broadcastDate": "2022-03-28",
+      "channel": "V Live"
+    },
+    {
+      "id": "0uzlwFnAQ8U",
+      "title": "(ENG/INDO SUB) TXT Soobin & Hueningkai VLive | 220326 | Glued🍓🍌🥭🍊🫐",
+      "duration": "1:08:45",
+      "durationSeconds": 4125,
+      "thumbnail": "https://i.ytimg.com/vi/0uzlwFnAQ8U/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-03-26",
+      "broadcastDate": "2022-03-26",
+      "channel": "V Live"
+    },
+    {
+      "id": "8UaDZrEw0mM",
+      "title": "(ENG/INDO SUB) TXT Beomgyu Birthday VLive | 220320 | 🧸🎉🎂",
+      "duration": "20:18",
+      "durationSeconds": 1218,
+      "thumbnail": "https://i.ytimg.com/vi/8UaDZrEw0mM/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-03-20",
+      "broadcastDate": "2022-03-20",
+      "channel": "V Live"
+    },
+    {
+      "id": "KvisiHv_W3w",
+      "title": "(ENG/INDO SUB) TXT Yeonjun VLive | 220316 | Dancer is Back!🕺",
+      "duration": "1:05:36",
+      "durationSeconds": 3936,
+      "thumbnail": "https://i.ytimg.com/vi/KvisiHv_W3w/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-03-16",
+      "broadcastDate": "2022-03-16",
+      "channel": "V Live"
+    },
+    {
+      "id": "eSFPFAz8ahc",
+      "title": "(ENG/INDO SUB) TXT Beomgyu & Soobin VLive | 220309 | Best Buds for the First Time in a While🐰🐻",
+      "duration": "54:26",
+      "durationSeconds": 3266,
+      "thumbnail": "https://i.ytimg.com/vi/eSFPFAz8ahc/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-03-09",
+      "broadcastDate": "2022-03-09",
+      "channel": "V Live"
+    },
+    {
+      "id": "17c2AHZbSW4",
+      "title": "(ENG/INDO SUB) TXT Hueningkai, Soobin & Beomgyu VLive | 220214 | 🐟Bungeoppang Wari Wari🐟",
+      "duration": "1:10:49",
+      "durationSeconds": 4249,
+      "thumbnail": "https://i.ytimg.com/vi/17c2AHZbSW4/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "beomgyu",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-02-14",
+      "broadcastDate": "2022-02-14",
+      "channel": "V Live"
+    },
+    {
+      "id": "No1FogwLxN4",
+      "title": "(ENG/INDO SUB) TXT Yeonjun  VLive | 220211 | 💚",
+      "duration": "50:06",
+      "durationSeconds": 3006,
+      "thumbnail": "https://i.ytimg.com/vi/No1FogwLxN4/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-02-11",
+      "broadcastDate": "2022-02-11",
+      "channel": "V Live"
+    },
+    {
+      "id": "6AB_oHET6zQ",
+      "title": "(ENG/INDO SUB) TXT Hueningkai VLive | 220128 | Are you all ready to enjoy Lunar New Year?",
+      "duration": "48:47",
+      "durationSeconds": 2927,
+      "thumbnail": "https://i.ytimg.com/vi/6AB_oHET6zQ/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-01-28",
+      "broadcastDate": "2022-01-28",
+      "channel": "V Live"
+    },
+    {
+      "id": "SYIS_bHsIeE",
+      "title": "(ENG/INDO SUB) TXT Yeonjun VLive | 220117 | 🦊",
+      "duration": "33:42",
+      "durationSeconds": 2022,
+      "thumbnail": "https://i.ytimg.com/vi/SYIS_bHsIeE/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2022-01-17",
+      "broadcastDate": "2022-01-17",
+      "channel": "V Live"
+    },
+    {
+      "id": "imP3LMbYJvw",
+      "title": "(Eng/Indo Sub) TXT Soobin, Hueningkai & Yeonjun VLive | 211230 | One more day left!!!!!!!!!!!",
+      "duration": "36:43",
+      "durationSeconds": 2203,
+      "thumbnail": "https://i.ytimg.com/vi/imP3LMbYJvw/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-12-30",
+      "broadcastDate": "2021-12-30",
+      "channel": "V Live"
+    },
+    {
+      "id": "z3Bzs6uUWiw",
+      "title": "(Eng/Indo Sub) TXT Beomgyu, Taehyun & Hueningkai VLive | 211227 | The last week of 2021",
+      "duration": "43:50",
+      "durationSeconds": 2630,
+      "thumbnail": "https://i.ytimg.com/vi/z3Bzs6uUWiw/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-12-27",
+      "broadcastDate": "2021-12-27",
+      "channel": "V Live"
+    },
+    {
+      "id": "gwyjDkvB8DA",
+      "title": "(Eng/Indo Sub) TXT Hueningkai VLive | 211212 | Kkyu🐧🦄",
+      "duration": "44:45",
+      "durationSeconds": 2685,
+      "thumbnail": "https://i.ytimg.com/vi/gwyjDkvB8DA/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-12-12",
+      "broadcastDate": "2021-12-12",
+      "channel": "V Live"
+    },
+    {
+      "id": "iHshLr-Vc60",
+      "title": "(Eng/Indo Sub) TXT Beomgyu VLive | 211202 | Thursday Night2",
+      "duration": "48:44",
+      "durationSeconds": 2924,
+      "thumbnail": "https://i.ytimg.com/vi/iHshLr-Vc60/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-12-02",
+      "broadcastDate": "2021-12-02",
+      "channel": "V Live"
+    },
+    {
+      "id": "dQ0vQcNLkW0",
+      "title": "(Eng/Indo Sub) TXT Hueningkai, Soobin & Beomgyu VLive | 211115 | It's a first🐰🐻🐧",
+      "duration": "1:00:11",
+      "durationSeconds": 3611,
+      "thumbnail": "https://i.ytimg.com/vi/dQ0vQcNLkW0/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "beomgyu",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-11-15",
+      "broadcastDate": "2021-11-15",
+      "channel": "V Live"
+    },
+    {
+      "id": "sry4ZtJPcWU",
+      "title": "(Eng/Indo Sub) TXT Hueningkai VLive | 211025 | Hi 🐧",
+      "duration": "54:44",
+      "durationSeconds": 3284,
+      "thumbnail": "https://i.ytimg.com/vi/sry4ZtJPcWU/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-10-25",
+      "broadcastDate": "2021-10-25",
+      "channel": "V Live"
+    },
+    {
+      "id": "iUuJ9FJIWCg",
+      "title": "(Eng/Indo Sub) TXT Yeonjun, Taehyun & Soobin VLive | 211019 | Combination You See For The First Time",
+      "duration": "56:41",
+      "durationSeconds": 3401,
+      "thumbnail": "https://i.ytimg.com/vi/iUuJ9FJIWCg/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "yeonjun",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-10-19",
+      "broadcastDate": "2021-10-19",
+      "channel": "V Live"
+    },
+    {
+      "id": "a7ZpUAgk0SA",
+      "title": "(Eng/Indo Sub) TXT Beomgyu & Hueningkai VLive | 211012 | GYUNING's Q&A😊",
+      "duration": "56:38",
+      "durationSeconds": 3398,
+      "thumbnail": "https://i.ytimg.com/vi/a7ZpUAgk0SA/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-10-12",
+      "broadcastDate": "2021-10-12",
+      "channel": "V Live"
+    },
+    {
+      "id": "Wz1cIKl3O-c",
+      "title": "(Eng/Indo Sub) TXT Soobin & Hueningkai VLive | 210922 | It's Been A While We Have Done a Workplace🐰🐧",
+      "duration": "1:11:39",
+      "durationSeconds": 4299,
+      "thumbnail": "https://i.ytimg.com/vi/Wz1cIKl3O-c/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-09-22",
+      "broadcastDate": "2021-09-22",
+      "channel": "V Live"
+    },
+    {
+      "id": "DX7e6njU9NQ",
+      "title": "TXT Yeonjun VLive | 210813 | 🦊 (Eng/Indo Sub)",
+      "duration": "42:34",
+      "durationSeconds": 2554,
+      "thumbnail": "https://i.ytimg.com/vi/DX7e6njU9NQ/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-08-13",
+      "broadcastDate": "2021-08-13",
+      "channel": "V Live"
+    },
+    {
+      "id": "6nw2thZLg9Q",
+      "title": "TXT Taehyun & Hueningkai VLive | 210801 | While August Starts (Eng Sub)",
+      "duration": "52:25",
+      "durationSeconds": 3145,
+      "thumbnail": "https://i.ytimg.com/vi/6nw2thZLg9Q/hqdefault.jpg",
+      "members": [
+        "taehyun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-08-01",
+      "broadcastDate": "2021-08-01",
+      "channel": "V Live"
+    },
+    {
+      "id": "zy62ix-vHRM",
+      "title": "TXT Soobin VLive | 210718 | This Time Real Talk!!! (Eng Sub)",
+      "duration": "1:20:29",
+      "durationSeconds": 4829,
+      "thumbnail": "https://i.ytimg.com/vi/zy62ix-vHRM/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-07-18",
+      "broadcastDate": "2021-07-18",
+      "channel": "V Live"
+    },
+    {
+      "id": "yZaMw1wNfxI",
+      "title": "TXT Hueningkai VLive | 210708 | I'm revealing it🐧 (Eng Sub)",
+      "duration": "36:00",
+      "durationSeconds": 2160,
+      "thumbnail": "https://i.ytimg.com/vi/yZaMw1wNfxI/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-07-08",
+      "broadcastDate": "2021-07-08",
+      "channel": "V Live"
+    },
+    {
+      "id": "ziNRDKRgi9Q",
+      "title": "TXT Taehyun VLive | 210630 | It's Hot, Right? (Eng/Indo Sub)",
+      "duration": "50:20",
+      "durationSeconds": 3020,
+      "thumbnail": "https://i.ytimg.com/vi/ziNRDKRgi9Q/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-06-30",
+      "broadcastDate": "2021-06-30",
+      "channel": "V Live"
+    },
+    {
+      "id": "JIs75C-SURg",
+      "title": "TXT Yeonjun VLive | 210626 | COMEBACK (Rule of Dance) | Eng Sub",
+      "duration": "59:39",
+      "durationSeconds": 3579,
+      "thumbnail": "https://i.ytimg.com/vi/JIs75C-SURg/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-06-26",
+      "broadcastDate": "2021-06-26",
+      "channel": "V Live"
+    },
+    {
+      "id": "VbvLjZ2MSMI",
+      "title": "TXT Beomgyu VLive | 210528 | Long time, no see😊 (Eng/Indo Sub)",
+      "duration": "38:16",
+      "durationSeconds": 2296,
+      "thumbnail": "https://i.ytimg.com/vi/VbvLjZ2MSMI/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-05-28",
+      "broadcastDate": "2021-05-28",
+      "channel": "V Live"
+    },
+    {
+      "id": "O8ynK4hrpAg",
+      "title": "TXT Taehyun & Hueningkai VLive | 210523 | 🌹Who knows how to make perfume~🐿🐧🌹 (Eng Sub)",
+      "duration": "43:27",
+      "durationSeconds": 2607,
+      "thumbnail": "https://i.ytimg.com/vi/O8ynK4hrpAg/hqdefault.jpg",
+      "members": [
+        "taehyun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-05-23",
+      "broadcastDate": "2021-05-23",
+      "channel": "V Live"
+    },
+    {
+      "id": "LimjqjJlse8",
+      "title": "TXT Soobin, Yeonjun & Beomgyu VLive | 210513 | Choi Choi Choi🧊 (Eng Sub)",
+      "duration": "43:24",
+      "durationSeconds": 2604,
+      "thumbnail": "https://i.ytimg.com/vi/LimjqjJlse8/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-05-13",
+      "broadcastDate": "2021-05-13",
+      "channel": "V Live"
+    },
+    {
+      "id": "ZJpDKnK9hrE",
+      "title": "TXT Taehyun & Beomgyu VLive | 210430 | (Eng Sub)",
+      "duration": "34:41",
+      "durationSeconds": 2081,
+      "thumbnail": "https://i.ytimg.com/vi/ZJpDKnK9hrE/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2021-04-30",
+      "broadcastDate": "2021-04-30",
+      "channel": "V Live"
+    },
+    {
+      "id": "lY8NcWvXU8o",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.08.16) | SOOBIN LIVE (MUSIC PARTY FULL)",
+      "duration": "5:22:44",
+      "durationSeconds": 19364,
+      "thumbnail": "https://i.ytimg.com/vi/lY8NcWvXU8o/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-08-16",
+      "broadcastDate": "2025-08-16",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "2U6Fkbsz6zI",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.01.20) | SOOBIN LIVE",
+      "duration": "54:55",
+      "durationSeconds": 3295,
+      "thumbnail": "https://i.ytimg.com/vi/2U6Fkbsz6zI/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-01-20",
+      "broadcastDate": "2026-01-20",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "YAxq8eGkhgI",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.03.20) | SOOBIN LIVE",
+      "duration": "1:21:44",
+      "durationSeconds": 4904,
+      "thumbnail": "https://i.ytimg.com/vi/YAxq8eGkhgI/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-03-20",
+      "broadcastDate": "2026-03-20",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "_W_hVNPA5Gg",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.12.05) | SOOBIN BIRTHDAY LIVE 🎂",
+      "duration": "1:08:49",
+      "durationSeconds": 4129,
+      "thumbnail": "https://i.ytimg.com/vi/_W_hVNPA5Gg/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-12-05",
+      "broadcastDate": "2025-12-05",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "_D0KIhlr3fw",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.12.15) | SOOBIN LIVE",
+      "duration": "31:57",
+      "durationSeconds": 1917,
+      "thumbnail": "https://i.ytimg.com/vi/_D0KIhlr3fw/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-12-15",
+      "broadcastDate": "2025-12-15",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "psmN87WPgcA",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.09.22) | SOOBIN & TAEHYUN LIVE",
+      "duration": "1:29:51",
+      "durationSeconds": 5391,
+      "thumbnail": "https://i.ytimg.com/vi/psmN87WPgcA/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-09-22",
+      "broadcastDate": "2025-09-22",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "euZQd5CtX7o",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.28) | SOOBIN LIVE",
+      "duration": "45:58",
+      "durationSeconds": 2758,
+      "thumbnail": "https://i.ytimg.com/vi/euZQd5CtX7o/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-28",
+      "broadcastDate": "2026-05-28",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "5YFtfDmmq9k",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.06.20) | SOOBIN LIVE",
+      "duration": "22:24",
+      "durationSeconds": 1344,
+      "thumbnail": "https://i.ytimg.com/vi/5YFtfDmmq9k/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-06-20",
+      "broadcastDate": "2026-06-20",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "akpjTD2go_A",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.19) | SOOBIN LIVE",
+      "duration": "42:08",
+      "durationSeconds": 2528,
+      "thumbnail": "https://i.ytimg.com/vi/akpjTD2go_A/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-19",
+      "broadcastDate": "2026-05-19",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "3jCGIvGC_GM",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.04.30) | SOOBIN & YEONJUN LIVE",
+      "duration": "43:15",
+      "durationSeconds": 2595,
+      "thumbnail": "https://i.ytimg.com/vi/3jCGIvGC_GM/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-04-30",
+      "broadcastDate": "2025-04-30",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "3gsJ8vroYx8",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.12.28) | SOOBIN LIVE",
+      "duration": "44:45",
+      "durationSeconds": 2685,
+      "thumbnail": "https://i.ytimg.com/vi/3gsJ8vroYx8/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-12-28",
+      "broadcastDate": "2025-12-28",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "XIY32i3_JSg",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.04.28) | SOOBIN LIVE",
+      "duration": "41:36",
+      "durationSeconds": 2496,
+      "thumbnail": "https://i.ytimg.com/vi/XIY32i3_JSg/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-04-28",
+      "broadcastDate": "2025-04-28",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "QfA51I8hE0s",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.08.31) | SOOBIN LIVE",
+      "duration": "37:35",
+      "durationSeconds": 2255,
+      "thumbnail": "https://i.ytimg.com/vi/QfA51I8hE0s/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-08-31",
+      "broadcastDate": "2026-08-31",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "KiVo1AyC6bc",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.10.06) | SOOBIN LIVE",
+      "duration": "32:38",
+      "durationSeconds": 1958,
+      "thumbnail": "https://i.ytimg.com/vi/KiVo1AyC6bc/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-10-05",
+      "broadcastDate": "2025-10-06",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "PkEox9R3sMQ",
+      "title": "[TXT-LOG] TXT IN PARIS✈️ feat.연준캠🦊+범규캠🧸+카이캠🐧 | 패션쇼🕺도 보고 에펠탑 앞에서 찰칵📸✨",
+      "duration": "18:55",
+      "durationSeconds": 1135,
+      "thumbnail": "https://i.ytimg.com/vi/PkEox9R3sMQ/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "beomgyu"
+      ],
+      "kind": "vlog",
+      "publishedAt": "2024-02-22",
+      "broadcastDate": null,
+      "channel": "TOMORROW X TOGETHER OFFICIAL"
+    },
+    {
+      "id": "yN3C244n4kg",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.09.28) | YEONJUN LIVE",
+      "duration": "1:21:12",
+      "durationSeconds": 4872,
+      "thumbnail": "https://i.ytimg.com/vi/yN3C244n4kg/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-09-28",
+      "broadcastDate": "2025-09-28",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "2gIZzQXs5es",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.23) | YEONJUN LIVE",
+      "duration": "1:15:37",
+      "durationSeconds": 4537,
+      "thumbnail": "https://i.ytimg.com/vi/2gIZzQXs5es/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-23",
+      "broadcastDate": "2026-05-23",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "slQJe4MUn1c",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.02.08) | YEONJUN LIVE",
+      "duration": "1:16:45",
+      "durationSeconds": 4605,
+      "thumbnail": "https://i.ytimg.com/vi/slQJe4MUn1c/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-02-08",
+      "broadcastDate": "2026-02-08",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "yk8fkVGbHS4",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.08.16) | YEONJUN LIVE",
+      "duration": "44:31",
+      "durationSeconds": 2671,
+      "thumbnail": "https://i.ytimg.com/vi/yk8fkVGbHS4/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-08-16",
+      "broadcastDate": "2026-08-16",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "hDsPxPc7N0M",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.03.04) | YEONJUN LIVE (7TH DEBUT ANNIVERSARY)",
+      "duration": "41:51",
+      "durationSeconds": 2511,
+      "thumbnail": "https://i.ytimg.com/vi/hDsPxPc7N0M/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-03-03",
+      "broadcastDate": "2026-03-04",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "v47K3lRZ1xg",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.09.13) | YEONJUN BIRTHDAY LIVE 🎂",
+      "duration": "44:03",
+      "durationSeconds": 2643,
+      "thumbnail": "https://i.ytimg.com/vi/v47K3lRZ1xg/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-09-13",
+      "broadcastDate": "2025-09-13",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "npTYetke9lQ",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.12.18) | BEOMGYU LIVE",
+      "duration": "45:13",
+      "durationSeconds": 2713,
+      "thumbnail": "https://i.ytimg.com/vi/npTYetke9lQ/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-12-18",
+      "broadcastDate": "2025-12-18",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "ZlYdKe4MlyQ",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.29) | BEOMGYU LIVE",
+      "duration": "37:20",
+      "durationSeconds": 2240,
+      "thumbnail": "https://i.ytimg.com/vi/ZlYdKe4MlyQ/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-29",
+      "broadcastDate": "2026-05-29",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "-ebUxwViDbc",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.18) | SOOBIN & BEOMGYU LIVE (PLAYING GAMES)",
+      "duration": "55:17",
+      "durationSeconds": 3317,
+      "thumbnail": "https://i.ytimg.com/vi/-ebUxwViDbc/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-18",
+      "broadcastDate": "2026-05-18",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "YvSq2GeYSLs",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.09.19) | BEOMGYU LIVE",
+      "duration": "1:06:54",
+      "durationSeconds": 4014,
+      "thumbnail": "https://i.ytimg.com/vi/YvSq2GeYSLs/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-09-19",
+      "broadcastDate": "2025-09-19",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "kiYRhjfWVhs",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.04.26) | TAEHYUN & BEOMGYU LIVE",
+      "duration": "47:46",
+      "durationSeconds": 2866,
+      "thumbnail": "https://i.ytimg.com/vi/kiYRhjfWVhs/hqdefault.jpg",
+      "members": [
+        "beomgyu",
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-04-26",
+      "broadcastDate": "2025-04-26",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "3xd97W2pNoI",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.12.07) | TAEHYUN LIVE",
+      "duration": "33:47",
+      "durationSeconds": 2027,
+      "thumbnail": "https://i.ytimg.com/vi/3xd97W2pNoI/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-12-07",
+      "broadcastDate": "2025-12-07",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "fDPCEnD1LWg",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.01.18) | TAEHYUN LIVE",
+      "duration": "40:12",
+      "durationSeconds": 2412,
+      "thumbnail": "https://i.ytimg.com/vi/fDPCEnD1LWg/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-01-18",
+      "broadcastDate": "2026-01-18",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "jbm-bWsw7XQ",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.27) | TAEHYUN LIVE",
+      "duration": "33:54",
+      "durationSeconds": 2034,
+      "thumbnail": "https://i.ytimg.com/vi/jbm-bWsw7XQ/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-27",
+      "broadcastDate": "2026-05-27",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "h_HLXwg9aQA",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.10.22) | KAI LIVE",
+      "duration": "44:59",
+      "durationSeconds": 2699,
+      "thumbnail": "https://i.ytimg.com/vi/h_HLXwg9aQA/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-10-22",
+      "broadcastDate": "2025-10-22",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "jTek-EKJgpU",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.24) | HUENING KAI LIVE",
+      "duration": "30:16",
+      "durationSeconds": 1816,
+      "thumbnail": "https://i.ytimg.com/vi/jTek-EKJgpU/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-24",
+      "broadcastDate": "2026-05-24",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "_tpiUiHlB20",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.09.17) | SOOBIN LIVE",
+      "duration": "1:07:37",
+      "durationSeconds": 4057,
+      "thumbnail": "https://i.ytimg.com/vi/_tpiUiHlB20/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-09-17",
+      "broadcastDate": "2025-09-17",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "eqbPXQwXKT0",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.10.21) | SOOBIN LIVE",
+      "duration": "23:12",
+      "durationSeconds": 1392,
+      "thumbnail": "https://i.ytimg.com/vi/eqbPXQwXKT0/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-10-21",
+      "broadcastDate": "2025-10-21",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "LJXuZSdZKW0",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.10.21) | BEOMGYU & SOOBIN LIVE",
+      "duration": "31:52",
+      "durationSeconds": 1912,
+      "thumbnail": "https://i.ytimg.com/vi/LJXuZSdZKW0/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-10-21",
+      "broadcastDate": "2025-10-21",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "SPaSluvZpSg",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.08.01) | BEOMGYU & SOOBIN LIVE",
+      "duration": "46:53",
+      "durationSeconds": 2813,
+      "thumbnail": "https://i.ytimg.com/vi/SPaSluvZpSg/hqdefault.jpg",
+      "members": [
+        "soobin",
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-08-01",
+      "broadcastDate": "2026-08-01",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "xGvItQByFUs",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.02.13) | SOOBIN LIVE",
+      "duration": "50:43",
+      "durationSeconds": 3043,
+      "thumbnail": "https://i.ytimg.com/vi/xGvItQByFUs/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-02-13",
+      "broadcastDate": "2026-02-13",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "qzmVkJgC3jM",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.05.11) | SOOBIN LIVE",
+      "duration": "40:01",
+      "durationSeconds": 2401,
+      "thumbnail": "https://i.ytimg.com/vi/qzmVkJgC3jM/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-05-11",
+      "broadcastDate": "2025-05-11",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "k87RlVEnT7U",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.10.27) | SOOBIN LIVE",
+      "duration": "36:19",
+      "durationSeconds": 2179,
+      "thumbnail": "https://i.ytimg.com/vi/k87RlVEnT7U/hqdefault.jpg",
+      "members": [
+        "soobin"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-10-26",
+      "broadcastDate": "2025-10-27",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "pgZQbfki7f0",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.09.13) | YEONJUN LIVE",
+      "duration": "34:33",
+      "durationSeconds": 2073,
+      "thumbnail": "https://i.ytimg.com/vi/pgZQbfki7f0/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-09-13",
+      "broadcastDate": "2026-09-13",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "CM6n0fAO0Ys",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.07.04) | YEONJUN LIVE",
+      "duration": "46:07",
+      "durationSeconds": 2767,
+      "thumbnail": "https://i.ytimg.com/vi/CM6n0fAO0Ys/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-07-05",
+      "broadcastDate": "2026-07-04",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "4TI1cpxjCA0",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.05.17) | YEONJUN LIVE",
+      "duration": "37:55",
+      "durationSeconds": 2275,
+      "thumbnail": "https://i.ytimg.com/vi/4TI1cpxjCA0/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-05-18",
+      "broadcastDate": "2025-05-17",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "iLrbY4DS36U",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.04.02) | YEONJUN LIVE",
+      "duration": "1:00:04",
+      "durationSeconds": 3604,
+      "thumbnail": "https://i.ytimg.com/vi/iLrbY4DS36U/hqdefault.jpg",
+      "members": [
+        "yeonjun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-04-01",
+      "broadcastDate": "2025-04-02",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "cHV0Nr9Qucc",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.06.24) | BEOMGYU LIVE",
+      "duration": "31:32",
+      "durationSeconds": 1892,
+      "thumbnail": "https://i.ytimg.com/vi/cHV0Nr9Qucc/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-06-26",
+      "broadcastDate": "2026-06-24",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "bTgPJUYRECI",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.01.22) | BEOMGYU LIVE",
+      "duration": "40:38",
+      "durationSeconds": 2438,
+      "thumbnail": "https://i.ytimg.com/vi/bTgPJUYRECI/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-01-22",
+      "broadcastDate": "2026-01-22",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "ENDzVINrriw",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.09.21) | BEOMGYU LIVE",
+      "duration": "40:19",
+      "durationSeconds": 2419,
+      "thumbnail": "https://i.ytimg.com/vi/ENDzVINrriw/hqdefault.jpg",
+      "members": [
+        "beomgyu"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-09-21",
+      "broadcastDate": "2025-09-21",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "x0TUDo9cRLs",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.11) | TAEHYUN LIVE",
+      "duration": "42:51",
+      "durationSeconds": 2571,
+      "thumbnail": "https://i.ytimg.com/vi/x0TUDo9cRLs/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-11",
+      "broadcastDate": "2026-05-11",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "bxn__RjXHWs",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.08.29) | TAEHYUN LIVE",
+      "duration": "47:33",
+      "durationSeconds": 2853,
+      "thumbnail": "https://i.ytimg.com/vi/bxn__RjXHWs/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-08-29",
+      "broadcastDate": "2025-08-29",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "eghKdqOGZmo",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.06.17) | TAEHYUN LIVE",
+      "duration": "40:45",
+      "durationSeconds": 2445,
+      "thumbnail": "https://i.ytimg.com/vi/eghKdqOGZmo/hqdefault.jpg",
+      "members": [
+        "taehyun"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-06-17",
+      "broadcastDate": "2026-06-17",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "gu33StEY-PU",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.06.16) | HUENING KAI LIVE",
+      "duration": "33:05",
+      "durationSeconds": 1985,
+      "thumbnail": "https://i.ytimg.com/vi/gu33StEY-PU/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-06-16",
+      "broadcastDate": "2026-06-16",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "5ivUxeCBuqY",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.11.16) | KAI LIVE",
+      "duration": "1:00:01",
+      "durationSeconds": 3601,
+      "thumbnail": "https://i.ytimg.com/vi/5ivUxeCBuqY/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-11-16",
+      "broadcastDate": "2025-11-16",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "HzbHnJdbRAo",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.06.20) | YEONJUN & KAI LIVE (PLAYING OVERWATCH)",
+      "duration": "1:31:52",
+      "durationSeconds": 5512,
+      "thumbnail": "https://i.ytimg.com/vi/HzbHnJdbRAo/hqdefault.jpg",
+      "members": [
+        "yeonjun",
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-06-20",
+      "broadcastDate": "2026-06-20",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "bBBWvynYrSU",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.05.04) | HUENING KAI LIVE",
+      "duration": "20:05",
+      "durationSeconds": 1205,
+      "thumbnail": "https://i.ytimg.com/vi/bBBWvynYrSU/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-05-04",
+      "broadcastDate": "2026-05-04",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "f8MJk1MoYgg",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.09.05) | HUENING KAI LIVE",
+      "duration": "21:57",
+      "durationSeconds": 1317,
+      "thumbnail": "https://i.ytimg.com/vi/f8MJk1MoYgg/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-09-05",
+      "broadcastDate": "2026-09-05",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "rdzaApmi5YE",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.04.12) | KAI LIVE",
+      "duration": "39:06",
+      "durationSeconds": 2346,
+      "thumbnail": "https://i.ytimg.com/vi/rdzaApmi5YE/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-04-12",
+      "broadcastDate": "2025-04-12",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "4KUklL414KM",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2025.05.10) | KAI LIVE",
+      "duration": "38:12",
+      "durationSeconds": 2292,
+      "thumbnail": "https://i.ytimg.com/vi/4KUklL414KM/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2025-05-09",
+      "broadcastDate": "2025-05-10",
+      "channel": "TomorrowByEdits"
+    },
+    {
+      "id": "wiUiOvTG5T0",
+      "title": "[MULTI SUB] TXT WEVERSE LIVE (2026.08.15) | HUENING KAI BIRTHDAY LIVE 🎂",
+      "duration": "44:53",
+      "durationSeconds": 2693,
+      "thumbnail": "https://i.ytimg.com/vi/wiUiOvTG5T0/hqdefault.jpg",
+      "members": [
+        "hueningkai"
+      ],
+      "kind": "live",
+      "publishedAt": "2026-08-15",
+      "broadcastDate": "2026-08-15",
+      "channel": "TomorrowByEdits"
     }
   ]
 }

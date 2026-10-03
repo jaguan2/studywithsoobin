@@ -1,3 +1,5 @@
+export type Member = 'soobin' | 'yeonjun' | 'beomgyu' | 'taehyun' | 'hueningkai'
+
 export interface Video {
   id: string
   title: string
@@ -7,6 +9,12 @@ export interface Video {
    *  playlist.json snapshots fetched after it was added. */
   durationSeconds?: number
   thumbnail: string
+  members?: Member[]
+  /** YouTube release date (YYYY-MM-DD), not an archive's original live date. */
+  publishedAt?: string | null
+  broadcastDate?: string | null
+  kind?: 'vlog' | 'live' | 'other'
+  channel?: string
 }
 
 export interface Playlist {

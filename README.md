@@ -1,7 +1,7 @@
 # study with soobin 🐰
 
 A LifeAt-style Pomodoro study app. Instead of generic cafe/nature scenery, the
-background is TXT Soobin's vlogs and VLIVEs — company for a study session, the
+background is TXT members' vlogs, VLIVEs and Weverse lives — company for a study session, the
 same way the [original "Study w/ Soobin" playlist](https://www.youtube.com/playlist?list=PLwzQP2wCE5w4hRj01BS0zxO2Bu8eaBDWt)
 gets used.
 
@@ -65,6 +65,8 @@ an internet connection since the videos stream from YouTube.)
 - Pomodoro extras: skip a break, nudge ±1:00 mid-round, and optionally pause
   the video during breaks — plus a gentle nudge if you've studied two hours
   without one
+- Member, release year and release month filters on the start screen and in-session picker
+- Surprise me and automatic next-video selection follow your active filters
 - Paged thumbnail grid to switch videos mid-session
 - Favorites (❤) and four themes — light, ☕ coffee, dark, and 🎨 a custom
   colour you pick yourself — all remembered between visits, along with your
@@ -105,20 +107,40 @@ npm run lint       # eslint
 
 ## Refreshing the playlist
 
-The video list lives in `src/data/playlist.json`, a static snapshot (id,
-title, duration, thumbnail) of the YouTube playlist, plus a handful of Soobin
-vlogs/VLIVEs that aren't in that playlist. It's not fetched live — this keeps
-the app free of API keys and rate limits. When new videos are added to the
-source playlist, regenerate it with:
+The video list lives in `src/data/playlist.json`, a static snapshot of the
+original Study w/ Soobin playlist plus curated TXT vlogs and live archives for
+**Soobin, Yeonjun, Beomgyu, Taehyun and Hueningkai**. Browse the full,
+member-organized [link catalog](docs/video-catalog.md) for titles, durations,
+channels, release dates and original broadcast dates. Shared lives appear under
+each named participant.
 
 ```
 npm run fetch-playlist
 ```
 
-To add a Soobin video that *isn't* in the source playlist, put its id in
-`scripts/extra-videos.json` and re-run the same command — the script resolves
-each id's title/duration/thumbnail and appends it. Add ids there rather than
-editing `playlist.json` directly, which the next refresh would overwrite.
+To add a video outside the source playlist, add its YouTube id and `members`
+to `scripts/extra-videos.json`, then refresh. Optional `kind` and
+`broadcastDate` overrides preserve curator knowledge. The refresh resolves
+fresh titles, durations, channels and publication dates for every video,
+keeps the source playlist first, and regenerates the link catalog. Individual
+lookup failures keep previous verified entries; widespread failures abort
+without replacing the snapshot.
+
+Date filters use **YouTube publication dates**, including an archive upload's
+release date. Original live dates are separate metadata, extracted only from
+explicit dates in archive titles or curated overrides. Missing dates are not
+guessed. Compare original dates, participants and duration before adding an
+alternate upload of the same broadcast. Equal durations alone do not prove a
+duplicate; separate lives on the same day can have different lengths.
+
+Research additional candidates with `node scripts/research-catalog.mjs`.
+It searches all five members and the established archive channels and writes
+an ignored `scripts/research-results.json` for review. After reviewing the
+results, `node scripts/curate-research.mjs` adds eligible ids from the selected
+channels; inspect the diff before refreshing. New curated vlogs are 10+
+minutes and live archives 20+ minutes; ambiguous and multipart clips are
+excluded. Runtime embedding can still fail, which the app handles by skipping
+the video. The collection is curated rather than exhaustive.
 
 This uses [`youtubei.js`](https://github.com/LuanRT/YouTube.js) to read the
 playlist server-side (Node-only), so no Google API credentials are needed. To
@@ -161,7 +183,7 @@ studywithsoobin/
 ├── requirements.txt          # product requirements spec (plain language)
 ├── docs/screenshots/         # images used by this README
 ├── scripts/
-│   ├── extra-videos.json     # curated Soobin videos not in the source playlist
+│   ├── extra-videos.json     # curated TXT videos not in the source playlist
 │   └── fetch-playlist.mjs    # refresh src/data/playlist.json from YouTube
 ├── src/
 │   ├── App.tsx               # top-level state: current video, volume, favorites
@@ -206,5 +228,5 @@ studywithsoobin/
   original creators; this project only embeds and links to their public
   YouTube content. The screenshots above are of the app in use and show
   frames from those videos.
-- The bundled `src/data/playlist.json` was last refreshed 2026-08-19 (34 videos:
-  21 from the playlist plus 13 curated Soobin vlogs/VLIVEs).
+- The bundled catalog now includes all five TXT members. Its current refresh
+  date, per-member totals and links are in [docs/video-catalog.md](docs/video-catalog.md).
