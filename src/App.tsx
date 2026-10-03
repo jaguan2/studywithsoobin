@@ -11,11 +11,9 @@ import { TimerCard } from './components/TimerCard'
 import { WelcomeScreen } from './components/WelcomeScreen'
 import { applyCustomTheme, clearCustomTheme, DEFAULT_CUSTOM_COLOR } from './lib/theme'
 import { storageGet, storageGetJson, storageRemove, storageSet, storageSetJson } from './lib/storage'
-import { EMPTY_FILTERS, filterVideos, type CatalogFilters } from './lib/catalog'
+import { adjacentVideo, EMPTY_FILTERS, filterVideos, type CatalogFilters } from './lib/catalog'
 
 const playlist = playlistData as Playlist
-
-const TXT_CHANNEL_URL = 'https://www.youtube.com/@TOMORROWXTOGETHER?sub_confirmation=1'
 
 export type Theme = 'light' | 'coffee' | 'dark' | 'custom'
 
@@ -53,14 +51,6 @@ function loadVolume(): number {
   return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : 40
 }
 
-function RestoreChevron() {
-  return (
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="opacity-60">
-      <path d="M6 15l6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
 function toggleFullscreen() {
   if (document.fullscreenElement) {
     void document.exitFullscreen()
@@ -84,7 +74,6 @@ export default function App() {
   // current player. Reset whenever the player is recreated.
   const [muted, setMuted] = useState(true)
   const [lastVideoId, setLastVideoId] = useState<string | null>(() => storageGet('sws.lastVideo'))
-  const [collapsed, setCollapsed] = useState(false)
   const [favorites, setFavorites] = useState<string[]>(loadFavorites)
   const [theme, setTheme] = useState<Theme>(loadTheme)
   const [customColor, setCustomColor] = useState<string>(loadCustomColor)
@@ -94,21 +83,24 @@ export default function App() {
   const [blockedIds, setBlockedIds] = useState<string[]>([])
   const [notice, setNotice] = useState<string | null>(null)
   const [videoPlaying, setVideoPlaying] = useState(true)
-  const [timerCollapsed, setTimerCollapsed] = useState(false)
-  const [tasksCollapsed, setTasksCollapsed] = useState(() => storageGet('sws.tasks.collapsed') === '1')
-  const [topPanel, setTopPanel] = useState<'timer' | 'sidebar' | 'tasks'>('sidebar')
+  const [dockCollapsed, setDockCollapsed] = useState(false)
+  const [topPanel, setTopPanel] = useState<'timer' | 'sidebar' | 'tasks'>('timer')
   // Zen mode: everything but the video disappears (Z toggles, Esc exits).
   const [zen, setZen] = useState(false)
-  // Mirrors the control pill's idle fade so the top-right cluster rides it.
-  const [controlsVisible, setControlsVisible] = useState(true)
+  // WebView can retain the document's small-layout scroll offset when the
+  // window expands, clipping the toolbar and leaving empty space below.
+  useEffect(() => {
+    if (!videoId) return
+    const wideLayout = window.matchMedia('(min-width: 1000px) and (min-height: 600px)')
+    const resetScroll = () => {
+      if (wideLayout.matches || dockCollapsed || zen) window.scrollTo(0, 0)
+    }
+    resetScroll()
+    window.addEventListener('resize', resetScroll)
+    return () => window.removeEventListener('resize', resetScroll)
+  }, [videoId, dockCollapsed, zen])
   const [pauseOnBreak, setPauseOnBreak] = useState(() => storageGet('sws.pauseOnBreak') === '1')
   const videoRef = useRef<VideoBackgroundHandle>(null)
-  // Constrains panel drags to the viewport — a panel flung past the edge
-  // would otherwise be unrecoverable (the restore pill restores visibility,
-  // not position).
-  const rootRef = useRef<HTMLDivElement>(null)
-  // The full-viewport overlay, used to keep a dragged control pill on screen.
-  const overlayRef = useRef<HTMLDivElement>(null)
   const noticeTimer = useRef<number | undefined>(undefined)
   const timer = useTimer(25)
   const setTaskDuration = timer.setDurationSeconds
@@ -167,9 +159,6 @@ export default function App() {
     document.title = timer.isRunning ? `⏱ ${timer.label} · study with soobin` : 'study with soobin'
   }, [timer.isRunning, timer.label])
 
-  useEffect(() => {
-    storageSet('sws.tasks.collapsed', tasksCollapsed ? '1' : '0')
-  }, [tasksCollapsed])
 
   // Optional pomodoro tie-in: the video pauses for breaks, resumes for focus.
   // Driven by real focus↔break transitions only — the toggle is read from a
@@ -195,7 +184,7 @@ export default function App() {
     () => playlist.videos.find((v) => v.id === videoId) ?? playlist.videos[0],
     [videoId],
   )
-  const filteredVideos = useMemo(() => filterVideos(playable, catalogFilters), [playable, catalogFilters])
+  const filteredVideos = useMemo(() => filterVideos(playable, catalogFilters, favorites), [playable, catalogFilters, favorites])
 
   const lastVideo = useMemo(
     () => playable.find((v) => v.id === lastVideoId) ?? null,
@@ -225,23 +214,31 @@ export default function App() {
     setVideoId(pickRandom(filteredVideos.filter((v) => v.id !== videoId)))
   }, [videoId, blockedIds, filteredVideos, showNotice])
 
-  const handleApiUnavailable = useCallback(() => {
-    showNotice('Couldn’t reach YouTube — check your internet connection, then pick a video to retry', 8000)
+  const handleApiUnavailable = useCallback((message?: string) => {
+    showNotice(message ?? 'Couldn’t reach YouTube — check your internet connection, then pick a video to retry', 8000)
   }, [showNotice])
 
   const handleEnded = useCallback(() => {
-    setVideoId((prev) => pickRandom(filteredVideos, prev ?? undefined))
-  }, [filteredVideos])
+    const next = pickRandom(filteredVideos, videoId ?? undefined)
+    if (next && next === videoId) videoRef.current?.restart()
+    else setVideoId(next)
+  }, [filteredVideos, videoId])
 
   const handleSurprise = useCallback(() => {
     setVideoId(pickRandom(filteredVideos))
+  }, [filteredVideos])
+  const handlePreviousVideo = useCallback(() => {
+    setVideoId(prev => adjacentVideo(filteredVideos, prev, -1) ?? prev)
+  }, [filteredVideos])
+  const handleNextVideo = useCallback(() => {
+    setVideoId(prev => adjacentVideo(filteredVideos, prev, 1) ?? prev)
   }, [filteredVideos])
 
   const handleTogglePlay = useCallback(() => setVideoPlaying((p) => !p), [])
   const loadTaskDuration = useCallback(
     (seconds: number) => {
       setTaskDuration(seconds)
-      setTimerCollapsed(false)
+      setDockCollapsed(false)
       setTopPanel('timer')
       showNotice(`Timer set to ${Math.round(seconds / 60)} minutes — press Start when you’re ready`, 4000)
     },
@@ -257,12 +254,6 @@ export default function App() {
     setPauseOnBreak(v)
     storageSet('sws.pauseOnBreak', v ? '1' : '0')
   }, [])
-  const toggleSidebarCollapsed = useCallback(() => setCollapsed((c) => !c), [])
-  const toggleTimerCollapsed = useCallback(() => setTimerCollapsed((c) => !c), [])
-  const toggleTasksCollapsed = useCallback(() => setTasksCollapsed((c) => !c), [])
-  const focusTimer = useCallback(() => setTopPanel('timer'), [])
-  const focusSidebar = useCallback(() => setTopPanel('sidebar'), [])
-  const focusTasks = useCallback(() => setTopPanel('tasks'), [])
 
   // Gentle "you've been at it two hours" toast — presence-based, so stepping
   // away for five minutes counts as the break.
@@ -346,206 +337,52 @@ export default function App() {
           onSetCustomColor={setCustomColor}
           onSelect={setVideoId}
           onSurprise={handleSurprise}
+          runningTimer={timer.isRunning ? timer.label : null}
         />
-        {/* The timer keeps counting after "Change video" — show it, or its
-            chime comes out of nowhere. */}
-        {timer.isRunning && (
-          <div className="pointer-events-none fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm tabular-nums text-cream-100 shadow-panel backdrop-blur-md">
-            ⏱ {timer.label}
-            {timer.pomodoro && (timer.pomodoro.phase === 'focus' ? ' · 📖 focus' : ' · ☕ break')}
-            {' · still running'}
-          </div>
-        )}
+
       </>
     )
   }
 
   return (
-    <div ref={rootRef} className="relative h-screen w-screen overflow-hidden bg-black">
-      <VideoBackground
-        ref={videoRef}
-        videoId={videoId}
-        volume={volume}
-        muted={muted}
-        isPlaying={videoPlaying}
-        captionLang={captionLang}
-        onEnded={handleEnded}
-        onPlayingChange={setVideoPlaying}
-        onUnplayable={handleUnplayable}
-        onApiUnavailable={handleApiUnavailable}
-      />
-
-      <TimerCard
-        timer={timer}
-        bounds={rootRef}
-        zIndex={topPanel === 'timer' ? 40 : 30}
-        onFocus={focusTimer}
-        collapsed={timerCollapsed || zen}
-        onToggleCollapsed={toggleTimerCollapsed}
-        pauseOnBreak={pauseOnBreak}
-        onSetPauseOnBreak={handleSetPauseOnBreak}
-      />
-
-      <TasksCard
-        bounds={rootRef}
-        zIndex={topPanel === 'tasks' ? 40 : 30}
-        onFocus={focusTasks}
-        collapsed={tasksCollapsed || zen}
-        onToggleCollapsed={toggleTasksCollapsed}
-        onUseDuration={loadTaskDuration}
-      />
-
-      <Sidebar
-        filters={catalogFilters}
-        onFiltersChange={setCatalogFilters}
-        collapsed={collapsed || zen}
-        onToggleCollapsed={toggleSidebarCollapsed}
-        bounds={rootRef}
-        videos={playable}
-        currentVideo={currentVideo}
-        onSelectVideo={setVideoId}
-        volume={volume}
-        onVolumeChange={handleVolumeChange}
-        playlistUrl={playlist.sourceUrl}
-        favorites={favorites}
-        onToggleFavorite={toggleFavorite}
-        theme={theme}
-        onSetTheme={setTheme}
-        customColor={customColor}
-        onSetCustomColor={setCustomColor}
-        zIndex={topPanel === 'sidebar' ? 40 : 30}
-        onFocus={focusSidebar}
-      />
-
-      <div ref={overlayRef} className="pointer-events-none absolute inset-0">
-
-        {/* Autoplay policy: every fresh player starts muted no matter what
-            the slider shows. One explicit tap restores the saved volume. */}
-        {muted && volume > 0 && (
-          <button
-            onClick={handleUnmute}
-            className="pointer-events-auto absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-ink-900/85 px-4 py-1.5 text-sm font-medium text-cream-100 shadow-panel backdrop-blur-md transition hover:bg-ink-900"
-          >
-            🔇 Tap to unmute
-          </button>
-        )}
-
-        <VideoControls
-          player={videoRef}
-          bounds={overlayRef}
-          isPlaying={videoPlaying}
-          onTogglePlay={handleTogglePlay}
-          captionLang={captionLang}
-          onSetCaptionLang={chooseCaptionLang}
-          onVisibleChange={setControlsVisible}
-        />
-
-        {/* Fades on the pill's idle rhythm; gone entirely in zen mode. */}
-        <div
-          className={
-            'absolute right-4 top-4 z-10 flex items-center gap-2 transition-opacity duration-300 motion-reduce:transition-none ' +
-            (zen
-              ? 'pointer-events-none opacity-0'
-              : controlsVisible
-                ? 'pointer-events-auto opacity-100'
-                : 'pointer-events-none opacity-0')
-          }
-        >
-          {/* Back to the welcome grid. Unmounting the main UI stops the music
-              and the ambience, which is what "exit the video" should do. */}
-          <button
-            onClick={() => setVideoId(null)}
-            aria-label="Back to video selection"
-            title="Pick a different video"
-            className="flex items-center gap-1.5 rounded-full bg-cream-50/90 px-3.5 py-1.5 text-sm font-medium text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Change video
-          </button>
-          <a
-            href={TXT_CHANNEL_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full bg-cream-50/90 px-4 py-1.5 text-sm font-medium text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
-          >
-            Join MOA!
-          </a>
-          <button
-            onClick={toggleFullscreen}
-            aria-label="Toggle fullscreen"
-            title="Fullscreen (F)"
-            className="grid h-9 w-9 place-items-center rounded-full bg-cream-50/90 text-ink-800 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          <button
-            onClick={() => {
-              setZen(true)
-              showNotice('Zen mode — press Z or Esc to bring everything back', 4000)
-            }}
-            aria-label="Zen mode — hide all panels"
-            title="Zen mode (Z)"
-            className="grid h-9 w-9 place-items-center rounded-full bg-cream-50/90 text-ink-800 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path
-                d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path d="M4 4l16 16" strokeLinecap="round" />
-            </svg>
-          </button>
+    <div className={'study-workspace' + (dockCollapsed ? ' tools-hidden' : '') + (zen ? ' is-zen' : '')}>
+      <header className="workspace-toolbar">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-ink-900 dark:text-cream-100">study with soobin 🐰</p>
+          <p className="truncate text-xs text-ink-700 dark:text-cream-300" title={currentVideo.title}>{currentVideo.title}</p>
         </div>
-
-        {/* z-50: the draggable panels are z-30/40 and would otherwise cover
-            the toast when one happens to sit bottom-center. */}
-        {notice && (
-          <div className="absolute bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink-900/85 px-4 py-2 text-sm text-cream-100 shadow-panel backdrop-blur-md">
-            {notice}
-          </div>
-        )}
-
-        {/* minimized panels dock here as restore pills */}
-        {!zen && (timerCollapsed || collapsed || tasksCollapsed) && (
-          <div className="pointer-events-auto absolute bottom-4 left-4 z-10 flex items-center gap-2">
-            {timerCollapsed && (
-              <button
-                onClick={() => setTimerCollapsed(false)}
-                aria-label="Restore timer"
-                className="flex items-center gap-2 rounded-full bg-cream-50/90 px-4 py-2 text-sm font-medium tabular-nums text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
-              >
-                ⏱ {timer.label}
-                <RestoreChevron />
-              </button>
-            )}
-            {tasksCollapsed && (
-              <button
-                onClick={() => setTasksCollapsed(false)}
-                aria-label="Restore tasks"
-                className="flex items-center gap-2 rounded-full bg-cream-50/90 px-4 py-2 text-sm font-medium text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
-              >
-                📝 tasks
-                <RestoreChevron />
-              </button>
-            )}
-            {collapsed && (
-              <button
-                onClick={() => setCollapsed(false)}
-                aria-label="Restore panel"
-                className="flex items-center gap-2 rounded-full bg-cream-50/90 px-4 py-2 text-sm font-medium text-ink-900 shadow-panel backdrop-blur-md transition hover:bg-cream-100 dark:bg-ink-800/80 dark:text-cream-100 dark:hover:bg-ink-700"
-              >
-                🐰 study with soobin
-                <RestoreChevron />
-              </button>
-            )}
-          </div>
-        )}
-      </div>
+        <div className="toolbar-actions">
+          {zen ? <button onClick={() => setZen(false)} className="workspace-button">Exit zen</button> : <>
+            {muted && volume > 0 && <button onClick={handleUnmute} className="workspace-button">🔇 Unmute</button>}
+            <button onClick={() => setVideoId(null)} aria-label="Back to video selection" className="workspace-button">Change video</button>
+            <button onClick={() => setDockCollapsed(v => !v)} aria-expanded={!dockCollapsed} aria-controls="workspace-tools" className="workspace-button">{dockCollapsed ? 'Show tools' : 'Hide tools'}</button>
+            <button onClick={toggleFullscreen} aria-label="Toggle fullscreen" className="workspace-button">Fullscreen</button>
+            <button onClick={() => setZen(true)} aria-label="Zen mode — hide all panels" className="workspace-button">Zen</button>
+          </>}
+        </div>
+      </header>
+      {notice && <div role="status" className="workspace-notice">{notice}</div>}
+      <main className="workspace-main">
+        <div className="video-stage" aria-label="Study video">
+          <VideoBackground ref={videoRef} videoId={videoId} volume={volume} muted={muted} isPlaying={videoPlaying} captionLang={captionLang} onEnded={handleEnded} onPlayingChange={setVideoPlaying} onUnplayable={handleUnplayable} onApiUnavailable={handleApiUnavailable} />
+        </div>
+        <div hidden={zen}>
+          <VideoControls videoId={videoId} onPreviousVideo={handlePreviousVideo} onNextVideo={handleNextVideo} canNavigate={filteredVideos.some(v => v.id !== videoId)} player={videoRef} isPlaying={videoPlaying} onTogglePlay={handleTogglePlay} captionLang={captionLang} onSetCaptionLang={chooseCaptionLang} />
+        </div>
+      </main>
+      <aside id="workspace-tools" className="workspace-dock" hidden={dockCollapsed || zen} aria-label="Study tools">
+        <div className="tool-tabs" role="tablist" aria-label="Study tools">
+          {([{ id: 'timer', label: 'Timer' }, { id: 'sidebar', label: 'Videos & sound' }, { id: 'tasks', label: 'Study plan' }] as const).map(tab =>
+            <button key={tab.id} id={`tab-${tab.id}`} role="tab" aria-selected={topPanel === tab.id} aria-controls={`tool-${tab.id}`} onClick={() => setTopPanel(tab.id)} className={'tool-tab' + (topPanel === tab.id ? ' selected' : '')}>{tab.label}</button>
+          )}
+        </div>
+        <div className="tool-body scrollbar-thin">
+          <div role="tabpanel" id="tool-timer" aria-labelledby="tab-timer" hidden={topPanel !== 'timer'}><TimerCard timer={timer} pauseOnBreak={pauseOnBreak} onSetPauseOnBreak={handleSetPauseOnBreak} /></div>
+          <div role="tabpanel" id="tool-sidebar" aria-labelledby="tab-sidebar" hidden={topPanel !== 'sidebar'}><Sidebar filters={catalogFilters} onFiltersChange={setCatalogFilters} videos={playable} currentVideo={currentVideo} onSelectVideo={setVideoId} volume={volume} onVolumeChange={handleVolumeChange} playlistUrl={playlist.sourceUrl} favorites={favorites} onToggleFavorite={toggleFavorite} theme={theme} onSetTheme={setTheme} customColor={customColor} onSetCustomColor={setCustomColor} /></div>
+          <div role="tabpanel" id="tool-tasks" aria-labelledby="tab-tasks" hidden={topPanel !== 'tasks'}><TasksCard onUseDuration={loadTaskDuration} /></div>
+        </div>
+        {topPanel !== 'timer' && <div className="dock-timer"><button onClick={() => setTopPanel('timer')} aria-label="Open timer">⏱ {timer.label}{timer.isRunning ? ' · running' : ''}</button></div>}
+      </aside>
     </div>
   )
 }

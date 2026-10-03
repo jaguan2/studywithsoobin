@@ -13,7 +13,7 @@ function load(): Record<string, number> {
   if (typeof raw !== 'object' || raw === null) return {}
   const map: Record<string, number> = {}
   for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
-    if (typeof v === 'number' && v > 0) map[k] = v
+    if (typeof v === 'number' && Number.isFinite(v) && v > 0) map[k] = v
   }
   return map
 }
@@ -24,6 +24,7 @@ export function getSavedPosition(videoId: string): number | null {
 
 /** Save (or clear, near the edges) the current position for a video. */
 export function savePosition(videoId: string, current: number, duration: number) {
+  if (!Number.isFinite(current) || !Number.isFinite(duration)) return
   const map = load()
   if (current > MIN_SAVE_SECONDS && duration - current > END_GUARD_SECONDS) {
     map[videoId] = Math.floor(current)

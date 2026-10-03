@@ -1,7 +1,4 @@
 import { memo, useMemo, useState } from 'react'
-import { motion, useDragControls } from 'framer-motion'
-import { usePanelPosition } from '../hooks/usePanelPosition'
-import { usePanelSize } from '../hooks/usePanelSize'
 import {
   clampTaskDuration,
   isTaskOrder,
@@ -13,9 +10,7 @@ import {
   type TaskPriority,
 } from '../lib/taskPlanning'
 import { storageGet, storageGetJson, storageSet, storageSetJson } from '../lib/storage'
-import { ResizeGrip } from './ResizeGrip'
 
-const BASE = { left: Math.max(16, window.innerWidth - 336), top: 72 }
 const TASKS_KEY = 'sws.tasks'
 const ORDER_KEY = 'sws.tasks.order'
 const ACTIVE_KEY = 'sws.tasks.active'
@@ -58,18 +53,10 @@ function loadOrder(): TaskOrder {
 }
 
 interface TasksCardProps {
-  bounds: React.RefObject<HTMLDivElement | null>
-  zIndex: number
-  onFocus: () => void
-  collapsed: boolean
-  onToggleCollapsed: () => void
   onUseDuration: (seconds: number) => void
 }
 
-function TasksCardInner({ bounds, zIndex, onFocus, collapsed, onToggleCollapsed, onUseDuration }: TasksCardProps) {
-  const dragControls = useDragControls()
-  const { width, startResize } = usePanelSize({ width: 320, minWidth: 290, maxWidth: 460, storageKey: 'sws.size.tasks' })
-  const { x, y, savePosition } = usePanelPosition('sws.pos.tasks', BASE)
+function TasksCardInner({ onUseDuration }: TasksCardProps) {
   const [tasks, setTasks] = useState<Task[]>(loadTasks)
   const [draft, setDraft] = useState('')
   const [duration, setDuration] = useState(25)
@@ -105,22 +92,12 @@ function TasksCardInner({ bounds, zIndex, onFocus, collapsed, onToggleCollapsed,
   }
 
   return (
-    <motion.div
-      drag dragListener={false} dragControls={dragControls} dragConstraints={bounds}
-      dragMomentum={false} dragElastic={0} onDragEnd={savePosition} onPointerDownCapture={onFocus}
-      style={{ x, y, width, left: BASE.left, top: BASE.top, zIndex, visibility: collapsed ? 'hidden' : 'visible' }}
-      className="absolute select-none rounded-2xl bg-cream-50/95 shadow-panel backdrop-blur-md dark:bg-ink-800/90"
-    >
-      <header onPointerDown={(event) => dragControls.start(event)} title="Drag to move"
-        className="flex cursor-grab items-center justify-between px-4 pb-1 pt-3 active:cursor-grabbing">
+    <section className="min-w-0" aria-label="Study plan">
+      <header className="flex items-center justify-between px-4 pb-2 pt-4">
         <span className="text-sm font-semibold text-ink-900 dark:text-cream-100">
           📝 Study plan
           {tasks.length > 0 && <span className="ml-2 text-xs font-normal text-ink-700/60 dark:text-cream-300/50">{doneCount}/{tasks.length}</span>}
         </span>
-        <button onClick={onToggleCollapsed} aria-label="Minimize tasks" title="Minimize"
-          className="grid h-6 w-6 place-items-center rounded-full text-ink-700 transition hover:bg-cream-200 dark:text-cream-300 dark:hover:bg-ink-700">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14" strokeLinecap="round" /></svg>
-        </button>
       </header>
 
       <div className="px-4 pb-4">
@@ -208,8 +185,7 @@ function TasksCardInner({ bounds, zIndex, onFocus, collapsed, onToggleCollapsed,
           </div>
         )}
       </div>
-      <ResizeGrip onStart={startResize} />
-    </motion.div>
+    </section>
   )
 }
 

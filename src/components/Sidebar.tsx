@@ -1,10 +1,6 @@
 import { memo } from 'react'
-import { motion, useDragControls } from 'framer-motion'
 import type { Theme } from '../App'
 import type { Video } from '../types/playlist'
-import { usePanelPosition } from '../hooks/usePanelPosition'
-import { usePanelSize } from '../hooks/usePanelSize'
-import { ResizeGrip } from './ResizeGrip'
 import { VideoPicker } from './VideoPicker'
 import { VolumeControl } from './VolumeControl'
 import { MusicPanel } from './MusicPanel'
@@ -12,20 +8,13 @@ import { AmbiencePanel } from './AmbiencePanel'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { HeartIcon } from './icons'
 import type { CatalogFilters } from '../lib/catalog'
+import { videoMetadata } from '../lib/catalog'
 
 const GITHUB_URL = 'https://github.com/jaguan2'
-
-// top: 300 keeps clear of the timer card even with its pomodoro form open.
-const BASE = { left: 16, top: 300 }
 
 interface SidebarProps {
   filters: CatalogFilters
   onFiltersChange: (value: CatalogFilters) => void
-  collapsed: boolean
-  onToggleCollapsed: () => void
-  /** Viewport-sized ancestor the panel may be dragged around inside — without
-   *  constraints a panel flung off screen is unrecoverable. */
-  bounds: React.RefObject<HTMLDivElement | null>
   videos: Video[]
   currentVideo: Video
   onSelectVideo: (id: string) => void
@@ -38,19 +27,11 @@ interface SidebarProps {
   onSetTheme: (theme: Theme) => void
   customColor: string
   onSetCustomColor: (hex: string) => void
-  zIndex: number
-  onFocus: () => void
 }
 
-// A floating, draggable control panel — same framer-motion pattern as
-// TaskNook's Drawer: the header is the drag handle, positioned with explicit
-// left/top because framer-motion owns the inline transform.
 function SidebarInner({
   filters,
   onFiltersChange,
-  collapsed,
-  onToggleCollapsed,
-  bounds,
   videos,
   currentVideo,
   onSelectVideo,
@@ -63,58 +44,14 @@ function SidebarInner({
   onSetTheme,
   customColor,
   onSetCustomColor,
-  zIndex,
-  onFocus,
 }: SidebarProps) {
-  const dragControls = useDragControls()
-  // min width chosen so the "Paste a YouTube or Spotify link…" placeholder
-  // renders in full
-  const { width, height, startResize } = usePanelSize({
-    width: 340,
-    minWidth: 340,
-    maxWidth: 560,
-    // 316 = the spawn top (300) plus a bottom margin, so the default height
-    // never runs off the bottom of a short window.
-    height: Math.min(560, window.innerHeight - 316),
-    minHeight: 320,
-    storageKey: 'sws.size.sidebar',
-  })
-  // x/y ride framer-motion's drag; persisted so the layout survives a reload.
-  const { x, y, savePosition } = usePanelPosition('sws.pos.sidebar', BASE)
-
   const isFavorite = favorites.includes(currentVideo.id)
 
   return (
-    <motion.aside
-      drag
-      dragListener={false}
-      dragControls={dragControls}
-      dragConstraints={bounds}
-      dragMomentum={false}
-      dragElastic={0}
-      onDragEnd={savePosition}
-      onPointerDownCapture={onFocus}
-      // visibility (not unmount) so music keeps playing and the dragged
-      // position survives a minimize/restore cycle
-      style={{
-        x,
-        y,
-        width,
-        height,
-        left: BASE.left,
-        top: BASE.top,
-        zIndex,
-        visibility: collapsed ? 'hidden' : 'visible',
-      }}
-      className="absolute flex select-none flex-col overflow-hidden rounded-2xl bg-cream-50/95 shadow-panel backdrop-blur-md dark:bg-ink-800/90"
-    >
-      <header
-        onPointerDown={(e) => dragControls.start(e)}
-        title="Drag to move"
-        className="flex shrink-0 cursor-grab items-center justify-between px-4 py-3 active:cursor-grabbing"
-      >
+    <section className="flex min-w-0 flex-col" aria-label="Videos and sound">
+      <header className="flex items-center justify-between px-4 py-3">
         <span className="text-lg font-semibold text-ink-900 dark:text-cream-100">
-          study with soobin
+          Videos & sound
         </span>
         <div className="flex items-center gap-2 text-ink-700 dark:text-cream-300">
           <a
@@ -127,20 +64,10 @@ function SidebarInner({
           >
             <GitHubIcon />
           </a>
-          <button
-            onClick={onToggleCollapsed}
-            aria-label="Minimize panel"
-            title="Minimize"
-            className="ml-1 grid h-6 w-6 place-items-center rounded-full transition hover:bg-cream-200 dark:hover:bg-ink-700"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M5 12h14" strokeLinecap="round" />
-            </svg>
-          </button>
         </div>
       </header>
 
-      <div className="scrollbar-thin flex flex-1 flex-col gap-5 overflow-y-auto px-4 pb-4">
+      <div className="flex min-w-0 flex-col gap-5 px-4 pb-4">
             <VideoPicker
               filters={filters}
               onFiltersChange={onFiltersChange}
@@ -180,6 +107,12 @@ function SidebarInner({
               </div>
             </div>
 
+            <div className="-mt-3 text-xs text-ink-700 dark:text-cream-300">
+              <p>{videoMetadata(currentVideo)}</p>
+              {currentVideo.broadcastDate && <p className="mt-1">Original live: {currentVideo.broadcastDate}</p>}
+              {currentVideo.channel && <p className="mt-1">Channel: {currentVideo.channel}</p>}
+            </div>
+
             <div className="flex items-center justify-between text-xs">
               <a
                 href={`https://www.youtube.com/watch?v=${currentVideo.id}`}
@@ -195,7 +128,7 @@ function SidebarInner({
                 rel="noreferrer"
                 className="text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
               >
-                Full playlist
+                Original Soobin playlist
               </a>
             </div>
 
@@ -217,8 +150,7 @@ function SidebarInner({
               />
             </footer>
       </div>
-      <ResizeGrip onStart={startResize} />
-    </motion.aside>
+    </section>
   )
 }
 

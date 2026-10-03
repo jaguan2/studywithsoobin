@@ -57,8 +57,9 @@ deliberately no tsconfig.app/node split.
   participants and multipart clips. `scripts/catalog-metadata.mjs` detects
   alternate uploads using original date + participants + near-equal duration,
   preserving separate broadcasts of different lengths on the same date.
-  Publication dates and original live dates are different: the app's release
-  filters use `publishedAt`, while the link catalog lists both. Never derive
+  Publication dates and original live dates are different: date filters default
+  to `publishedAt`; Original live uses `broadcastDate` for live archives and
+  `publishedAt` for vlogs, excluding undated lives when filtering dates. Never derive
   original broadcast dates from upload dates. TomorrowByEdits numeric titles
   use month/day/year; established older archives use day/month/year.
   The refresh follows playlist continuations, preserves order, retains previous
@@ -66,52 +67,35 @@ deliberately no tsconfig.app/node split.
   failures. Research candidates with `scripts/research-catalog.mjs`, review the
   ignored research JSON, then run `scripts/curate-research.mjs` and inspect its
   diff before refreshing.
-  `App.tsx` owns shared member/year/month filter state; `lib/catalog.ts` applies
-  it to both video pickers and random/next-video selection. Changing filters
+  `App.tsx` owns shared search/member/type/solo/favorites/date/sort state;
+  `lib/catalog.ts` applies it to both video pickers, random selection and
+  ordered previous/next controls. `VideoTile` supplies readable video cards. Changing filters
   does not interrupt current playback. Clearing them restores the full catalog.
+  `CatalogFilters` uses a search field, scrollable member chips, video-type chips,
+  and an inline expandable Filters panel. Dates/solo/favorites stay visible as
+  removable refinements when the panel closes. Sorting stays available outside
+  the panel. Its CSS container queries adapt to the dock width, not the viewport.
+  Light/dark discovery controls use neutral colours; coffee/custom retain their
+  palette. `VideoTile` uses thumbnail-led cards without surrounding borders.
 - `App.tsx` loads `playlist.json` and owns all top-level state: current `videoId`
   (**starts `null`** — a `WelcomeScreen` video-selection grid renders until the user
-  picks one; only then does the main UI mount), `volume`, sidebar `collapsed`,
-  `favorites`, `theme`, and which floating panel is on top (`topPanel`). The main UI
-  is a fullscreen letterboxed video with **two independent floating panels** over it:
-  - `VideoBackground` — a muted-autoplay YouTube IFrame Player (`controls: 0`,
-    `pointer-events: none`). The `.yt-bg` / `.yt-frame-box` CSS in `index.css`
-    **letterboxes** the 16:9 iframe inside the full viewport (contain, not cover —
-    the whole frame always stays visible). It creates the `YT.Player` once on
-    mount; subsequent video swaps go through `loadVideoById` rather than
-    remounting. It exposes `seekBy` / `seekTo` / `getProgress` via
-    `forwardRef`, and reports real play/pause state up through
-    `onPlayingChange`. `VideoControls` renders the floating bottom-center pill
-    (pause/play, ±10s, and a scrub bar with elapsed/total times) over the
-    video. The scrub bar is a plain `<input type="range">` — that buys
-    click-to-jump, drag-to-scrub and arrow-key seeking for free — and the
-    played portion is a gradient (`.scrubber` in `index.css`) because
-    `appearance: none` disables the native accent-coloured fill. The IFrame
-    API has no timeupdate event, so `VideoControls` polls `getProgress()`
-    every 500ms; it's a separate component precisely so that poll re-renders
-    the pill rather than `App` and every panel under it. The bar itself is
-    `Scrubber`, shared with the music player. A "Change video" button (top
-    right) drops `videoId` back to `null` to return to the `WelcomeScreen`.
-  - **The pill auto-hides, copying YouTube's model** (`VideoControls`): it
-    fades after `HIDE_AFTER_MS` (3s) of no pointer movement, and *any*
-    `pointermove` anywhere brings it back — not just hovering its last
-    position, which would make the user hunt for a small target. It refuses to
-    hide while `keepVisible` holds: video paused (YouTube keeps controls up
-    when paused), pointer over the pill, CC menu open, or `interacting` (set
-    on pointerdown, cleared on window pointerup — this is what stops a
-    scrubber drag that wanders off the pill from hiding mid-drag). When hidden
-    it also drops `pointer-events`, so it can't swallow clicks.
-  - The pill is **draggable**, which forces two things. (1) framer-motion owns
-    the dragged element's inline transform, so the `-translate-x-1/2` that
-    centres it lives on a **non-dragged wrapper** — the wrapper is the resting
-    place (centring + the caption lift), the inner `motion.div` is what drags.
-    (2) It sits at **z-50, above the panels** (z-30/40): it doesn't overlap
-    them where it rests, but a pill dragged *under* a panel could never be
-    grabbed back. `dragConstraints` is the full-viewport overlay (`bounds`
-    prop from `App`) so it can't be thrown off screen — unlike the other
-    panels, it has no restore pill to recover it. Once dragged, the caption
-    lift stops applying: the position is the user's.
-  - **Subtitles** (the pill's `CC` button) drive YouTube's undocumented
+  picks one; only then does the main UI mount), `volume`, `dockCollapsed`,
+  `favorites`, `theme`, and the active tools tab (`topPanel`). The main UI
+  uses a responsive CSS grid with a toolbar, reserved video stage, controls
+  below the video, and a tools dock. At 1000px wide and 600px tall or larger,
+  the dock sits on the right; otherwise it sits below and the page can scroll.
+  - `VideoBackground` is a muted-autoplay YouTube IFrame Player (`controls: 0`,
+    `pointer-events: none`). `.yt-bg` / `.yt-frame-box` letterbox the 16:9
+    iframe inside its reserved stage, preserving the whole video. The player
+    is created once; video swaps use `loadVideoById`. It exposes `seekBy`,
+    `seekTo`, and `getProgress` via `forwardRef`, and reports real playback
+    state through `onPlayingChange`.
+  - `VideoControls` stays in normal flow below the video. It provides
+    previous/next video, pause/play, +/-10s, and a shared `Scrubber` range input.
+    Progress polls every 500ms in this component, keeping polling renders out
+    of `App`. Captions expand inline. Controls do not drag or auto-hide.
+    The toolbar's Change video button returns to the welcome screen.
+  - **Subtitles** (the controls' `CC` button) drive YouTube's undocumented
     captions module, since `controls: 0` hides YouTube's own CC button. The
     playlist's videos carry 4–7 translation tracks each. Rules learned by
     testing against real videos — the docs and `getOption` both mislead here:
@@ -125,16 +109,14 @@ deliberately no tsconfig.app/node split.
       every `loadVideoById`, so `VideoBackground.applyCaptions()` re-applies
       the stored language on each `PLAYING` and retries while the module spins
       up.
-    - `controls: 0` also means YouTube reserves no space for controls and
-      renders subtitles hard against the bottom of the frame — exactly where
-      the control pill sits. Nothing in the API moves the captions, so the
-      pill raises itself (`bottom-24`) while a track is active.
+    - YouTube captions render near the bottom of the iframe. The control
+      row is outside the video stage, so no caption lift or overlay is needed.
   - **Video quality is not controllable** — don't add a quality selector.
     `setPlaybackQuality()` and `loadVideoById({suggestedQuality})` are both
     ignored (verified on a 1920x1080 player: every call stayed at `hd1080`).
     `getAvailableQualityLevels()` still returns a list, which makes the API
     look alive; it isn't. The player picks quality from bandwidth and player
-    size, and since the video is letterboxed to fill the viewport it already
+    size, and since the video is letterboxed within the reserved stage it already
     resolves to `hd1080` on its own.
     `MusicPanel`'s YouTube stations use the same IFrame API via
     `YouTubeMusicPlayer` (play/pause/±10s/seek/volume); Spotify stations keep
@@ -170,27 +152,18 @@ deliberately no tsconfig.app/node split.
     both ship, because neither trade-off is right for every listener.
     Playlist/album/artist/show embeds get 352px (Spotify's own oEmbed height)
     so the tracklist is usable; a lone track/episode stays at 152px.
-  - `TimerCard` — a floating, draggable, width-resizable card wrapping `TimerPanel`
-    (15/30/60-min presets, click-the-time-to-type custom durations, and a 🍅
-    Pomodoro mode with configurable focus/break/rounds cycles — all from `useTimer`).
-  - `Sidebar` — a floating, draggable, width+height-resizable panel (min 340px wide
-    so the music-link placeholder fits, scrollable body), composed of `VideoPicker`
-    (paged 4x2 thumbnail grid), `VolumeControl` (video volume), `MusicPanel`
-    (built-in lofi stations + paste-your-own YouTube/Spotify links), and
-    `AmbiencePanel` (a 7-channel procedural sound mixer via Web Audio — rain,
-    storm, snow, wind, fireplace, café, page turns — layerable, per-channel
-    volumes).
-  - **Drag/resize pattern (from TaskNook's Drawer/FocusTimer):** framer-motion
-    `drag` with `dragListener={false}` + `useDragControls` — only the header/grab
-    strip starts a drag; `dragMomentum={false}`, `dragElastic={0}`; panels are
-    positioned with explicit `left`/`top` (never Tailwind translate classes)
-    because framer-motion owns the inline `transform`. Resizing is a plain
-    pointer-event corner grip (`usePanelSize` + `ResizeGrip`) — TaskNook has no
-    resize; that part is ours. Last-touched panel gets the higher z-index.
-    Minimizing hides a panel with `visibility: hidden` (NOT unmount — unmounting
-    would stop `MusicPanel`'s audio and lose the framer-motion drag transform)
-    and shows a restore pill docked at the bottom-left; the timer's pill shows
-    the live countdown.
+  - `TimerCard` wraps `TimerPanel` in the Timer tab (presets, custom
+    durations, Pomodoro cycles and focus stats).
+  - `Sidebar` is the Videos & sound tab, containing `VideoPicker`,
+    `VolumeControl`, `MusicPanel`, `AmbiencePanel`, and theme controls.
+  - `TasksCard` is the Study plan tab, containing editable tasks and estimates.
+  - **Managed layout:** tools share one dock with a scrollable body. Inactive
+    tabs and hidden tools use `hidden`, keeping their components mounted so
+    audio, timer and task state survive tab switches. A timer footer remains
+    available on the other tabs. Old saved floating positions and sizes are
+    ignored. Toolbar buttons wrap, notices occupy their own row, and controls
+    wrap on narrow screens. Do not reintroduce independently positioned panels
+    that can cover each other or the video.
 - `useTimer` is a self-contained countdown state machine; it does not know about
   video state. Its pomodoro extension auto-advances focus → break → focus… and
   stops after the configured number of rounds. Setting any preset/custom duration
@@ -259,11 +232,16 @@ exit without opening a window — use it to verify a build headlessly.
   flag for this, reset to true whenever the player is recreated (returning from
   the welcome screen), because each fresh player starts muted again regardless of
   the persisted volume.
+- `VideoBackground` flushes resume positions on switching, unmounting, pagehide
+  and visibility changes, and guards against stale video ids on player events.
+  Controls wait for player readiness; pre-ready volume/mute/pause changes are
+  applied onReady. YouTube errors 2/100/101/150 blocklist videos; player errors
+  such as 5/153 show retry guidance without deleting catalog entries.
 - Some playlist videos report `embeddable=true` in metadata but still refuse to play
   in an embed at runtime ("Watch on YouTube" — copyright-restricted VLIVE re-uploads).
   This is unknowable ahead of time, so `App.tsx` handles the IFrame player's `onError`:
   the video is added to a session-scoped `blockedIds` list, removed from the grids,
-  and playback skips to another video with a toast notice.
+  and playback skips to another video with a notice in the layout.
 - Spotify embeds never autoplay (user must click play inside the widget); YouTube
   music embeds autoplay muted-or-with-sound at the browser's discretion.
 - `scripts/fetch-playlist.mjs` runs against YouTube's internal (undocumented) page

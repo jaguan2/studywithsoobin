@@ -5,7 +5,7 @@ background is TXT members' vlogs, VLIVEs and Weverse lives — company for a stu
 same way the [original "Study w/ Soobin" playlist](https://www.youtube.com/playlist?list=PLwzQP2wCE5w4hRj01BS0zxO2Bu8eaBDWt)
 gets used.
 
-![The app running: a Soobin vlog fills the screen, with the floating timer card and control panel over it](docs/screenshots/hero.png)
+![Video discovery with search, quick member chips and expandable filters](docs/screenshots/catalog.png)
 
 ## ⚡ Just want the app?
 
@@ -20,17 +20,15 @@ an internet connection since the videos stream from YouTube.)
   "Change video" in the top right takes you back to it any time
 - Looping YouTube video that always stays fully in frame (autoplay, muted
   until you turn up the volume slider)
-- The timer and the control panel are separate floating cards — drag them
-  anywhere, resize them from the corner, or minimize either one down to a
-  small pill docked at the bottom of the screen (the timer pill keeps
-  showing the countdown)
-- Floating video controls: pause/play, skip back/forward 10 seconds, and a
-  scrub bar — click or drag anywhere on the line to jump to that point, with
-  the elapsed and total time either side of it; the music player has its own
-  play/pause/seek/volume controls too
-- The video controls fade away after a few seconds and come back the moment
-  you move the mouse — they stay put while the video is paused or while you're
-  using them. Drag them anywhere by the grip on their left
+- A responsive tools dock with Timer, Videos & sound, and Study plan tabs.
+  It sits beside the video on wide windows and below it on narrow or short
+  windows. Small windows scroll, and each section keeps its own space
+- Video controls sit below the video: pause/play, previous/next video,
+  skip back/forward 10 seconds, and a scrub bar with elapsed/total times.
+  Caption options expand below the controls without covering the video.
+  The music player has its own play/pause/seek/volume controls
+- Hide tools for more video space, or use Zen mode for a quiet view.
+  Switching tabs or hiding tools keeps music and the timer running
 - 💬 Subtitles: the `CC` button lists whatever translations a video carries
   (most have English, Japanese, Chinese and more). Your language is remembered
   and turned back on automatically for every video that has it
@@ -58,19 +56,27 @@ an internet connection since the videos stream from YouTube.)
   daily goal with progress, and a 🔥 day streak, all kept on your device
 - ⌨️ Keyboard shortcuts: space play/pause · ←/→ skip 10s · F fullscreen ·
   M mute · T start/pause the timer · Z zen mode
-- 🧘 Zen mode (Z or the 👁 button): everything disappears except the video —
+- 🧘 Zen mode (Z or the Zen button): tools and playback controls disappear; an Exit zen button stays accessible —
   Z or Esc brings it all back
-- Videos remember where you stopped and pick up there next time, and the URL
+- Videos save your position when switching or leaving as well as periodically,
+  and pick up there next time. The URL
   carries `?v=` so you can share exactly what you're watching
 - Pomodoro extras: skip a break, nudge ±1:00 mid-round, and optionally pause
   the video during breaks — plus a gentle nudge if you've studied two hours
   without one
-- Member, release year and release month filters on the start screen and in-session picker
+- Search titles, members and channels in a prominent search field; quick chips
+  select a member or video type. The Filters button expands date, solo and
+  favorites options, with removable chips showing selected refinements.
+  The same controls appear on the start screen and in-session picker
+- Filter by year/month using YouTube release dates or original live dates; sort by
+  playlist order, newest, oldest, longest or shortest
+- Previous/next video controls follow the filtered order; video cards show titles,
+  durations, member names and original broadcast dates
 - Surprise me and automatic next-video selection follow your active filters
 - Paged thumbnail grid to switch videos mid-session
 - Favorites (❤) and four themes — light, ☕ coffee, dark, and 🎨 a custom
   colour you pick yourself — all remembered between visits, along with your
-  volumes, ambience mix, pomodoro settings, panel layout, and last video
+  volumes, ambience mix, pomodoro settings, and last video
   (the start screen offers to continue where you left off)
 - Auto-advances to a random video when the current one ends; videos that
   refuse to play embedded are skipped automatically
@@ -126,10 +132,11 @@ keeps the source playlist first, and regenerates the link catalog. Individual
 lookup failures keep previous verified entries; widespread failures abort
 without replacing the snapshot.
 
-Date filters use **YouTube publication dates**, including an archive upload's
-release date. Original live dates are separate metadata, extracted only from
-explicit dates in archive titles or curated overrides. Missing dates are not
-guessed. Compare original dates, participants and duration before adding an
+Date filters default to **YouTube publication dates**, including an archive
+upload's release date. Choose **Original live** to use original broadcast dates
+for live archives and release dates for vlogs. Original dates come only from
+explicit archive titles or curated overrides; undated lives are excluded when
+an original-date filter is active. Missing dates are not guessed. Compare original dates, participants and duration before adding an
 alternate upload of the same broadcast. Equal durations alone do not prove a
 duplicate; separate lives on the same day can have different lengths.
 
@@ -190,20 +197,20 @@ studywithsoobin/
 │   ├── components/
 │   │   ├── WelcomeScreen.tsx     # start screen: pick a video (or 🎲 random)
 │   │   ├── VideoBackground.tsx   # letterboxed YouTube IFrame player
-│   │   ├── VideoControls.tsx     # floating pill: play/pause, ±10s, scrub bar
+│   │   ├── VideoControls.tsx     # video controls: play/pause, ±10s, scrub bar
 │   │   ├── Scrubber.tsx          # shared seek bar + LIVE badge
-│   │   ├── Sidebar.tsx           # floating control panel (drag/resize/minimize)
-│   │   ├── TimerCard.tsx         # floating timer card (drag/resize)
+│   │   ├── Sidebar.tsx           # Videos & sound tab in the tools dock
+│   │   ├── TimerCard.tsx         # Timer tab in the tools dock
 │   │   ├── TimerPanel.tsx        # presets, custom time, 🍅 pomodoro cycles
 │   │   ├── VideoPicker.tsx       # paged 4x2 thumbnail grid
 │   │   ├── MusicPanel.tsx        # lofi stations + custom YouTube/Spotify links
 │   │   ├── YouTubeMusicPlayer.tsx # mini player for YouTube music stations
 │   │   ├── AmbiencePanel.tsx     # rain / snow / storm sound controls
 │   │   ├── VolumeControl.tsx     # video volume slider
-│   │   └── ResizeGrip.tsx        # shared corner grip for resizable panels
+│   │   └── ResizeGrip.tsx        # legacy resize grip (unused by dock)
 │   ├── hooks/
 │   │   ├── useTimer.ts           # countdown + pomodoro state machine
-│   │   ├── usePanelSize.ts       # width/height state for floating panels
+│   │   ├── usePanelSize.ts       # legacy panel sizing helper (unused by dock)
 │   │   └── useYouTubeIframeApi.ts # one-time YT API script loader
 │   ├── lib/
 │   │   ├── musicLink.ts          # YouTube/Spotify URL → playable station

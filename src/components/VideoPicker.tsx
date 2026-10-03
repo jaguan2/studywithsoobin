@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import type { Video } from '../types/playlist'
-import { HeartIcon } from './icons'
+import { VideoTile } from './VideoTile'
 import { CatalogFilters } from './CatalogFilters'
-import { filterVideos, videoMetadata, type CatalogFilters as Filters } from '../lib/catalog'
+import { filterVideos, type CatalogFilters as Filters } from '../lib/catalog'
 
-const PAGE_SIZE = 8 // 4 columns x 2 rows, matching the LifeAt scenery grid
+const PAGE_SIZE = 8 // 2 columns x 4 rows; readable titles for the larger catalog
 
 interface VideoPickerProps {
   filters: Filters
@@ -17,7 +17,7 @@ interface VideoPickerProps {
 
 export function VideoPicker({ videos, selectedId, onSelect, favorites, filters, onFiltersChange }: VideoPickerProps) {
   const [page, setPage] = useState(0)
-  const filtered = filterVideos(videos, filters)
+  const filtered = filterVideos(videos, filters, favorites)
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   // the list can shrink at runtime (embed-blocked videos get filtered out)
   const safePage = Math.min(page, pageCount - 1)
@@ -37,14 +37,16 @@ export function VideoPicker({ videos, selectedId, onSelect, favorites, filters, 
           <button
             onClick={goPrev}
             aria-label="Previous videos"
-            className="grid h-6 w-6 place-items-center rounded-full transition hover:bg-cream-200 dark:hover:bg-ink-700"
+            disabled={pageCount <= 1}
+            className="grid h-8 w-8 place-items-center rounded-full transition disabled:opacity-40 hover:bg-cream-200 dark:hover:bg-ink-700"
           >
             <ChevronIcon direction="left" />
           </button>
           <button
             onClick={goNext}
             aria-label="More videos"
-            className="grid h-6 w-6 place-items-center rounded-full transition hover:bg-cream-200 dark:hover:bg-ink-700"
+            disabled={pageCount <= 1}
+            className="grid h-8 w-8 place-items-center rounded-full transition disabled:opacity-40 hover:bg-cream-200 dark:hover:bg-ink-700"
           >
             <ChevronIcon direction="right" />
           </button>
@@ -56,35 +58,8 @@ export function VideoPicker({ videos, selectedId, onSelect, favorites, filters, 
         {filtered.length === 0 && <p className="mt-2 text-xs text-ink-700 dark:text-cream-300">No videos match. Try changing or clearing the filters.</p>}
       </div>
 
-      <div className="mt-2 grid grid-cols-4 gap-2">
-        {visible.map((video) => {
-          const selected = video.id === selectedId
-          return (
-            <button
-              key={video.id}
-              onClick={() => onSelect(video.id)}
-              title={`${video.title} · ${videoMetadata(video)}`}
-              className={
-                'relative aspect-square rounded-xl border p-1 transition ' +
-                (selected
-                  ? 'border-clay-500 bg-clay-400/40 dark:bg-clay-500/30'
-                  : 'border-cream-300 bg-white hover:border-clay-400/70 dark:border-ink-700 dark:bg-ink-700 dark:hover:border-clay-400/70')
-              }
-            >
-              <img
-                src={video.thumbnail}
-                alt={video.title}
-                className="h-full w-full rounded-lg object-cover"
-                loading="lazy"
-              />
-              {favorites.includes(video.id) && (
-                <span className="absolute right-0.5 top-0.5 grid h-4 w-4 place-items-center rounded-full bg-white/90 text-clay-500 dark:bg-ink-800/90">
-                  <HeartIcon filled size={9} />
-                </span>
-              )}
-            </button>
-          )
-        })}
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        {visible.map(video => <VideoTile key={video.id} video={video} favorite={favorites.includes(video.id)} selected={video.id === selectedId} onSelect={onSelect} />)}
       </div>
     </div>
   )

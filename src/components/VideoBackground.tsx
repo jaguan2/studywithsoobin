@@ -1,6 +1,7 @@
 import { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
 import { getSavedPosition, savePosition } from '../lib/positions'
+import { isUnavailableVideo, playerErrorMessage } from '../lib/videoPlayback'
 
 // How often to save the playback position for "continue where you left off".
 const SAVE_POSITION_MS = 10_000
@@ -11,6 +12,8 @@ export interface CaptionTrack {
 }
 
 export interface VideoBackgroundHandle {
+  /** Replay when the filtered catalog contains only the current video. */
+  restart: () => void
   /** Seek relative to the current position (negative = backward). */
   seekBy: (deltaSeconds: number) => void
   /** Seek to an absolute position, for the scrubber. */
@@ -37,11 +40,11 @@ interface VideoBackgroundProps {
   /** Keeps the caller's play/pause state in sync with the real player state. */
   onPlayingChange: (playing: boolean) => void
   /** Fired when YouTube refuses to play the video in an embed (copyright /
-   *  embed restrictions — error codes 2, 5, 100, 101, 150). */
+   *  embed restrictions — error codes 2, 100, 101, 150). */
   onUnplayable: () => void
   /** Fired when the IFrame API itself can't be loaded (offline / blocked) —
    *  distinct from onUnplayable, which blocklists the *video*. */
-  onApiUnavailable: () => void
+  onApiUnavailable: (message?: string) => void
 }
 
 const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundProps>(
@@ -51,6 +54,12 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
   ) {
     const containerRef = useRef<HTMLDivElement>(null)
     const playerRef = useRef<YT.Player | null>(null)
+    const readyRef = useRef(false)
+    const requestedIdRef = useRef(videoId)
+    const volumeRef = useRef(volume)
+    volumeRef.current = volume
+    const mutedRef = useRef(muted)
+    mutedRef.current = muted
     const onEndedRef = useRef(onEnded)
     onEndedRef.current = onEnded
     const onPlayingChangeRef = useRef(onPlayingChange)
@@ -72,6 +81,21 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
     // video, not one per PLAYING event (pause/resume also fires PLAYING).
     const resumedForRef = useRef<string | null>(null)
     const captionRetryRef = useRef<number | undefined>(undefined)
+
+    const rememberPosition = useCallback(() => {
+      const player = playerRef.current
+      if (!player || !readyRef.current) return
+      try {
+        const loadedId = player.getVideoData?.()?.video_id
+        // Never file the previous video's time under the newly requested id.
+        if (loadedId && loadedId !== requestedIdRef.current) return
+        const current = player.getCurrentTime()
+        const duration = player.getDuration()
+        if (Number.isFinite(current) && Number.isFinite(duration) && duration > 0) {
+          savePosition(requestedIdRef.current, current, duration)
+        }
+      } catch { /* not ready */ }
+    }, [])
 
     /** Push the current preference into the player. The tracklist only exists
      *  once the captions module has spun up (a second or two after playback
@@ -109,21 +133,31 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
     }, [])
 
     useImperativeHandle(ref, () => ({
+      restart: () => {
+        if (!readyRef.current) return
+        try {
+          savePosition(videoIdRef.current, 0, 0)
+          playerRef.current?.seekTo(0, true)
+          playerRef.current?.playVideo()
+        } catch { /* player not ready */ }
+      },
       seekBy: (deltaSeconds: number) => {
         const player = playerRef.current
         // Same defensiveness as getProgress: the YT.Player object exists
         // before its methods are wired up, and an arrow-key seek in that
         // window would throw.
-        if (!player || typeof player.getCurrentTime !== 'function') return
+        if (!player || !readyRef.current || !Number.isFinite(deltaSeconds)) return
         try {
-          player.seekTo(Math.max(0, player.getCurrentTime() + deltaSeconds), true)
+          player.seekTo(Math.max(0, Math.min(player.getDuration(), player.getCurrentTime() + deltaSeconds)), true)
         } catch {
           /* player not ready */
         }
       },
       seekTo: (seconds: number) => {
+        if (!readyRef.current || !Number.isFinite(seconds)) return
         try {
-          playerRef.current?.seekTo(Math.max(0, seconds), true)
+          const player = playerRef.current
+          if (player) player.seekTo(Math.max(0, Math.min(player.getDuration(), seconds)), true)
         } catch {
           /* player not ready */
         }
@@ -132,8 +166,10 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
         const player = playerRef.current
         // The YT.Player object exists before its methods are wired up, and
         // they throw if called too early — hence the guard and the catch.
-        if (!player || typeof player.getDuration !== 'function') return null
+        if (!player || !readyRef.current) return null
         try {
+          const loadedId = player.getVideoData?.()?.video_id
+          if (loadedId && loadedId !== videoIdRef.current) return null
           const duration = player.getDuration()
           const current = player.getCurrentTime()
           if (!Number.isFinite(duration) || !Number.isFinite(current)) return null
@@ -144,8 +180,10 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
       },
       getCaptionTracks: () => {
         const player = playerRef.current
-        if (!player?.getOption) return []
+        if (!player?.getOption || !readyRef.current) return []
         try {
+          const loadedId = player.getVideoData?.()?.video_id
+          if (loadedId && loadedId !== videoIdRef.current) return []
           const tracks = player.getOption('captions', 'tracklist') as
             | YT.CaptionTrack[]
             | undefined
@@ -167,6 +205,7 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
       loadYouTubeIframeApi()
         .then((YT) => {
           if (cancelled || !containerRef.current) return
+          requestedIdRef.current = videoIdRef.current
           playerRef.current = new YT.Player(containerRef.current, {
             videoId: videoIdRef.current,
             width: '100%',
@@ -179,13 +218,26 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
               rel: 0,
               iv_load_policy: 3,
               mute: 1,
+              origin: window.location.origin,
             },
             events: {
               onReady: (event) => {
-                event.target.setVolume(volume)
-                event.target.playVideo()
+                if (cancelled) return
+                readyRef.current = true
+                event.target.setVolume(volumeRef.current)
+                if (mutedRef.current || volumeRef.current <= 0) event.target.mute()
+                else event.target.unMute()
+                if (requestedIdRef.current !== videoIdRef.current) {
+                  requestedIdRef.current = videoIdRef.current
+                  event.target.loadVideoById(videoIdRef.current)
+                }
+                if (isPlayingRef.current) event.target.playVideo()
+                else event.target.pauseVideo()
               },
               onStateChange: (event) => {
+                if (cancelled) return
+                const loadedId = event.target.getVideoData?.()?.video_id
+                if (loadedId && loadedId !== videoIdRef.current) return
                 if (event.data === YT.PlayerState.ENDED) {
                   // Watched to the end — drop the resume point.
                   savePosition(videoIdRef.current, 0, 0)
@@ -207,8 +259,15 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
                   onPlayingChangeRef.current(false)
                 }
               },
-              onError: () => {
-                onUnplayableRef.current()
+              onError: (event) => {
+                if (cancelled) return
+                const loadedId = event.target.getVideoData?.()?.video_id
+                if (loadedId && loadedId !== videoIdRef.current) return
+                if (isUnavailableVideo(event.data)) onUnplayableRef.current()
+                else {
+                  onPlayingChangeRef.current(false)
+                  onApiUnavailableRef.current(playerErrorMessage(event.data))
+                }
               },
             },
           })
@@ -219,6 +278,8 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
 
       return () => {
         cancelled = true
+        rememberPosition()
+        readyRef.current = false
         window.clearTimeout(captionRetryRef.current)
         playerRef.current?.destroy()
         playerRef.current = null
@@ -231,39 +292,31 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
       applyCaptions()
     }, [captionLang, applyCaptions])
 
-    // Periodically remember where we are, for "continue where you left off".
+    // Flush on tab exit and visibility changes as well as the regular timer.
     useEffect(() => {
-      const id = window.setInterval(() => {
-        if (!isPlayingRef.current) return
-        const player = playerRef.current
-        if (!player || typeof player.getDuration !== 'function') return
-        try {
-          // Just after loadVideoById the player still reports the previous
-          // video's time while videoIdRef already holds the new id — saving
-          // then would file video A's position under video B's key. Only
-          // save once the player agrees on which video is loaded.
-          const loadedId = player.getVideoData?.()?.video_id
-          if (loadedId && loadedId !== videoIdRef.current) return
-          const duration = player.getDuration()
-          const current = player.getCurrentTime()
-          if (Number.isFinite(duration) && Number.isFinite(current) && duration > 0) {
-            savePosition(videoIdRef.current, current, duration)
-          }
-        } catch {
-          /* player not ready */
-        }
-      }, SAVE_POSITION_MS)
-      return () => window.clearInterval(id)
-    }, [])
+      const id = window.setInterval(rememberPosition, SAVE_POSITION_MS)
+      window.addEventListener('pagehide', rememberPosition)
+      document.addEventListener('visibilitychange', rememberPosition)
+      return () => {
+        window.clearInterval(id)
+        window.removeEventListener('pagehide', rememberPosition)
+        document.removeEventListener('visibilitychange', rememberPosition)
+      }
+    }, [rememberPosition])
 
     // Swap videos without recreating the player.
     useEffect(() => {
+      if (!readyRef.current || requestedIdRef.current === videoId) return
+      rememberPosition()
+      window.clearTimeout(captionRetryRef.current)
+      resumedForRef.current = null
+      requestedIdRef.current = videoId
       playerRef.current?.loadVideoById(videoId)
-    }, [videoId])
+    }, [videoId, rememberPosition])
 
     useEffect(() => {
       const player = playerRef.current
-      if (!player) return
+      if (!player || !readyRef.current) return
       if (muted || volume <= 0) {
         player.mute()
       } else {
@@ -274,7 +327,7 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
 
     useEffect(() => {
       const player = playerRef.current
-      if (!player) return
+      if (!player || !readyRef.current) return
       if (isPlaying) player.playVideo()
       else player.pauseVideo()
     }, [isPlaying])
