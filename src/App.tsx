@@ -3,12 +3,16 @@ import playlistData from './data/playlist.json'
 import type { Playlist, Video } from './types/playlist'
 import { useBreakNudge } from './hooks/useBreakNudge'
 import { useTimer } from './hooks/useTimer'
+import { useProgression } from './hooks/useProgression'
 import { VideoBackground, type VideoBackgroundHandle } from './components/VideoBackground'
 import { VideoControls } from './components/VideoControls'
 import { Sidebar } from './components/Sidebar'
 import { TasksCard } from './components/TasksCard'
 import { TimerCard } from './components/TimerCard'
 import { WelcomeScreen } from './components/WelcomeScreen'
+import { AppearancePanel } from './components/AppearancePanel'
+import { ProfileCard, ProfileLevelButton } from './components/ProfileCard'
+import { UIIcon } from './components/UIIcon'
 import { applyCustomTheme, clearCustomTheme, DEFAULT_CUSTOM_COLOR } from './lib/theme'
 import { storageGet, storageGetJson, storageRemove, storageSet, storageSetJson } from './lib/storage'
 import { adjacentVideo, EMPTY_FILTERS, filterVideos, type CatalogFilters } from './lib/catalog'
@@ -51,6 +55,12 @@ function loadVolume(): number {
   return Number.isFinite(stored) && stored >= 0 && stored <= 100 ? stored : 40
 }
 
+function loadPanelOpacity(): number {
+  const raw = storageGet('sws.panelOpacity')
+  const value = raw === null || raw.trim() === '' ? 88 : Number(raw)
+  return Number.isFinite(value) ? Math.max(65, Math.min(100, Math.round(value))) : 88
+}
+
 function toggleFullscreen() {
   if (document.fullscreenElement) {
     void document.exitFullscreen()
@@ -77,6 +87,8 @@ export default function App() {
   const [favorites, setFavorites] = useState<string[]>(loadFavorites)
   const [theme, setTheme] = useState<Theme>(loadTheme)
   const [customColor, setCustomColor] = useState<string>(loadCustomColor)
+  const [panelOpacity, setPanelOpacity] = useState(loadPanelOpacity)
+  const [appearanceOpen, setAppearanceOpen] = useState(false)
   const [captionLang, setCaptionLang] = useState<string | null>(loadCaptionLang)
   // videos YouTube refused to play embedded this session (copyright/embed
   // restrictions surface only at playback time, not in playlist metadata)
@@ -84,7 +96,7 @@ export default function App() {
   const [notice, setNotice] = useState<string | null>(null)
   const [videoPlaying, setVideoPlaying] = useState(true)
   const [dockCollapsed, setDockCollapsed] = useState(false)
-  const [topPanel, setTopPanel] = useState<'timer' | 'sidebar' | 'tasks'>('timer')
+  const [topPanel, setTopPanel] = useState<'timer' | 'sidebar' | 'tasks' | 'profile'>('timer')
   // Zen mode: everything but the video disappears (Z toggles, Esc exits).
   const [zen, setZen] = useState(false)
   // WebView can retain the document's small-layout scroll offset when the
@@ -102,8 +114,15 @@ export default function App() {
   const [pauseOnBreak, setPauseOnBreak] = useState(() => storageGet('sws.pauseOnBreak') === '1')
   const videoRef = useRef<VideoBackgroundHandle>(null)
   const noticeTimer = useRef<number | undefined>(undefined)
-  const timer = useTimer(25)
+  const showNotice = useCallback((message: string, ms = 5000) => {
+    setNotice(message)
+    window.clearTimeout(noticeTimer.current)
+    noticeTimer.current = window.setTimeout(() => setNotice(null), ms)
+  }, [])
+  const { progression, recordStudy, completeTask, updateProfile } = useProgression(showNotice)
+  const timer = useTimer(25, recordStudy)
   const setTaskDuration = timer.setDurationSeconds
+  const openProfile = useCallback(() => { setDockCollapsed(false); setTopPanel('profile') }, [])
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
@@ -118,6 +137,11 @@ export default function App() {
   useEffect(() => {
     storageSet('sws.customColor', customColor)
   }, [customColor])
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--panel-opacity', String(panelOpacity / 100))
+    storageSet('sws.panelOpacity', String(panelOpacity))
+  }, [panelOpacity])
 
   // Persisted from an effect rather than inside the setState updater:
   // updaters should be pure (StrictMode runs them twice), and localStorage
@@ -190,12 +214,6 @@ export default function App() {
     () => playable.find((v) => v.id === lastVideoId) ?? null,
     [playable, lastVideoId],
   )
-
-  const showNotice = useCallback((message: string, ms = 5000) => {
-    setNotice(message)
-    window.clearTimeout(noticeTimer.current)
-    noticeTimer.current = window.setTimeout(() => setNotice(null), ms)
-  }, [])
 
   const chooseCaptionLang = useCallback((code: string | null) => {
     setCaptionLang(code)
@@ -280,7 +298,7 @@ export default function App() {
       }
       // Buttons/links own only their activation keys — a focused Start button
       // (focus lingers after any click) shouldn't swallow F/M/T/Z.
-      if (['BUTTON', 'A'].includes(target.tagName) && (e.key === ' ' || e.key === 'Enter')) {
+      if (['BUTTON', 'A', 'SUMMARY'].includes(target.tagName) && (e.key === ' ' || e.key === 'Enter')) {
         return
       }
       switch (e.key) {
@@ -315,6 +333,7 @@ export default function App() {
           break
         case 'Escape':
           setZen(false)
+          setAppearanceOpen(false)
           break
       }
     }
@@ -326,6 +345,8 @@ export default function App() {
     return (
       <>
         <WelcomeScreen
+          progression={progression}
+          onUpdateProfile={updateProfile}
           filters={catalogFilters}
           onFiltersChange={setCatalogFilters}
           videos={playable}
@@ -348,19 +369,23 @@ export default function App() {
     <div className={'study-workspace' + (dockCollapsed ? ' tools-hidden' : '') + (zen ? ' is-zen' : '')}>
       <header className="workspace-toolbar">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-ink-900 dark:text-cream-100">study with soobin 🐰</p>
-          <p className="truncate text-xs text-ink-700 dark:text-cream-300" title={currentVideo.title}>{currentVideo.title}</p>
+          <p className="workspace-brand"><span className="brand-mark"><UIIcon name="leaf" size={20} /></span>study with soobin</p>
+          <p className="workspace-video-title" title={currentVideo.title}>{currentVideo.title}</p>
         </div>
         <div className="toolbar-actions">
-          {zen ? <button onClick={() => setZen(false)} className="workspace-button">Exit zen</button> : <>
-            {muted && volume > 0 && <button onClick={handleUnmute} className="workspace-button">🔇 Unmute</button>}
-            <button onClick={() => setVideoId(null)} aria-label="Back to video selection" className="workspace-button">Change video</button>
-            <button onClick={() => setDockCollapsed(v => !v)} aria-expanded={!dockCollapsed} aria-controls="workspace-tools" className="workspace-button">{dockCollapsed ? 'Show tools' : 'Hide tools'}</button>
-            <button onClick={toggleFullscreen} aria-label="Toggle fullscreen" className="workspace-button">Fullscreen</button>
-            <button onClick={() => setZen(true)} aria-label="Zen mode — hide all panels" className="workspace-button">Zen</button>
+          {zen ? <button onClick={() => setZen(false)} className="workspace-button"><UIIcon name="leaf" />Exit zen</button> : <>
+            {muted && volume > 0 && <button onClick={handleUnmute} className="workspace-button"><UIIcon name="volume" />Unmute</button>}
+            <button onClick={() => setVideoId(null)} aria-label="Back to video selection" className="workspace-button"><UIIcon name="video" />Change video</button>
+            <button onClick={() => setDockCollapsed(v => !v)} aria-expanded={!dockCollapsed} aria-controls="workspace-tools" className="workspace-button"><UIIcon name="panel" />{dockCollapsed ? 'Show tools' : 'Hide tools'}</button>
+            <button onClick={() => { setDockCollapsed(false); setTopPanel('tasks') }} aria-controls="tool-tasks" className={'workspace-button' + (!dockCollapsed && topPanel === 'tasks' ? ' selected' : '')}><UIIcon name="tasks" />Tasks</button>
+            <ProfileLevelButton progression={progression} onClick={openProfile} />
+            <button onClick={() => setAppearanceOpen(value => !value)} aria-expanded={appearanceOpen} aria-controls="workspace-appearance" className={'workspace-button' + (appearanceOpen ? ' selected' : '')}><UIIcon name="palette" />Appearance</button>
+            <button onClick={toggleFullscreen} aria-label="Toggle fullscreen" title="Fullscreen (F)" className="workspace-button toolbar-icon"><UIIcon name="fullscreen" /></button>
+            <button onClick={() => setZen(true)} aria-label="Zen mode — hide all panels" title="Zen mode (Z)" className="workspace-button toolbar-icon"><UIIcon name="leaf" /></button>
           </>}
         </div>
       </header>
+      {appearanceOpen && !zen && <AppearancePanel theme={theme} onSetTheme={setTheme} customColor={customColor} onSetCustomColor={setCustomColor} opacity={panelOpacity} onSetOpacity={setPanelOpacity} />}
       {notice && <div role="status" className="workspace-notice">{notice}</div>}
       <main className="workspace-main">
         <div className="video-stage" aria-label="Study video">
@@ -372,16 +397,17 @@ export default function App() {
       </main>
       <aside id="workspace-tools" className="workspace-dock" hidden={dockCollapsed || zen} aria-label="Study tools">
         <div className="tool-tabs" role="tablist" aria-label="Study tools">
-          {([{ id: 'timer', label: 'Timer' }, { id: 'sidebar', label: 'Videos & sound' }, { id: 'tasks', label: 'Study plan' }] as const).map(tab =>
-            <button key={tab.id} id={`tab-${tab.id}`} role="tab" aria-selected={topPanel === tab.id} aria-controls={`tool-${tab.id}`} onClick={() => setTopPanel(tab.id)} className={'tool-tab' + (topPanel === tab.id ? ' selected' : '')}>{tab.label}</button>
+          {([{ id: 'timer', label: 'Timer', icon: 'timer' }, { id: 'sidebar', label: 'Videos & sound', icon: 'headphones' }, { id: 'tasks', label: 'Tasks', icon: 'tasks' }, { id: 'profile', label: 'Profile', icon: 'user' }] as const).map(tab =>
+            <button key={tab.id} id={`tab-${tab.id}`} role="tab" aria-selected={topPanel === tab.id} aria-controls={`tool-${tab.id}`} onClick={() => setTopPanel(tab.id)} className={'tool-tab' + (topPanel === tab.id ? ' selected' : '')}><UIIcon name={tab.icon} size={17} /><span>{tab.label}</span></button>
           )}
         </div>
         <div className="tool-body scrollbar-thin">
           <div role="tabpanel" id="tool-timer" aria-labelledby="tab-timer" hidden={topPanel !== 'timer'}><TimerCard timer={timer} pauseOnBreak={pauseOnBreak} onSetPauseOnBreak={handleSetPauseOnBreak} /></div>
           <div role="tabpanel" id="tool-sidebar" aria-labelledby="tab-sidebar" hidden={topPanel !== 'sidebar'}><Sidebar filters={catalogFilters} onFiltersChange={setCatalogFilters} videos={playable} currentVideo={currentVideo} onSelectVideo={setVideoId} volume={volume} onVolumeChange={handleVolumeChange} playlistUrl={playlist.sourceUrl} favorites={favorites} onToggleFavorite={toggleFavorite} theme={theme} onSetTheme={setTheme} customColor={customColor} onSetCustomColor={setCustomColor} /></div>
-          <div role="tabpanel" id="tool-tasks" aria-labelledby="tab-tasks" hidden={topPanel !== 'tasks'}><TasksCard onUseDuration={loadTaskDuration} /></div>
+          <div role="tabpanel" id="tool-tasks" aria-labelledby="tab-tasks" hidden={topPanel !== 'tasks'}><TasksCard onUseDuration={loadTaskDuration} onTaskCompleted={completeTask} /></div>
+          <div role="tabpanel" id="tool-profile" aria-labelledby="tab-profile" hidden={topPanel !== 'profile'}><ProfileCard progression={progression} onUpdateProfile={updateProfile} /></div>
         </div>
-        {topPanel !== 'timer' && <div className="dock-timer"><button onClick={() => setTopPanel('timer')} aria-label="Open timer">⏱ {timer.label}{timer.isRunning ? ' · running' : ''}</button></div>}
+        {topPanel !== 'timer' && <div className="dock-timer"><button onClick={() => setTopPanel('timer')} aria-label="Open timer"><UIIcon name="timer" size={16} /><span>{timer.label}</span><span className="timer-status">{timer.isRunning ? 'Running' : 'Open timer'}</span></button></div>}
       </aside>
     </div>
   )

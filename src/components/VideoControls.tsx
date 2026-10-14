@@ -53,7 +53,7 @@ function VideoControlsInner({ videoId, onPreviousVideo, onNextVideo, canNavigate
         <button onClick={() => player.current?.seekBy(10)} aria-label="Forward 10 seconds" title="Forward 10 seconds" className={buttonStyle}><SeekIcon direction="forward" /></button>
         <button onClick={onNextVideo} disabled={!canNavigate} aria-label="Next video" title="Next video in filtered order" className={buttonStyle}><SkipIcon direction="forward" /></button>
         <div className="player-progress"><Scrubber key={videoId} current={current} duration={duration} onSeek={seconds => { player.current?.seekTo(seconds); setCurrent(seconds) }} /></div>
-        {tracks.length > 0 && <button onClick={() => setMenuOpen(o => !o)} aria-label="Subtitles" aria-expanded={menuOpen} title={activeTrack ? `Subtitles: ${activeTrack.name}` : 'Subtitles'} className={buttonStyle + (activeTrack ? ' bg-clay-500 text-white' : '')}>CC</button>}
+        {tracks.length > 0 && <button onClick={() => setMenuOpen(o => !o)} aria-label="Subtitles" aria-expanded={menuOpen} title={activeTrack ? `Subtitles: ${activeTrack.name}` : 'Subtitles'} className={buttonStyle + (activeTrack ? ' captions-active' : '')}>CC</button>}
       </div>
       {menuOpen && <div className="caption-options" aria-label="Subtitle languages">
         {[{ code: '', name: 'Off' }, ...tracks].map(track => <button key={track.code} onClick={() => { onSetCaptionLang(track.code || null); setMenuOpen(false) }} aria-pressed={(captionLang ?? '') === track.code} className={'rounded-lg px-3 py-2 text-xs ' + ((captionLang ?? '') === track.code ? 'bg-clay-500 text-white' : 'bg-cream-100 text-ink-800 hover:bg-cream-200 dark:bg-ink-700 dark:text-cream-200')}>{track.name}</button>)}

@@ -10,8 +10,10 @@ import {
 } from '../lib/ambience'
 import { storageGet, storageGetJson, storageRemove, storageSetJson } from '../lib/storage'
 import { Slider } from './Slider'
+import { UIIcon, type UIIconName } from './UIIcon'
 
 const MIX_KEY = 'sws.ambience.mix'
+const CHANNEL_ICONS: Record<ChannelKey, UIIconName> = { rain: 'rain', storm: 'storm', snow: 'snow', wind: 'wind', fireplace: 'flame', cafe: 'coffee', paper: 'book' }
 
 /** The stored mix, migrating the pre-mixer single-mode keys
  *  (`sws.ambience.mode`/`.volume`) into a one-channel mix on first run. */
@@ -79,7 +81,7 @@ export function AmbiencePanel() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-ink-800 dark:text-cream-200">🌦️ Ambience</p>
+        <p className="section-heading"><UIIcon name="wind" />Ambience</p>
         {anyOn && (
           <button
             onClick={() => {
@@ -95,17 +97,17 @@ export function AmbiencePanel() {
       </div>
 
       <div className="mt-2 space-y-1.5">
-        {SOUND_CHANNELS.map(({ key, label, icon }) => (
+        {SOUND_CHANNELS.map(({ key, label }) => (
           <div key={key} className="flex items-center gap-2">
             <span
               className={
-                'w-28 shrink-0 text-xs transition ' +
+                'flex w-28 shrink-0 items-center gap-2 text-xs transition ' +
                 ((mix[key] ?? 0) > 0
                   ? 'text-ink-800 dark:text-cream-200'
-                  : 'text-ink-700/60 dark:text-cream-300/50')
+                  : 'text-ink-700 dark:text-cream-300')
               }
             >
-              {icon} {label}
+              <UIIcon name={CHANNEL_ICONS[key]} size={16} />{label}
             </span>
             <Slider
               value={mix[key] ?? 0}
@@ -119,8 +121,8 @@ export function AmbiencePanel() {
         ))}
       </div>
 
-      <p className="mt-1.5 text-[10px] text-ink-700/60 dark:text-cream-300/50">
-        layer as many as you like — procedurally generated, no downloads, works offline
+      <p className="mt-3 text-[11px] leading-relaxed text-ink-700 dark:text-cream-300">
+        Layer a few sounds to find your quiet.
       </p>
     </div>
   )

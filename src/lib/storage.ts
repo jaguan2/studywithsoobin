@@ -11,11 +11,12 @@ export function storageGet(key: string): string | null {
   }
 }
 
-export function storageSet(key: string, value: string): void {
+export function storageSet(key: string, value: string): boolean {
   try {
     localStorage.setItem(key, value)
+    return true
   } catch {
-    /* quota full / storage disabled — the app keeps working, just forgets */
+    return false // callers can explain session-only changes when needed
   }
 }
 
@@ -38,6 +39,6 @@ export function storageGetJson<T>(key: string, fallback: T): T {
   }
 }
 
-export function storageSetJson(key: string, value: unknown): void {
-  storageSet(key, JSON.stringify(value))
+export function storageSetJson(key: string, value: unknown): boolean {
+  return storageSet(key, JSON.stringify(value))
 }

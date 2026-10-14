@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { resolveMusicLink, stationKey, type Station } from '../lib/musicLink'
 import { storageGet, storageGetJson, storageSet, storageSetJson } from '../lib/storage'
 import { YouTubeMusicPlayer } from './YouTubeMusicPlayer'
+import { UIIcon } from './UIIcon'
 
 // A few cozy lofi streams to start with; users can add their own via
 // YouTube or Spotify link.
@@ -121,7 +122,7 @@ export function MusicPanel() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-ink-800 dark:text-cream-200">🎵 Music</p>
+        <p className="section-heading"><UIIcon name="headphones" />Music</p>
         <button
           onClick={() => setMusicOn((on) => !on)}
           className={
@@ -158,7 +159,7 @@ export function MusicPanel() {
               {/* Without this the 30-second cut-off reads as a broken player.
                   Nothing in the embed API changes it — only being signed in
                   does. */}
-              <p className="mt-1 text-[10px] leading-snug text-ink-700/60 dark:text-cream-300/50">
+              <p className="mt-2 text-[11px] leading-relaxed text-ink-700 dark:text-cream-300">
                 Spotify plays 30-second previews unless you're signed in to Spotify in this
                 browser — the YouTube stations play in full either way.
               </p>

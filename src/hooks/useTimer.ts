@@ -60,7 +60,7 @@ export function parseTimeInput(raw: string): number | null {
   return Math.min(Math.max(seconds, MIN_SECONDS), MAX_SECONDS)
 }
 
-export function useTimer(initialMinutes = 25): TimerApi {
+export function useTimer(initialMinutes = 25, onFocusComplete?: (minutes: number) => void): TimerApi {
   const [durationSeconds, setDuration] = useState(initialMinutes * 60)
   const [secondsLeft, setSecondsLeft] = useState(durationSeconds)
   const [isRunning, setIsRunning] = useState(false)
@@ -77,6 +77,12 @@ export function useTimer(initialMinutes = 25): TimerApi {
   pomodoroRef.current = pomodoro
   const durationRef = useRef(durationSeconds)
   durationRef.current = durationSeconds
+  const onFocusCompleteRef = useRef(onFocusComplete)
+  onFocusCompleteRef.current = onFocusComplete
+  const recordCompletedFocus = useCallback((minutes: number) => {
+    recordFocusMinutes(minutes)
+    onFocusCompleteRef.current?.(minutes)
+  }, [])
 
   useEffect(() => {
     if (!isRunning) return
@@ -103,7 +109,7 @@ export function useTimer(initialMinutes = 25): TimerApi {
         // effect below; a plain timer has no other place to announce itself.
         if (!pomodoroRef.current) {
           timerCue("Time's up", 'Your focus timer finished.')
-          recordFocusMinutes(durationRef.current / 60)
+          recordCompletedFocus(durationRef.current / 60)
         }
       }
     }
@@ -120,7 +126,7 @@ export function useTimer(initialMinutes = 25): TimerApi {
       document.removeEventListener('visibilitychange', onVisible)
       endAtRef.current = null
     }
-  }, [isRunning])
+  }, [isRunning, recordCompletedFocus])
 
   // Pomodoro phase advancement: when a focus/break block hits zero, roll into
   // the next block (or finish after the last focus round).
@@ -129,7 +135,7 @@ export function useTimer(initialMinutes = 25): TimerApi {
     if (pomodoro.phase === 'focus' && pomodoro.round >= pomodoro.rounds) {
       setPomodoro({ ...pomodoro, completed: true })
       timerCue('All rounds done! 🎉', `${pomodoro.rounds} focus rounds complete — great work.`)
-      recordFocusMinutes(pomodoro.focusMinutes)
+      recordCompletedFocus(pomodoro.focusMinutes)
       return
     }
     const nextPhase = pomodoro.phase === 'focus' ? 'break' : 'focus'
@@ -141,11 +147,11 @@ export function useTimer(initialMinutes = 25): TimerApi {
     setIsRunning(true)
     if (nextPhase === 'break') {
       timerCue('Focus round done', `Take a ${pomodoro.breakMinutes} minute break.`)
-      recordFocusMinutes(pomodoro.focusMinutes)
+      recordCompletedFocus(pomodoro.focusMinutes)
     } else {
       timerCue('Break over', `Round ${nextRound} — ${pomodoro.focusMinutes} minutes of focus.`)
     }
-  }, [secondsLeft, pomodoro])
+  }, [secondsLeft, pomodoro, recordCompletedFocus])
 
   const toggle = useCallback(() => {
     setIsRunning((r) => {

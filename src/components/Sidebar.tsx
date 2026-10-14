@@ -7,6 +7,7 @@ import { MusicPanel } from './MusicPanel'
 import { AmbiencePanel } from './AmbiencePanel'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { HeartIcon } from './icons'
+import { UIIcon } from './UIIcon'
 import type { CatalogFilters } from '../lib/catalog'
 import { videoMetadata } from '../lib/catalog'
 
@@ -50,8 +51,8 @@ function SidebarInner({
   return (
     <section className="flex min-w-0 flex-col" aria-label="Videos and sound">
       <header className="flex items-center justify-between px-4 py-3">
-        <span className="text-lg font-semibold text-ink-900 dark:text-cream-100">
-          Videos & sound
+        <span className="section-heading">
+          <UIIcon name="headphones" />Videos & sound
         </span>
         <div className="flex items-center gap-2 text-ink-700 dark:text-cream-300">
           <a
@@ -141,7 +142,7 @@ function SidebarInner({
             <AmbiencePanel />
 
             <footer className="mt-auto flex items-center justify-between pt-4 text-xs text-ink-700/70 dark:text-cream-300/60">
-              <span>made for MOA 🐰</span>
+              <span>made for MOA</span>
               <ThemeSwitcher
                 theme={theme}
                 onSetTheme={onSetTheme}

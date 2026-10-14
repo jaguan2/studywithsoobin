@@ -16,16 +16,16 @@
  *  base hue; accents and text run a few degrees off it, as the hand-tuned
  *  light palette does. */
 const RAMP: { name: string; dh: number; s: number; anchor: [number, number, number] }[] = [
-  { name: 'cream-50', dh: 0, s: 0.6, anchor: [253, 251, 247] },
-  { name: 'cream-100', dh: 0, s: 0.52, anchor: [248, 242, 233] },
-  { name: 'cream-200', dh: 0, s: 0.49, anchor: [241, 231, 214] },
-  { name: 'cream-300', dh: 0, s: 0.48, anchor: [232, 217, 190] },
-  { name: 'clay-400', dh: -9, s: 0.68, anchor: [227, 168, 107] },
-  { name: 'clay-500', dh: -9, s: 0.65, anchor: [217, 146, 79] },
-  { name: 'clay-600', dh: -10, s: 0.55, anchor: [199, 125, 60] },
-  { name: 'ink-700', dh: -11, s: 0.14, anchor: [74, 64, 56] },
-  { name: 'ink-800', dh: -12, s: 0.16, anchor: [51, 43, 37] },
-  { name: 'ink-900', dh: -11, s: 0.19, anchor: [34, 28, 23] },
+  { name: 'cream-50', dh: 0, s: 0.12, anchor: [246, 244, 241] },
+  { name: 'cream-100', dh: 0, s: 0.16, anchor: [253, 251, 248] },
+  { name: 'cream-200', dh: 0, s: 0.14, anchor: [236, 232, 226] },
+  { name: 'cream-300', dh: 0, s: 0.12, anchor: [216, 211, 204] },
+  { name: 'clay-400', dh: 0, s: 0.26, anchor: [163, 149, 187] },
+  { name: 'clay-500', dh: 0, s: 0.3, anchor: [115, 96, 145] },
+  { name: 'clay-600', dh: 0, s: 0.3, anchor: [93, 80, 120] },
+  { name: 'ink-700', dh: 0, s: 0.06, anchor: [104, 99, 108] },
+  { name: 'ink-800', dh: 0, s: 0.07, anchor: [65, 59, 68] },
+  { name: 'ink-900', dh: 0, s: 0.1, anchor: [43, 37, 48] },
 ]
 
 /** Saturation of a pick that reproduces the ramp above as-is. Picking a greyer

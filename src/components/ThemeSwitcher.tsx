@@ -1,9 +1,10 @@
 import type { Theme } from '../App'
+import { UIIcon, type UIIconName } from './UIIcon'
 
-const THEMES: { value: Theme; label: string; icon: string }[] = [
-  { value: 'light', label: 'Light theme', icon: '☀️' },
-  { value: 'coffee', label: 'Coffee theme', icon: '☕' },
-  { value: 'dark', label: 'Dark theme', icon: '🌙' },
+const THEMES: { value: Theme; label: string; icon: UIIconName }[] = [
+  { value: 'light', label: 'Linen', icon: 'sun' },
+  { value: 'coffee', label: 'Coffee', icon: 'coffee' },
+  { value: 'dark', label: 'Plum night', icon: 'moon' },
 ]
 
 interface ThemeSwitcherProps {
@@ -11,25 +12,25 @@ interface ThemeSwitcherProps {
   onSetTheme: (theme: Theme) => void
   customColor: string
   onSetCustomColor: (hex: string) => void
+  expanded?: boolean
 }
 
 /** The theme pill row: three presets plus the custom-colour swatch. Shared by
  *  the sidebar footer and the welcome screen. */
-export function ThemeSwitcher({ theme, onSetTheme, customColor, onSetCustomColor }: ThemeSwitcherProps) {
+export function ThemeSwitcher({ theme, onSetTheme, customColor, onSetCustomColor, expanded = false }: ThemeSwitcherProps) {
   return (
-    <div className="flex items-center gap-0.5 rounded-full bg-cream-200/70 p-0.5 dark:bg-ink-700">
+    <div className={'theme-switcher' + (expanded ? ' expanded' : '')} role="group" aria-label="Color theme">
       {THEMES.map((t) => (
         <button
           key={t.value}
           onClick={() => onSetTheme(t.value)}
-          aria-label={t.label}
+          aria-label={t.value === 'dark' ? 'Dark theme' : `${t.value === 'light' ? 'Light' : 'Coffee'} theme`}
+          aria-pressed={theme === t.value}
           title={t.label}
-          className={
-            'grid h-6 w-7 place-items-center rounded-full text-[12px] leading-none transition ' +
-            (theme === t.value ? 'bg-white shadow dark:bg-ink-900' : 'opacity-45 hover:opacity-100')
-          }
+          className={'theme-option' + (theme === t.value ? ' selected' : '')}
         >
-          {t.icon}
+          <UIIcon name={t.icon} size={16} />
+          {expanded && <span>{t.label}</span>}
         </button>
       ))}
       {/* Clicking the swatch both selects the custom theme and opens the OS
@@ -37,15 +38,13 @@ export function ThemeSwitcher({ theme, onSetTheme, customColor, onSetCustomColor
       <label
         onClick={() => onSetTheme('custom')}
         title="Custom colour — pick your own"
-        className={
-          'grid h-6 w-7 cursor-pointer place-items-center rounded-full transition ' +
-          (theme === 'custom' ? 'bg-white shadow dark:bg-ink-900' : 'opacity-45 hover:opacity-100')
-        }
+        className={'theme-option theme-custom' + (theme === 'custom' ? ' selected' : '')}
       >
         <span
           className="h-3.5 w-3.5 rounded-full ring-1 ring-inset ring-ink-900/20"
           style={{ background: customColor }}
         />
+        {expanded && <span>Custom</span>}
         <input
           type="color"
           value={customColor}
@@ -54,7 +53,7 @@ export function ThemeSwitcher({ theme, onSetTheme, customColor, onSetCustomColor
             onSetTheme('custom')
           }}
           aria-label="Custom colour theme"
-          className="sr-only"
+          className="theme-color-input"
         />
       </label>
     </div>
