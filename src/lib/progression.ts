@@ -1,4 +1,4 @@
-import { localDayKey, type DayLog } from './stats'
+import { calendarDayNumber as dayNumber, localDayKey, type DayLog } from './stats'
 
 export const PROGRESSION_KEY = 'sws.progression'
 export const XP_RULES = { studyMinute: 1, task: 10, checkIn: 10, streakMaxBonus: 10 } as const
@@ -22,12 +22,6 @@ export interface Progression {
   bestStreak: number
 }
 
-function dayNumber(value: unknown): number | null {
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null
-  const date = new Date(`${value}T12:00:00Z`)
-  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value
-    ? Math.floor(date.getTime() / 86_400_000) : null
-}
 function normalizeDays(value: unknown): DayLog {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
   const days: DayLog = {}

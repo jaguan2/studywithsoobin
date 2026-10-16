@@ -61,7 +61,14 @@ app's persisted WebView profile each have their own storage.
 
 `lib/progression.ts` contains the pure model. `hooks/useProgression.ts` initializes
 history and known task claims, saves outside React updaters, and handles
-completion/check-in actions. `useTimer` invokes the completion callback after
+completion/check-in actions. `lib/progressionSession.ts` queues operations, reads
+current persisted progress before applying them, and uses a shared Web Lock to
+serialize saves across tabs in supported browsers (including modern Edge/WebView2).
+Older browsers fall back to a fresh synchronous read before writing. Storage
+events refresh other tabs without echo writes. Failed saves retain pending actions
+in memory and replay them on the next successful save; failed reads prevent writing
+an unseen profile. Profile saves await the result before reporting success.
+`useTimer` invokes the completion callback after
 ordinary stats are written. Focus and task callbacks do not run on timer ticks.
 Failed storage writes keep progress in memory and report that it is session-only.
 

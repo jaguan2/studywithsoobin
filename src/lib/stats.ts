@@ -17,12 +17,20 @@ export function localDayKey(date = new Date()): string {
   return date.toLocaleDateString('en-CA')
 }
 
+/** Calendar ordinal, independent of local DST and rejecting rolled-over dates. */
+export function calendarDayNumber(value: unknown): number | null {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null
+  const date = new Date(`${value}T12:00:00Z`)
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value
+    ? Math.floor(date.getTime() / 86_400_000) : null
+}
+
 function loadDays(): DayLog {
   const raw = storageGetJson<unknown>(KEY, {})
-  if (typeof raw !== 'object' || raw === null) return {}
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return {}
   const days: DayLog = {}
   for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
-    if (/^\d{4}-\d{2}-\d{2}$/.test(k) && typeof v === 'number' && v > 0) days[k] = v
+    if (calendarDayNumber(k) !== null && typeof v === 'number' && Number.isFinite(v) && v > 0) days[k] = v
   }
   return days
 }
@@ -38,7 +46,9 @@ export function recordFocusMinutes(minutes: number, now = new Date()) {
   const key = localDayKey(now)
   days[key] = (days[key] ?? 0) + Math.round(minutes)
   // prune ancient entries so the object never grows unbounded
-  const cutoff = localDayKey(new Date(now.getTime() - KEEP_DAYS * 86400_000))
+  const cutoffDate = new Date(now)
+  cutoffDate.setDate(cutoffDate.getDate() - KEEP_DAYS)
+  const cutoff = localDayKey(cutoffDate)
   for (const k of Object.keys(days)) if (k < cutoff) delete days[k]
   storageSetJson(KEY, days)
 }
@@ -51,16 +61,17 @@ export function getTodayMinutes(now = new Date()): number {
  *  yesterday, so the streak isn't shown as broken before today's first
  *  session. Pure core exported for tests. */
 export function computeStreak(days: DayLog, todayKey: string): number {
-  const dated = (key: string) => {
-    const [y, m, d] = key.split('-').map(Number)
-    return new Date(y, m - 1, d)
+  let cursor = calendarDayNumber(todayKey)
+  if (cursor === null) return 0
+  const hasFocus = (day: number) => {
+    const minutes = days[new Date(day * 86_400_000).toISOString().slice(0, 10)]
+    return Number.isFinite(minutes) && minutes > 0
   }
-  let cursor = dated(todayKey)
-  if (!days[todayKey]) cursor = new Date(cursor.getTime() - 86400_000) // start from yesterday
+  if (!hasFocus(cursor)) cursor -= 1 // start from yesterday
   let streak = 0
-  while (days[localDayKey(cursor)]) {
+  while (hasFocus(cursor)) {
     streak += 1
-    cursor = new Date(cursor.getTime() - 86400_000)
+    cursor -= 1
   }
   return streak
 }

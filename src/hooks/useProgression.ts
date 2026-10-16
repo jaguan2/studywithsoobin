@@ -1,84 +1,105 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
-  editProfile, normalizeProgression, PROGRESSION_KEY, progressionLevel, recordCheckIn,
+  editProfile, normalizeProgression, PROGRESSION_KEY, recordCheckIn,
   rememberCompletedTasks, rewardFocusSession, rewardTaskCompletion, syncFocusHistory,
   type ProfileAvatar, type Progression,
 } from '../lib/progression'
+import { createProgressionSession, type ProgressionUpdate } from '../lib/progressionSession'
 import { getFocusDays, localDayKey } from '../lib/stats'
 import { storageGetJson, storageSetJson } from '../lib/storage'
 import { normalizePlannedTask } from '../lib/taskPlanning'
 
-function loadProgression(): Progression {
+function readProgression(): Progression {
+  // Storage access errors must differ from an absent profile: a failed read
+  // must not replace a previously readable profile with an empty snapshot.
+  const raw = localStorage.getItem(PROGRESSION_KEY)
+  try { return normalizeProgression(raw === null ? null : JSON.parse(raw)) }
+  catch { return normalizeProgression(null) }
+}
+
+function createSession() {
+  const raw = storageGetJson<unknown>(PROGRESSION_KEY, null)
+  const migrating = !raw || typeof raw !== 'object' || (raw as { version?: unknown }).version !== 1
   const tasks = storageGetJson<unknown>('sws.tasks', [])
-  const completedIds = Array.isArray(tasks) ? tasks.flatMap(value => {
+  const completedIds = migrating && Array.isArray(tasks) ? tasks.flatMap(value => {
     const task = normalizePlannedTask(value)
     return task?.done ? [task.id] : []
   }) : []
-  return rememberCompletedTasks(syncFocusHistory(
-    normalizeProgression(storageGetJson<unknown>(PROGRESSION_KEY, null)), getFocusDays()), completedIds)
+  const history = getFocusDays()
+  return createProgressionSession({
+    read: readProgression,
+    write: next => storageSetJson(PROGRESSION_KEY, next),
+    lock: operation => {
+      if (typeof navigator !== 'undefined' && navigator.locks?.request) {
+        return navigator.locks.request(PROGRESSION_KEY, operation)
+      }
+      // Older browsers still re-read immediately before each synchronous write.
+      return Promise.resolve(operation())
+    },
+    bootstrap: state => rememberCompletedTasks(syncFocusHistory(state, history), completedIds),
+  })
 }
 
 export function useProgression(onNotice: (message: string) => void) {
-  const [progression, setProgression] = useState(loadProgression)
-  const progressRef = useRef(progression)
-
-  // Synchronous refs make repeated event callbacks idempotent. Persistence stays
-  // outside React updaters, which StrictMode may evaluate more than once.
-  const commit = useCallback((next: Progression, activity?: string, forceSave = false): boolean => {
-    const previous = progressRef.current
-    if (next === previous && !forceSave) return true
-    progressRef.current = next
-    setProgression(next)
-    const saved = storageSetJson(PROGRESSION_KEY, next)
-    if (!saved) {
+  const [session] = useState(createSession)
+  const [progression, setProgression] = useState(session.getSnapshot)
+  const commit = useCallback(async (update: ProgressionUpdate, activity?: string): Promise<boolean> => {
+    const result = await session.update(update, activity)
+    if (!result.saved) {
       onNotice('Your progress could not be saved. It is kept for this session; check that browser storage is available.')
-      return false
+    } else if (result.earned > 0) {
+      onNotice(result.leveledUp
+        ? `Level ${result.level}! +${result.earned} XP · ${result.activity}`
+        : `+${result.earned} XP · ${result.activity}`)
     }
-    if (activity) {
-      const before = progressionLevel(previous)
-      const after = progressionLevel(next)
-      const earned = after.totalXP - before.totalXP
-      if (earned > 0) onNotice(after.level > before.level
-        ? `Level ${after.level}! +${earned} XP · ${activity}`
-        : `+${earned} XP · ${activity}`)
-    }
-    return true
-  }, [onNotice])
+    return result.saved
+  }, [session, onNotice])
 
   const recordStudy = useCallback((minutes: number) => {
-    commit(rewardFocusSession(progressRef.current, minutes, getFocusDays()), 'Focus session complete')
-  }, [commit])
+    // Stats already include this block. Capture the intended high-water marks,
+    // so replay after a failed save or another tab's backfill cannot add it twice.
+    const credited = rewardFocusSession(session.getSnapshot(), minutes, getFocusDays())
+    void commit(state => syncFocusHistory(state, credited.focusDays), 'Focus session complete')
+  }, [session, commit])
   const completeTask = useCallback((id: string) => {
-    commit(rewardTaskCompletion(progressRef.current, id), 'Task complete')
+    void commit(state => rewardTaskCompletion(state, id), 'Task complete')
   }, [commit])
   const updateProfile = useCallback((name: string, avatar: ProfileAvatar) =>
-    commit(editProfile(progressRef.current, name, avatar), undefined, true), [commit])
-
+    commit(state => editProfile(state, name, avatar)), [commit])
   const checkIn = useCallback(() => {
-    if (progressRef.current.lastCheckIn && progressRef.current.lastCheckIn >= localDayKey()) return
-    commit(recordCheckIn(progressRef.current), 'Daily check-in')
-  }, [commit])
+    const now = new Date()
+    const snapshot = session.getSnapshot()
+    if (snapshot.lastCheckIn && snapshot.lastCheckIn >= localDayKey(now)) return
+    void commit(state => recordCheckIn(state, now), 'Daily check-in')
+  }, [session, commit])
 
   useEffect(() => {
-    commit(recordCheckIn(progressRef.current), undefined, true)
+    const unsubscribe = session.subscribe(setProgression)
+    const now = new Date()
+    void commit(state => recordCheckIn(state, now))
     const returned = () => {
       if (document.hidden) return
-      commit(syncFocusHistory(progressRef.current, getFocusDays()))
+      const history = getFocusDays()
+      void commit(state => syncFocusHistory(state, history))
       checkIn()
     }
-    // A real open, return or gesture counts. An idle window crossing midnight
-    // does not reward check-ins or extend a streak on its own.
+    const stored = (event: StorageEvent) => {
+      if (event.key === PROGRESSION_KEY || event.key === null) void session.refresh()
+    }
+    window.addEventListener('storage', stored)
     window.addEventListener('focus', returned)
     document.addEventListener('visibilitychange', returned)
     window.addEventListener('pointerdown', checkIn, { passive: true })
     window.addEventListener('keydown', checkIn)
     return () => {
+      unsubscribe()
+      window.removeEventListener('storage', stored)
       window.removeEventListener('focus', returned)
       document.removeEventListener('visibilitychange', returned)
       window.removeEventListener('pointerdown', checkIn)
       window.removeEventListener('keydown', checkIn)
     }
-  }, [commit, checkIn])
+  }, [session, commit, checkIn])
 
   return { progression, recordStudy, completeTask, updateProfile }
 }

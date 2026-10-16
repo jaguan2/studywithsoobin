@@ -11,7 +11,7 @@ import { progressionLevel, type ProfileAvatar, type Progression } from '../lib/p
 
 interface WelcomeScreenProps {
   progression: Progression
-  onUpdateProfile: (name: string, avatar: ProfileAvatar) => boolean
+  onUpdateProfile: (name: string, avatar: ProfileAvatar) => Promise<boolean>
   runningTimer: string | null
   filters: Filters
   onFiltersChange: (value: Filters) => void

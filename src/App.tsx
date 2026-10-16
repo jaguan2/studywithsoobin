@@ -8,6 +8,7 @@ import { VideoBackground, type VideoBackgroundHandle } from './components/VideoB
 import { VideoControls } from './components/VideoControls'
 import { Sidebar } from './components/Sidebar'
 import { TasksCard } from './components/TasksCard'
+import { SocialCard } from './components/SocialCard'
 import { TimerCard } from './components/TimerCard'
 import { WelcomeScreen } from './components/WelcomeScreen'
 import { AppearancePanel } from './components/AppearancePanel'
@@ -96,7 +97,7 @@ export default function App() {
   const [notice, setNotice] = useState<string | null>(null)
   const [videoPlaying, setVideoPlaying] = useState(true)
   const [dockCollapsed, setDockCollapsed] = useState(false)
-  const [topPanel, setTopPanel] = useState<'timer' | 'sidebar' | 'tasks' | 'profile'>('timer')
+  const [topPanel, setTopPanel] = useState<'timer' | 'sidebar' | 'tasks' | 'profile' | 'social'>('timer')
   // Zen mode: everything but the video disappears (Z toggles, Esc exits).
   const [zen, setZen] = useState(false)
   // WebView can retain the document's small-layout scroll offset when the
@@ -397,7 +398,7 @@ export default function App() {
       </main>
       <aside id="workspace-tools" className="workspace-dock" hidden={dockCollapsed || zen} aria-label="Study tools">
         <div className="tool-tabs" role="tablist" aria-label="Study tools">
-          {([{ id: 'timer', label: 'Timer', icon: 'timer' }, { id: 'sidebar', label: 'Videos & sound', icon: 'headphones' }, { id: 'tasks', label: 'Tasks', icon: 'tasks' }, { id: 'profile', label: 'Profile', icon: 'user' }] as const).map(tab =>
+          {([{ id: 'timer', label: 'Timer', icon: 'timer' }, { id: 'sidebar', label: 'Videos & sound', icon: 'headphones' }, { id: 'tasks', label: 'Tasks', icon: 'tasks' }, { id: 'profile', label: 'Profile', icon: 'user' }, { id: 'social', label: 'Social', icon: 'social' }] as const).map(tab =>
             <button key={tab.id} id={`tab-${tab.id}`} role="tab" aria-selected={topPanel === tab.id} aria-controls={`tool-${tab.id}`} onClick={() => setTopPanel(tab.id)} className={'tool-tab' + (topPanel === tab.id ? ' selected' : '')}><UIIcon name={tab.icon} size={17} /><span>{tab.label}</span></button>
           )}
         </div>
@@ -406,6 +407,7 @@ export default function App() {
           <div role="tabpanel" id="tool-sidebar" aria-labelledby="tab-sidebar" hidden={topPanel !== 'sidebar'}><Sidebar filters={catalogFilters} onFiltersChange={setCatalogFilters} videos={playable} currentVideo={currentVideo} onSelectVideo={setVideoId} volume={volume} onVolumeChange={handleVolumeChange} playlistUrl={playlist.sourceUrl} favorites={favorites} onToggleFavorite={toggleFavorite} theme={theme} onSetTheme={setTheme} customColor={customColor} onSetCustomColor={setCustomColor} /></div>
           <div role="tabpanel" id="tool-tasks" aria-labelledby="tab-tasks" hidden={topPanel !== 'tasks'}><TasksCard onUseDuration={loadTaskDuration} onTaskCompleted={completeTask} /></div>
           <div role="tabpanel" id="tool-profile" aria-labelledby="tab-profile" hidden={topPanel !== 'profile'}><ProfileCard progression={progression} onUpdateProfile={updateProfile} /></div>
+          <div role="tabpanel" id="tool-social" aria-labelledby="tab-social" hidden={topPanel !== 'social'}><SocialCard /></div>
         </div>
         {topPanel !== 'timer' && <div className="dock-timer"><button onClick={() => setTopPanel('timer')} aria-label="Open timer"><UIIcon name="timer" size={16} /><span>{timer.label}</span><span className="timer-status">{timer.isRunning ? 'Running' : 'Open timer'}</span></button></div>}
       </aside>

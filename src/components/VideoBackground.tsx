@@ -1,4 +1,4 @@
-import { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { loadYouTubeIframeApi } from '../hooks/useYouTubeIframeApi'
 import { getSavedPosition, savePosition } from '../lib/positions'
 import { isUnavailableVideo, playerErrorMessage } from '../lib/videoPlayback'
@@ -55,6 +55,13 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
     const containerRef = useRef<HTMLDivElement>(null)
     const playerRef = useRef<YT.Player | null>(null)
     const readyRef = useRef(false)
+    const apiFailedRef = useRef(false)
+    const [apiAttempt, setApiAttempt] = useState(0)
+    const retryApi = useCallback(() => {
+      if (!apiFailedRef.current) return
+      apiFailedRef.current = false
+      setApiAttempt(attempt => attempt + 1)
+    }, [])
     const requestedIdRef = useRef(videoId)
     const volumeRef = useRef(volume)
     volumeRef.current = volume
@@ -198,7 +205,7 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
       },
     }))
 
-    // Create the player once.
+    // Keep a healthy player; retry initialization only after a failed API load.
     useEffect(() => {
       let cancelled = false
 
@@ -273,7 +280,10 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
           })
         })
         .catch(() => {
-          if (!cancelled) onApiUnavailableRef.current()
+          if (!cancelled) {
+            apiFailedRef.current = true
+            onApiUnavailableRef.current()
+          }
         })
 
       return () => {
@@ -284,9 +294,12 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
         playerRef.current?.destroy()
         playerRef.current = null
       }
-      // Player is intentionally created once; video/volume changes are handled below.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [apiAttempt, applyCaptions, rememberPosition])
+
+    useEffect(() => {
+      window.addEventListener('online', retryApi)
+      return () => window.removeEventListener('online', retryApi)
+    }, [retryApi])
 
     useEffect(() => {
       applyCaptions()
@@ -306,13 +319,14 @@ const VideoBackgroundInner = forwardRef<VideoBackgroundHandle, VideoBackgroundPr
 
     // Swap videos without recreating the player.
     useEffect(() => {
+      if (apiFailedRef.current) { retryApi(); return }
       if (!readyRef.current || requestedIdRef.current === videoId) return
       rememberPosition()
       window.clearTimeout(captionRetryRef.current)
       resumedForRef.current = null
       requestedIdRef.current = videoId
       playerRef.current?.loadVideoById(videoId)
-    }, [videoId, rememberPosition])
+    }, [videoId, rememberPosition, retryApi])
 
     useEffect(() => {
       const player = playerRef.current

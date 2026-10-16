@@ -12,7 +12,9 @@ const PRESETS = [
 ]
 
 function loadPomodoroConfig(): { focus: number; break: number; rounds: number } {
-  const stored = storageGetJson<{ focus?: unknown; break?: unknown; rounds?: unknown }>('sws.pomodoro', {})
+  const raw = storageGetJson<unknown>('sws.pomodoro', {})
+  const stored = raw && typeof raw === 'object' && !Array.isArray(raw)
+    ? raw as { focus?: unknown; break?: unknown; rounds?: unknown } : {}
   const num = (value: unknown, fallback: number, max: number) =>
     typeof value === 'number' && Number.isFinite(value) && value >= 1 && value <= max ? Math.round(value) : fallback
   return { focus: num(stored.focus, 25, 180), break: num(stored.break, 5, 60), rounds: num(stored.rounds, 4, 12) }

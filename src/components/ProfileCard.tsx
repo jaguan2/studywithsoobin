@@ -7,7 +7,7 @@ import { UIIcon } from './UIIcon'
 
 interface ProfileCardProps {
   progression: Progression
-  onUpdateProfile: (name: string, avatar: ProfileAvatar) => boolean
+  onUpdateProfile: (name: string, avatar: ProfileAvatar) => Promise<boolean>
 }
 const AVATAR_LABELS: Record<ProfileAvatar, string> = { leaf: 'Little leaf', book: 'Open book', moon: 'Night owl', coffee: 'Coffee break' }
 
@@ -17,6 +17,7 @@ function ProfileCardInner({ progression, onUpdateProfile }: ProfileCardProps) {
   const [nameDraft, setNameDraft] = useState(progression.name)
   const [avatarDraft, setAvatarDraft] = useState(progression.avatar)
   const [saveMessage, setSaveMessage] = useState('')
+  const [saving, setSaving] = useState(false)
   useEffect(() => { setNameDraft(progression.name); setAvatarDraft(progression.avatar) }, [progression.name, progression.avatar])
   const minutes = totalFocusMinutes(progression)
   const studiedHours = Math.floor(minutes / 60)
@@ -67,19 +68,23 @@ function ProfileCardInner({ progression, onUpdateProfile }: ProfileCardProps) {
       </details>
       <details className="profile-disclosure">
         <summary><span>Edit profile</span><UIIcon name="chevron" size={16} /></summary>
-        <form onSubmit={event => {
+        <form onSubmit={async event => {
           event.preventDefault()
-          const saved = onUpdateProfile(nameDraft, avatarDraft)
-          setNameDraft(nameDraft.trim())
-          setSaveMessage(saved ? 'Profile saved.' : 'Profile updated for this session.')
+          setSaving(true)
+          setSaveMessage('')
+          const trimmedName = nameDraft.trim()
+          try {
+            const saved = await onUpdateProfile(trimmedName, avatarDraft)
+            setSaveMessage(saved ? 'Profile saved.' : 'Profile updated for this session.')
+          } finally { setSaving(false) }
         }} className="profile-editor">
-          <label className="task-field"><span>Display name (optional)</span><input aria-label="Profile display name" maxLength={32} value={nameDraft} placeholder="Study friend"
+          <label className="task-field"><span>Display name (optional)</span><input aria-label="Profile display name" disabled={saving} maxLength={32} value={nameDraft} placeholder="Study friend"
             onChange={event => { setNameDraft(event.target.value); setSaveMessage('') }} /></label>
-          <fieldset className="profile-avatar-choices"><legend>Choose an avatar</legend><div>
+          <fieldset disabled={saving} className="profile-avatar-choices"><legend>Choose an avatar</legend><div>
             {PROFILE_AVATARS.map(avatar => <button type="button" key={avatar} aria-label={AVATAR_LABELS[avatar]} aria-pressed={avatarDraft === avatar}
               onClick={() => { setAvatarDraft(avatar); setSaveMessage('') }}><UIIcon name={avatar} size={23} /></button>)}
           </div></fieldset>
-          <button type="submit" className="primary-button">Save profile</button>
+          <button type="submit" disabled={saving} className="primary-button">{saving ? 'Saving…' : 'Save profile'}</button>
           {saveMessage && <p role="status" className="profile-note">{saveMessage}</p>}
         </form>
       </details>

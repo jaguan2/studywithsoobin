@@ -1,7 +1,7 @@
 # Python deps for the desktop (native-window) launcher, desktop.py.
 #   pip install -r requirements-desktop.txt
 #
-# (Not to be confused with requirements.txt, which is this project's
+# (Not to be confused with docs/requirements.md, which is this project's
 # plain-language product spec — the app itself is JS/TS and has no
 # Python runtime dependencies at all.)
 #

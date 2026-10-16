@@ -16,52 +16,73 @@ let apiPromise: Promise<typeof YT> | null = null
 export function loadYouTubeIframeApi(): Promise<typeof YT> {
   if (apiPromise) return apiPromise
 
-  apiPromise = new Promise<typeof YT>((resolve, reject) => {
+  const attempt = new Promise<typeof YT>((resolve, reject) => {
     if (window.YT && window.YT.Player) {
       resolve(window.YT)
       return
     }
 
     let settled = false
+    let tag: HTMLElement | null = null
+    const previousCallback = window.onYouTubeIframeAPIReady
     const timeout = window.setTimeout(() => {
       fail(new Error('YouTube IFrame API did not load (offline or blocked?)'))
     }, LOAD_TIMEOUT_MS)
 
+    const cleanup = () => {
+      window.clearTimeout(timeout)
+      tag?.removeEventListener('error', onError)
+      if (window.onYouTubeIframeAPIReady === onReady) {
+        window.onYouTubeIframeAPIReady = previousCallback
+      }
+    }
+
     const fail = (err: Error) => {
       if (settled) return
       settled = true
-      window.clearTimeout(timeout)
-      apiPromise = null // let the next call retry
+      cleanup()
+      tag?.remove() // stalled or failed tags cannot start a fresh request
       reject(err)
     }
 
-    const previousCallback = window.onYouTubeIframeAPIReady
-    window.onYouTubeIframeAPIReady = () => {
-      previousCallback?.()
+    const onError = () => fail(new Error('YouTube IFrame API failed to load'))
+    const onReady = () => {
       if (settled) return
+      if (!window.YT?.Player) {
+        fail(new Error('YouTube IFrame API failed to load'))
+        return
+      }
       settled = true
-      window.clearTimeout(timeout)
+      cleanup()
       resolve(window.YT)
+      // Settle our players before calling another consumer's callback, so
+      // an exception there cannot strand this app's loading promise.
+      previousCallback?.()
     }
+    window.onYouTubeIframeAPIReady = onReady
 
     // Reuse an existing tag (e.g. from a previous failed attempt that later
     // recovered) rather than piling up duplicates.
-    const existing = document.getElementById('youtube-iframe-api')
-    if (existing) {
-      existing.addEventListener('error', () => fail(new Error('YouTube IFrame API failed to load')))
-      return
+    try {
+      const existing = document.getElementById('youtube-iframe-api')
+      tag = existing ?? document.createElement('script')
+      tag.addEventListener('error', onError)
+      if (!existing) {
+        const script = tag as HTMLScriptElement
+        script.id = 'youtube-iframe-api'
+        script.src = 'https://www.youtube.com/iframe_api'
+        document.head.appendChild(script)
+      }
+    } catch (error) {
+      fail(error instanceof Error ? error : new Error('YouTube IFrame API failed to load'))
     }
-    const tag = document.createElement('script')
-    tag.id = 'youtube-iframe-api'
-    tag.src = 'https://www.youtube.com/iframe_api'
-    tag.onerror = () => {
-      tag.remove() // a fresh attempt needs a fresh tag
-      fail(new Error('YouTube IFrame API failed to load'))
-    }
-    document.head.appendChild(tag)
   })
 
-  return apiPromise
+  apiPromise = attempt
+  // Runs after assignment even when script injection fails synchronously.
+  // Only clear this attempt, never a newer promise created by another caller.
+  void attempt.catch(() => { if (apiPromise === attempt) apiPromise = null })
+  return attempt
 }
 
 declare global {
