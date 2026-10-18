@@ -3,6 +3,8 @@
 ## Using and developing the app
 
 - [App guide](app-guide.md): features, local setup, video curation, and desktop builds.
+- [Repository layout](app-guide.md#project-structure): where application, desktop,
+  configuration, maintenance, and generated files belong.
 - [Screenshots and feature walkthrough](screenshots.md): examples of the app's main screens.
 - [Profile progression](LEVELS.md): XP, levels, milestones, check-ins, and lifetime study hours.
 - [TXT social accounts](social.md): the Social tab, account links, and verification sources.

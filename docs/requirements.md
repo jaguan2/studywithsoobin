@@ -48,7 +48,7 @@ Non-functional requirements
 
 Desktop app (implemented)
 ---------------------------
-- `desktop.py` + `build-exe.bat` package the app as a single Windows
+- `desktop/launcher.py` + `scripts/build-exe.bat` package the app as a single Windows
   executable (`StudyWithSoobin.exe`, kept at the repo root so users can
   download it straight from GitHub) via pywebview + PyInstaller, following
   the same pattern as the TaskNook project. Favorites and theme persist

@@ -7,6 +7,15 @@ The full project documentation lives in `docs/`, and screenshots live in
 files pointing here. Code paths in this document refer to the repository root.
 Keep `requirements-desktop.txt` at the root for pip and the packaging script.
 
+**Repository layout:** `src/` contains the web app and colocated tests;
+`desktop/` contains the native launcher; `config/` holds Tailwind/PostCSS;
+`scripts/` holds packaging and catalog maintenance; `public/` holds web assets.
+Vite points to `config/` for PostCSS, whose Tailwind path is resolved relative to
+its own file. Keep editor-discovered Vite, TypeScript, and ESLint entry points
+at the root. PyInstaller specifications and work files belong in ignored `build/`.
+The old floating-panel drag/resize helpers and their motion dependency were
+removed; video resume positions in `lib/positions.ts` are still active.
+
 ## What this is
 
 A LifeAt-style Pomodoro study app whose video background is drawn from the
@@ -24,9 +33,8 @@ npm run lint             # eslint .
 npm test                 # vitest run (logic, saved timer state, YouTube API recovery)
 npm run fetch-playlist    # refresh src/data/playlist.json from the live YouTube playlist
 
-python desktop.py        # run as a native desktop window (needs dist/ built +
-                         #   pip install -r requirements-desktop.txt)
-build-exe.bat            # package into StudyWithSoobin.exe at the repo root (PyInstaller)
+python desktop/launcher.py # native window (needs dist/ + desktop pip dependencies)
+scripts/build-exe.bat       # package into StudyWithSoobin.exe at the repo root
 ```
 
 Type-checking (`tsc --noEmit`, run as part of `npm run build`) is the main
@@ -205,8 +213,9 @@ document. These tests do not verify live playback or interactive browser behavio
   LOCAL date on open/return/gesture; idle midnight crossings never count.
   Calendar arithmetic is independent of DST and a backward clock cannot reopen
   a reward day. Name, avatar, XP, best streak and milestones remain local.
-  `ProfileCard` lives in a fourth dock tab and a start-screen disclosure;
-  `ProfileLevelButton` opens it from the toolbar. No XP work runs on timer ticks.
+  `ProfileCard` lives only in the fourth dock tab, **Profile**. Keep profile
+  settings and progression off the start screen and toolbar. No XP work runs
+  on timer ticks.
   `lib/progressionSession.ts` replays queued operations on freshly read state
   under a shared Web Lock, preserving cross-tab rewards and failed in-memory
   saves. Storage events refresh state without echo writes. Profile save callbacks
@@ -236,7 +245,7 @@ document. These tests do not verify live playback or interactive browser behavio
   (just the members this app uses) instead of pulling in `@types/youtube`.
 
 **Styling:** Tailwind with a small custom palette (`cream` / `clay` / `ink`). The palette
-values are CSS variables (`src/index.css`), not hex literals in `tailwind.config.js` —
+values are CSS variables (`src/index.css`), not hex literals in `config/tailwind.config.js` —
 that's what makes the **coffee theme** work: `:root.coffee` swaps the variable values
 (palette borrowed from the personal-portfolio repo) without any per-component classes.
 Dark mode is separate and class-based (`dark:` variants, `.dark` on `<html>`). Theme
@@ -256,8 +265,9 @@ lets them win over the stylesheet's `:root` / `:root.coffee` rules. Two conseque
   anchors keep contrast identical to the light preset for every hue.
 
 **Appearance (TaskNook-inspired):** the light preset is neutral linen with a
-muted violet accent; coffee uses subdued warm browns; dark uses near-neutral
-plum surfaces with a rose accent. Keep the light preset's RGB values synchronized
+muted violet accent; coffee uses subdued warm browns; dark uses neutral charcoal
+surfaces, soft white/gray text, and a muted blue accent. Dark keyboard focus uses
+the lighter accent stop for visibility. Keep the light preset's RGB values synchronized
 with the luminance anchors in `lib/theme.ts` and `lib/theme.test.ts`.
 `UIIcon` supplies shared stroke icons. `AppearancePanel` expands inline beneath
 the toolbar and controls themes plus persisted `sws.panelOpacity` (65–100%,
@@ -270,7 +280,7 @@ appearance without introducing draggable panels. Native `<summary>` elements
 must own their activation keys so the global Space shortcut doesn't also play
 or pause the video.
 
-**Desktop app:** `desktop.py` (repo root) serves the built `dist/` with a stdlib
+**Desktop app:** `desktop/launcher.py` serves the built `dist/` with a stdlib
 `http.server` on a stable local port and opens it in a native window with `pywebview`
 (WebView2 on Windows). There's no backend — the "server" is only a static file host,
 so unlike TaskNook there's no Flask/waitress and no `--hidden-import` flags needed.
@@ -280,11 +290,14 @@ favorites and theme live there):
    (under `%LOCALAPPDATA%\StudyWithSoobin\`) or all localStorage is wiped on close.
 2. The port must be stable across launches (`DEFAULT_PORT = 39218`; random fallback
    only if taken) because localStorage is scoped by origin = host **and** port.
-PyInstaller packaging (`build-exe.bat`) outputs **`StudyWithSoobin.exe` to the repo
+PyInstaller packaging (`scripts/build-exe.bat`) outputs **`StudyWithSoobin.exe` to the repo
 root** (`--distpath .`) — the exe is deliberately committed so GitHub visitors can
 download and run it without building anything; rebuild and re-commit it when the app
 changes. `dist/` is the Vite build that gets bundled *into* the exe via `--add-data`,
 not the exe output dir.
+The build script sets its working directory to the repository root, writes
+specifications to `build/`, and uses an absolute `dist/` source for `--add-data`
+because PyInstaller resolves relative data sources against the spec directory.
 `SWS_SELFTEST=1` makes the exe/script boot the server, print a diagnostic line, and
 exit without opening a window — use it to verify a build headlessly.
 

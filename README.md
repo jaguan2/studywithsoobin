@@ -15,3 +15,7 @@ All project documentation lives in [docs](docs/README.md):
 - [TXT video catalog](docs/video-catalog.md)
 
 For development, run `npm install` and `npm run dev`.
+
+Application code is in `src/`, desktop support in `desktop/`, styling configuration
+in `config/`, and maintenance tools in `scripts/`. See the
+[repository layout](docs/app-guide.md#project-structure) for details.

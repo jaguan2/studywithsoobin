@@ -1,4 +1,4 @@
-# Python deps for the desktop (native-window) launcher, desktop.py.
+# Python deps for the desktop (native-window) launcher, desktop/launcher.py.
 #   pip install -r requirements-desktop.txt
 #
 # (Not to be confused with docs/requirements.md, which is this project's

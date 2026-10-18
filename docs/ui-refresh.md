@@ -11,10 +11,23 @@ The October 14, 2026 refresh draws from the local TaskNook repository:
 - `frontend/src/components/SettingsPanel.jsx`: labeled palette choices and
   a hex-code alternative to the native color picker.
 
-StudyWithSoobin adapts these ideas into linen, coffee, plum-night, and custom
+StudyWithSoobin adapts these ideas into linen, coffee, dark, and custom
 themes. The existing grid and tabbed dock retain their placement, matching the
 owner's preference. The video stays in its reserved stage, with controls and
 captions below it. No draggable or overlapping panels were added.
+
+The Dark preset uses neutral charcoal backgrounds, soft white and gray text,
+and a muted blue accent. It replaces the original plum-night palette and keeps
+the saved `dark` preference, so existing users receive the updated colors.
+Keyboard focus uses the lighter blue accent for visibility on dark surfaces.
+The page's subtle background glow is neutral gray, keeping the blue confined to
+controls and small highlights. See [current screenshots](screenshots.md#current-dark-mode-screenshots).
+
+The dark-palette check samples 65%, 88%, and 100% panel opacity, raised surfaces,
+and accent-tinted selected surfaces. Sampled body/secondary/accent text stays at
+or above 5.13:1 contrast; white primary-button text measures 4.74:1 normally and
+6.27:1 on hover. These numeric samples supplement the Windows visual check;
+they are not a complete accessibility audit.
 
 The toolbar's Appearance disclosure changes themes and panel opacity. The
 opacity preference is saved as `sws.panelOpacity`; only background surfaces

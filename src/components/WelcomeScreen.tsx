@@ -6,12 +6,8 @@ import { VideoTile } from './VideoTile'
 import { CatalogFilters } from './CatalogFilters'
 import { filterVideos, type CatalogFilters as Filters } from '../lib/catalog'
 import { UIIcon } from './UIIcon'
-import { ProfileCard } from './ProfileCard'
-import { progressionLevel, type ProfileAvatar, type Progression } from '../lib/progression'
 
 interface WelcomeScreenProps {
-  progression: Progression
-  onUpdateProfile: (name: string, avatar: ProfileAvatar) => Promise<boolean>
   runningTimer: string | null
   filters: Filters
   onFiltersChange: (value: Filters) => void
@@ -28,8 +24,6 @@ interface WelcomeScreenProps {
 }
 
 function WelcomeScreenInner({
-  progression,
-  onUpdateProfile,
   runningTimer,
   filters,
   onFiltersChange,
@@ -44,7 +38,6 @@ function WelcomeScreenInner({
   onSurprise,
 }: WelcomeScreenProps) {
   const sorted = useMemo(() => filterVideos(videos, filters, favorites), [videos, filters, favorites])
-  const level = useMemo(() => progressionLevel(progression), [progression])
 
   return (
     <div className="catalog-welcome min-h-screen w-full">
@@ -82,10 +75,6 @@ function WelcomeScreenInner({
             </button>
           )}
         </header>
-        <details className="welcome-profile">
-          <summary><span><UIIcon name="user" size={17} />Your profile · Level {level.level}</span><span>{level.totalXP.toLocaleString()} XP<UIIcon name="chevron" size={15} /></span></summary>
-          <ProfileCard progression={progression} onUpdateProfile={onUpdateProfile} />
-        </details>
         {runningTimer && <p role="status" className="mt-4 rounded-xl bg-cream-100 px-4 py-2 text-center text-sm text-ink-800 dark:bg-ink-800 dark:text-cream-200">⏱ {runningTimer} · timer still running</p>}
         <div className="mt-8">
           <CatalogFilters videos={videos} value={filters} onChange={onFiltersChange} />

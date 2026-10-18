@@ -21,6 +21,8 @@
   --secondary-text: var(--ink-700);
   --surface-border: var(--ink-900);
   --workspace-bg: var(--cream-50);
+  --workspace-glow: var(--clay-400);
+  --focus-ring: var(--clay-500);
   --panel-opacity: 0.88;
   --surface-shadow: 0 8px 32px rgb(43 37 48 / 0.045);
 }
@@ -41,25 +43,27 @@
   --ink-900: 46 39 33;
 }
 
-/* Plum night stays nearly neutral; rose is reserved for small accents. */
+/* Neutral charcoal surfaces, soft white text, and a restrained blue accent. */
 :root.dark {
   color-scheme: dark;
-  --cream-50: 246 240 243;
-  --cream-100: 238 231 235;
-  --cream-200: 219 209 217;
-  --cream-300: 185 176 186;
-  --clay-400: 213 157 179;
-  --clay-500: 154 90 112;
-  --clay-600: 133 74 96;
-  --ink-700: 66 57 68;
-  --ink-800: 43 37 46;
-  --ink-900: 28 24 32;
+  --cream-50: 248 248 248;
+  --cream-100: 240 240 240;
+  --cream-200: 214 214 214;
+  --cream-300: 178 178 178;
+  --clay-400: 171 196 223;
+  --clay-500: 82 118 156;
+  --clay-600: 66 99 132;
+  --ink-700: 42 42 42;
+  --ink-800: 26 26 26;
+  --ink-900: 16 16 16;
   --surface: var(--ink-800);
   --surface-text: var(--cream-100);
   --secondary-text: var(--cream-300);
   --surface-border: var(--cream-100);
   --workspace-bg: var(--ink-900);
-  --surface-shadow: 0 8px 32px rgb(0 0 0 / 0.12);
+  --workspace-glow: var(--cream-300);
+  --focus-ring: var(--clay-400);
+  --surface-shadow: 0 8px 32px rgb(0 0 0 / 0.24);
 }
 
 html,
@@ -73,7 +77,7 @@ body,
 /* One consistent keyboard-focus affordance everywhere (buttons mostly rely on
    the browser default otherwise, and several inputs suppress it). */
 :focus-visible {
-  outline: 2px solid rgb(var(--clay-500));
+  outline: 2px solid rgb(var(--focus-ring));
   outline-offset: 2px;
 }
 
@@ -96,11 +100,11 @@ body {
 }
 
 /* Search is the primary action; detailed filters are a quiet disclosure. */
-.catalog-welcome { background: radial-gradient(ellipse at 50% 0%, rgb(var(--clay-400) / 0.1), transparent 650px), rgb(var(--workspace-bg)); }
+.catalog-welcome { background: radial-gradient(ellipse at 50% 0%, rgb(var(--workspace-glow) / 0.1), transparent 650px), rgb(var(--workspace-bg)); }
 .catalog-welcome .catalog-search { max-width: 680px; margin-inline: auto; }
 .catalog-video { align-self: start; border-radius: 12px; }
 .catalog-video:hover img { opacity: 0.9; }
-.catalog-video[aria-pressed='true'] > :first-child { outline: 2px solid rgb(var(--clay-500)); outline-offset: 2px; }
+.catalog-video[aria-pressed='true'] > :first-child { outline: 2px solid rgb(var(--focus-ring)); outline-offset: 2px; }
 .catalog-video-meta { color: rgb(var(--secondary-text)); line-height: 1.6; }
 .catalog-welcome .catalog-video-title { font-size: 14px; }
 .catalog-discovery {
@@ -171,7 +175,7 @@ body {
   min-height: 100dvh;
   width: 100%;
   color: rgb(var(--surface-text));
-  background: radial-gradient(ellipse at 80% 0%, rgb(var(--clay-400) / 0.13), transparent 65%), rgb(var(--workspace-bg));
+  background: radial-gradient(ellipse at 80% 0%, rgb(var(--workspace-glow) / 0.13), transparent 65%), rgb(var(--workspace-bg));
 }
 .workspace-toolbar, .workspace-dock, .workspace-controls, .workspace-appearance {
   background: rgb(var(--surface) / var(--panel-opacity));
@@ -288,7 +292,7 @@ body {
 .theme-option:hover, .theme-option.selected { background: rgb(var(--clay-400) / 0.16); color: rgb(var(--surface-text)); }
 .theme-switcher.expanded .theme-option { padding-inline: 10px; font-size: 12px; }
 .theme-color-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-.theme-custom:focus-within { outline: 2px solid rgb(var(--clay-500)); outline-offset: 2px; }
+.theme-custom:focus-within { outline: 2px solid rgb(var(--focus-ring)); outline-offset: 2px; }
 .welcome-theme-row { display: flex; justify-content: flex-end; max-width: 1120px; margin: auto; padding: 24px 24px 0; }
 .welcome-header { padding-top: 12px; }
 .welcome-header h1 { margin-top: 14px; letter-spacing: -0.04em; }
@@ -437,9 +441,9 @@ body {
 .profile-milestones p { margin-top: 3px; color: rgb(var(--secondary-text)); font-size: 10px; line-height: 1.7; }
 .milestone-progress { display: block; margin-top: 5px; color: rgb(var(--secondary-text)); font-size: 10px; }
 .profile-disclosure { margin-top: 16px; border-top: 1px solid rgb(var(--surface-border) / 0.08); padding-top: 10px; }
-.profile-disclosure > summary, .welcome-profile > summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 36px; color: rgb(var(--secondary-text)); font-size: 12px; cursor: pointer; list-style: none; }
-.profile-disclosure > summary::-webkit-details-marker, .welcome-profile > summary::-webkit-details-marker { display: none; }
-.profile-disclosure[open] > summary > svg, .welcome-profile[open] > summary > span:last-child > svg { transform: rotate(180deg); }
+.profile-disclosure > summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 36px; color: rgb(var(--secondary-text)); font-size: 12px; cursor: pointer; list-style: none; }
+.profile-disclosure > summary::-webkit-details-marker { display: none; }
+.profile-disclosure[open] > summary > svg { transform: rotate(180deg); }
 .profile-xp-rules { display: grid; gap: 12px; margin-top: 12px; }
 .profile-xp-rules dt { color: rgb(var(--surface-text)); font-size: 11px; font-weight: 500; }
 .profile-xp-rules dd, .profile-note { margin-top: 5px; color: rgb(var(--secondary-text)); font-size: 11px; line-height: 1.75; }
@@ -451,11 +455,6 @@ body {
 .profile-avatar-choices > div { display: flex; flex-wrap: wrap; gap: 8px; }
 .profile-avatar-choices button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgb(var(--surface-border) / 0.1); border-radius: 12px; color: rgb(var(--secondary-text)); }
 .profile-avatar-choices button:hover, .profile-avatar-choices button[aria-pressed='true'] { border-color: rgb(var(--clay-400) / 0.5); color: rgb(var(--surface-text)); background: rgb(var(--clay-400) / 0.15); }
-.profile-level-button { background: rgb(var(--clay-400) / 0.09); border: 1px solid rgb(var(--clay-400) / 0.2); color: rgb(var(--surface-text)); }
-.welcome-profile { max-width: 420px; margin: 22px auto 0; border: 1px solid rgb(var(--surface-border) / 0.1); border-radius: 15px; background: rgb(var(--surface) / var(--panel-opacity)); }
-.welcome-profile > summary { padding: 12px 16px; }
-.welcome-profile > summary > span { display: inline-flex; align-items: center; gap: 8px; }
-.welcome-profile[open] > summary { border-bottom: 1px solid rgb(var(--surface-border) / 0.08); }
 @media (hover: hover) {
   .hover-reveal { opacity: 0; }
   .group:hover .hover-reveal, .hover-reveal:focus-visible { opacity: 1; }

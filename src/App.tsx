@@ -12,7 +12,7 @@ import { SocialCard } from './components/SocialCard'
 import { TimerCard } from './components/TimerCard'
 import { WelcomeScreen } from './components/WelcomeScreen'
 import { AppearancePanel } from './components/AppearancePanel'
-import { ProfileCard, ProfileLevelButton } from './components/ProfileCard'
+import { ProfileCard } from './components/ProfileCard'
 import { UIIcon } from './components/UIIcon'
 import { applyCustomTheme, clearCustomTheme, DEFAULT_CUSTOM_COLOR } from './lib/theme'
 import { storageGet, storageGetJson, storageRemove, storageSet, storageSetJson } from './lib/storage'
@@ -123,7 +123,6 @@ export default function App() {
   const { progression, recordStudy, completeTask, updateProfile } = useProgression(showNotice)
   const timer = useTimer(25, recordStudy)
   const setTaskDuration = timer.setDurationSeconds
-  const openProfile = useCallback(() => { setDockCollapsed(false); setTopPanel('profile') }, [])
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
@@ -346,8 +345,6 @@ export default function App() {
     return (
       <>
         <WelcomeScreen
-          progression={progression}
-          onUpdateProfile={updateProfile}
           filters={catalogFilters}
           onFiltersChange={setCatalogFilters}
           videos={playable}
@@ -379,7 +376,6 @@ export default function App() {
             <button onClick={() => setVideoId(null)} aria-label="Back to video selection" className="workspace-button"><UIIcon name="video" />Change video</button>
             <button onClick={() => setDockCollapsed(v => !v)} aria-expanded={!dockCollapsed} aria-controls="workspace-tools" className="workspace-button"><UIIcon name="panel" />{dockCollapsed ? 'Show tools' : 'Hide tools'}</button>
             <button onClick={() => { setDockCollapsed(false); setTopPanel('tasks') }} aria-controls="tool-tasks" className={'workspace-button' + (!dockCollapsed && topPanel === 'tasks' ? ' selected' : '')}><UIIcon name="tasks" />Tasks</button>
-            <ProfileLevelButton progression={progression} onClick={openProfile} />
             <button onClick={() => setAppearanceOpen(value => !value)} aria-expanded={appearanceOpen} aria-controls="workspace-appearance" className={'workspace-button' + (appearanceOpen ? ' selected' : '')}><UIIcon name="palette" />Appearance</button>
             <button onClick={toggleFullscreen} aria-label="Toggle fullscreen" title="Fullscreen (F)" className="workspace-button toolbar-icon"><UIIcon name="fullscreen" /></button>
             <button onClick={() => setZen(true)} aria-label="Zen mode — hide all panels" title="Zen mode (Z)" className="workspace-button toolbar-icon"><UIIcon name="leaf" /></button>

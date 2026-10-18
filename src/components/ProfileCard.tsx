@@ -94,10 +94,3 @@ function ProfileCardInner({ progression, onUpdateProfile }: ProfileCardProps) {
 }
 
 export const ProfileCard = memo(ProfileCardInner)
-
-export const ProfileLevelButton = memo(function ProfileLevelButton({ progression, onClick }: { progression: Progression; onClick: () => void }) {
-  const level = progressionLevel(progression)
-  return <button onClick={onClick} className="workspace-button profile-level-button" aria-label={`Open profile, level ${level.level}`} title={`${level.totalXP} XP · ${level.remaining} XP to the next level`}>
-    <UIIcon name="sparkles" size={17} /><span>Level {level.level}</span>
-  </button>
-})

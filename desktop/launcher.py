@@ -6,7 +6,7 @@ desktop program instead of a browser tab. There is no backend — the server
 here is just a static file server for the SPA; YouTube playback happens
 inside the page exactly as it does in a browser.
 
-    python desktop.py
+    python desktop/launcher.py
 
 Requires the frontend to be built once (dist/):
 
@@ -24,7 +24,7 @@ if getattr(sys, "frozen", False):
     # Running from a PyInstaller bundle: assets are extracted under _MEIPASS.
     BASE_DIR = sys._MEIPASS
 else:
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DIST_DIR = os.path.join(BASE_DIR, "dist")
 

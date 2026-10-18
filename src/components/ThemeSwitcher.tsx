@@ -4,7 +4,7 @@ import { UIIcon, type UIIconName } from './UIIcon'
 const THEMES: { value: Theme; label: string; icon: UIIconName }[] = [
   { value: 'light', label: 'Linen', icon: 'sun' },
   { value: 'coffee', label: 'Coffee', icon: 'coffee' },
-  { value: 'dark', label: 'Plum night', icon: 'moon' },
+  { value: 'dark', label: 'Dark', icon: 'moon' },
 ]
 
 interface ThemeSwitcherProps {

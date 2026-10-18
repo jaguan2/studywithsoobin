@@ -104,7 +104,7 @@ function solveLightness(h: number, s: number, target: number): number {
 }
 
 /** `--cream-50` → `"253 251 247"` for every palette variable. The values are
- *  space-separated RGB triplets because tailwind.config.js reads them as
+ *  space-separated RGB triplets because config/tailwind.config.js reads them as
  *  `rgb(var(--x) / <alpha-value>)`. */
 export function deriveThemeVars(hex: string): [string, string][] {
   const base = hexToHsl(hex) ?? hexToHsl(DEFAULT_CUSTOM_COLOR)!

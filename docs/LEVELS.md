@@ -1,7 +1,7 @@
 # Study profile and progression
 
-Your profile is available in the Profile tools tab, the toolbar's Level button,
-and an expandable Your profile card on the start screen. Choose a display name
+Your profile is available in the **Profile** tools tab after you choose a video.
+Open **Edit profile** there to choose a display name
 and one of four study avatars. The card shows your level, total XP, progress to
 the next level, total hours studied, completed-task total, check-in streak,
 best streak, and eight milestones.

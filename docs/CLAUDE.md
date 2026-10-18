@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+> Historical architecture notes. Use [AGENTS.md](AGENTS.md) for current paths,
+> commands, and layout constraints; the floating-panel descriptions below predate
+> the managed dock.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## What this is

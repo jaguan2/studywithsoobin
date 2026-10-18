@@ -65,8 +65,8 @@ an internet connection since the videos stream from YouTube.)
 - Profile progression inspired by TaskNook: a saved name and avatar, levels,
   XP toward the next level, a prominent **Total hours studied** lifetime counter
   shown in hours and minutes, task totals, daily check-in streaks,
-  and eight milestones. Use the toolbar's **Level** button, the **Profile** tab,
-  or **Your profile** on the start screen. Earn 1 XP per recorded focus minute,
+  and eight milestones. After choosing a video, open the **Profile** tools tab
+  for these stats and **Edit profile** settings. Earn 1 XP per recorded focus minute,
   10 XP the first time you complete each task, and 10–20 XP for daily check-ins.
   The first level-up takes 100 XP, then 150, 200, and so on. Available study
   history counts; rechecking a task never awards it twice. Read the full
@@ -95,7 +95,7 @@ an internet connection since the videos stream from YouTube.)
   colour you pick yourself — all remembered between visits, along with your
   volumes, ambience mix, pomodoro settings, and last video
   (the start screen offers to continue where you left off)
-- TaskNook-inspired appearance: a soft linen light theme, plum-night dark
+- TaskNook-inspired appearance: a soft linen light theme, neutral charcoal dark
   theme, muted coffee colors, frosted surfaces, and consistent stroke icons.
   **Appearance** in the toolbar offers labeled palettes and a saved panel-opacity
   slider (65–100%). Only the surfaces become translucent; text stays fully visible.
@@ -180,7 +180,7 @@ point it at a different playlist, edit `PLAYLIST_ID` in
 ## Desktop app
 
 Study w/ Soobin can also run as a **native desktop application** — its own
-window, no browser tab. `desktop.py` serves the built app on a local port and
+window, no browser tab. `desktop/launcher.py` serves the built app on a local port and
 opens it in an OS window via [pywebview](https://pywebview.flowrl.com/)
 (WebView2 on Windows, WebKit on macOS).
 
@@ -190,10 +190,10 @@ npm install && npm run build
 pip install -r requirements-desktop.txt
 
 # launch the native window
-python desktop.py
+python desktop/launcher.py
 ```
 
-**To rebuild `StudyWithSoobin.exe` (Windows):** run `build-exe.bat` from the
+**To rebuild `StudyWithSoobin.exe` (Windows):** run `scripts/build-exe.bat` from the
 repo root. It builds the frontend, installs the desktop deps + PyInstaller,
 and packages everything into **`StudyWithSoobin.exe`** at the repo root — one
 double-clickable file, no console window, nothing else to install. Your
@@ -204,51 +204,31 @@ favorites/theme persist in `%LOCALAPPDATA%\StudyWithSoobin\`.
 
 ## Project structure
 
-```
+```text
 studywithsoobin/
-├── StudyWithSoobin.exe       # ⭐ ready-to-run Windows app (rebuild: build-exe.bat)
-├── desktop.py                # native-window launcher (pywebview + local server)
-├── build-exe.bat             # one-command exe rebuild (PyInstaller)
-├── requirements-desktop.txt  # Python deps for desktop.py (pip)
-├── README.md                 # short GitHub overview and documentation links
-├── docs/                     # full guides, requirements, and review notes
-│   └── images/               # feature screenshots and earlier references
-├── scripts/
-│   ├── extra-videos.json     # curated TXT videos not in the source playlist
-│   └── fetch-playlist.mjs    # refresh src/data/playlist.json from YouTube
-├── src/
-│   ├── App.tsx               # top-level state: current video, volume, favorites
-│   ├── components/
-│   │   ├── WelcomeScreen.tsx     # start screen: pick a video (or 🎲 random)
-│   │   ├── VideoBackground.tsx   # letterboxed YouTube IFrame player
-│   │   ├── VideoControls.tsx     # video controls: play/pause, ±10s, scrub bar
-│   │   ├── Scrubber.tsx          # shared seek bar + LIVE badge
-│   │   ├── Sidebar.tsx           # Videos & sound tab in the tools dock
-│   │   ├── TimerCard.tsx         # Timer tab in the tools dock
-│   │   ├── TimerPanel.tsx        # presets, custom time, 🍅 pomodoro cycles
-│   │   ├── TasksCard.tsx         # task checklist, editing, ordering, and Undo
-│   │   ├── ProfileCard.tsx       # profile, XP, levels, and total hours studied
-│   │   ├── VideoPicker.tsx       # paged 4x2 thumbnail grid
-│   │   ├── MusicPanel.tsx        # lofi stations + custom YouTube/Spotify links
-│   │   ├── YouTubeMusicPlayer.tsx # mini player for YouTube music stations
-│   │   ├── AmbiencePanel.tsx     # rain / snow / storm sound controls
-│   │   ├── VolumeControl.tsx     # video volume slider
-│   │   └── ResizeGrip.tsx        # legacy resize grip (unused by dock)
-│   ├── hooks/
-│   │   ├── useTimer.ts           # countdown + pomodoro state machine
-│   │   ├── useProgression.ts     # local XP, task rewards, and check-ins
-│   │   ├── usePanelSize.ts       # legacy panel sizing helper (unused by dock)
-│   │   └── useYouTubeIframeApi.ts # one-time YT API script loader
-│   ├── lib/
-│   │   ├── musicLink.ts          # YouTube/Spotify URL → playable station
-│   │   ├── theme.ts              # one picked colour → the whole palette
-│   │   ├── progression.ts        # level curve, rewards, and lifetime ledger
-│   │   └── ambience.ts           # Web Audio rain/snow/storm engine
-│   ├── data/playlist.json    # checked-in snapshot of the playlist
-│   └── types/                # playlist types + minimal YT ambient types
-├── index.html                # Vite entry point
-└── *.config.js / tsconfig.json  # Vite / Tailwind / ESLint / TypeScript config
+|-- src/                       # React application; tests beside the code they cover
+|   |-- components/            # Video, timer, tasks, profile, and social UI
+|   |-- hooks/                 # Timer, progression, and player lifecycle
+|   |-- lib/                   # Shared logic, storage, audio, and palette helpers
+|   |-- data/                  # Checked-in video catalog and social accounts
+|   `-- types/                 # Playlist and YouTube API types
+|-- desktop/launcher.py        # Native pywebview window and local static server
+|-- config/                    # Tailwind and PostCSS styling configuration
+|-- scripts/                   # Desktop packaging and video-catalog maintenance
+|-- docs/                      # User guides, maintenance rules, and historical notes
+|   `-- images/                # Current screenshots and earlier references
+|-- public/                    # Favicon and web manifest
+|-- StudyWithSoobin.exe        # Ready-to-run Windows download
+|-- requirements-desktop.txt   # Python dependency manifest
+|-- README.md                  # Overview and documentation links
+|-- AGENTS.md / CLAUDE.md       # Tool-discoverable instruction entry points
+`-- package*.json, index.html, vite.config.ts, tsconfig.json, eslint.config.js
+                               # Standard build, editor, and package entry points
 ```
+
+Generated frontend assets go in ignored `dist/`; PyInstaller work files and
+specifications go in ignored `build/`. Run commands from the repository root.
+The Windows build script also works when launched from another working directory.
 
 ## Tech stack
 
