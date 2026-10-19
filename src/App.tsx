@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import playlistData from './data/playlist.json'
-import type { Playlist, Video } from './types/playlist'
+import type { Video } from './types/playlist'
+import { usePlaylist } from './hooks/usePlaylist'
 import { useBreakNudge } from './hooks/useBreakNudge'
 import { useTimer } from './hooks/useTimer'
 import { VideoBackground, type VideoBackgroundHandle } from './components/VideoBackground'
@@ -12,8 +12,6 @@ import { WelcomeScreen } from './components/WelcomeScreen'
 import { applyCustomTheme, clearCustomTheme, DEFAULT_CUSTOM_COLOR } from './lib/theme'
 import { storageGet, storageGetJson, storageRemove, storageSet, storageSetJson } from './lib/storage'
 import { adjacentVideo, EMPTY_FILTERS, filterVideos, type CatalogFilters } from './lib/catalog'
-
-const playlist = playlistData as Playlist
 
 export type Theme = 'light' | 'coffee' | 'dark' | 'custom'
 
@@ -60,12 +58,22 @@ function toggleFullscreen() {
 }
 
 export default function App() {
+  const { playlist, isChecking } = usePlaylist()
+  const pendingDeepLink = useRef(new URLSearchParams(window.location.search).get('v'))
   // null until the user picks a video on the welcome screen — unless the URL
   // deep-links one (?v=<id>), which skips the welcome screen entirely.
   const [videoId, setVideoId] = useState<string | null>(() => {
     const v = new URLSearchParams(window.location.search).get('v')
     return v && playlist.videos.some((video) => video.id === v) ? v : null
   })
+  // A first-time link can name a video that exists only in the downloaded catalog.
+  useEffect(() => {
+    if (videoId !== null) pendingDeepLink.current = null
+    if (isChecking) return
+    const id = pendingDeepLink.current
+    pendingDeepLink.current = null
+    if (id && playlist.videos.some(video => video.id === id)) setVideoId(id)
+  }, [isChecking, playlist, videoId])
   const [volume, setVolume] = useState(loadVolume)
   const [catalogFilters, setCatalogFilters] = useState<CatalogFilters>(EMPTY_FILTERS)
   // Autoplay policy forces every freshly-created player to start muted, and
@@ -147,11 +155,12 @@ export default function App() {
   // Keep the URL shareable: ?v=<id> while a video plays, clean on the
   // welcome screen.
   useEffect(() => {
+    if (isChecking && videoId === null && pendingDeepLink.current) return
     const url = new URL(window.location.href)
     if (videoId) url.searchParams.set('v', videoId)
     else url.searchParams.delete('v')
     window.history.replaceState(null, '', url)
-  }, [videoId])
+  }, [videoId, isChecking])
 
   // The countdown lives in the tab title too, so it's visible from whatever
   // tab the actual studying happens in.
@@ -177,13 +186,15 @@ export default function App() {
 
   const playable = useMemo(
     () => playlist.videos.filter((v) => !blockedIds.includes(v.id)),
-    [blockedIds],
+    [blockedIds, playlist],
   )
 
-  const currentVideo = useMemo(
-    () => playlist.videos.find((v) => v.id === videoId) ?? playlist.videos[0],
-    [videoId],
-  )
+  // A catalog update may remove a video already playing. Keep its label and
+  // playback until the user chooses another; the updated pickers omit it.
+  const currentVideoRef = useRef(playlist.videos[0])
+  const selectedVideo = playlist.videos.find(video => video.id === videoId)
+  if (selectedVideo) currentVideoRef.current = selectedVideo
+  const currentVideo = currentVideoRef.current
   const filteredVideos = useMemo(() => filterVideos(playable, catalogFilters, favorites), [playable, catalogFilters, favorites])
 
   const lastVideo = useMemo(

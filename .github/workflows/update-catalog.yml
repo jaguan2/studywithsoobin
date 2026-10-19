@@ -1,0 +1,76 @@
+name: Discover TXT videos
+
+on:
+  schedule:
+    - cron: '23 9 * * *'
+  workflow_dispatch:
+    inputs:
+      pages:
+        description: 'Upload pages per channel (50 videos/page, 1–100)'
+        default: '3'
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: catalog-discovery
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Discover eligible uploads
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PAGES: ${{ inputs.pages || '3' }}
+        run: npm run update-catalog -- --write --pages="$PAGES"
+      - name: Record discovery report
+        if: always()
+        run: |
+          if [ -f build/catalog-update/report.md ]; then
+            head -c 950000 build/catalog-update/report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Check catalog and application
+        run: |
+          npm test
+          npm run build
+      - name: Propose reviewed catalog update
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        with:
+          branch: automation/catalog-update
+          base: ${{ github.event.repository.default_branch }}
+          commit-message: 'Update TXT video catalog'
+          title: 'Update TXT video catalog with discovered uploads'
+          body: |
+            Discovered eligible TXT uploads using the trusted channel and curation rules.
+
+            Review the generated catalog diff before merging. The full proposed-addition
+            list and ambiguous/skipped matches are in the run summary and report artifact:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Merging publishes the catalog for startup updates. Existing catalog entries
+            are retained; real-player embeddability is not established by metadata alone.
+          add-paths: |
+            scripts/extra-videos.json
+            src/data/playlist.json
+            docs/video-catalog.md
+      - name: Save discovery report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: catalog-discovery-report
+          path: build/catalog-update/report.md
+          if-no-files-found: ignore
+          retention-days: 30

@@ -113,6 +113,12 @@ npm run lint       # eslint
 
 ## Refreshing the playlist
 
+For daily discovery of new TXT uploads and startup catalog updates in the app,
+see [automatic catalog updates](docs/CATALOG_UPDATES.md). The scheduled job uses
+a server-side YouTube API key and proposes reviewed catalog pull requests;
+the app itself needs no API key. Existing EXEs need one upgrade to gain the
+startup catalog loader.
+
 The video list lives in `src/data/playlist.json`, a static snapshot of the
 original Study w/ Soobin playlist plus curated TXT vlogs and live archives for
 **Soobin, Yeonjun, Beomgyu, Taehyun and Hueningkai**. Browse the full,
@@ -228,6 +234,12 @@ studywithsoobin/
 - Tailwind CSS
 - YouTube IFrame Player API (background playback)
 - `youtubei.js` (dev-only, for the playlist-refresh script)
+
+## Agent skills
+
+Project-local engineering, strict structural review and verification skills
+are available for explicit use. See [the skill guide](docs/AGENT_SKILLS.md)
+for names, example prompts, sources and verification recipes.
 
 ## Notes
 
