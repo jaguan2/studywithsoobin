@@ -2,6 +2,30 @@
 
 This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
+## Required TXT discovery check for every coding task
+
+At the start of every coding task, scan for newly uploaded Soobin and TXT
+vlogs, VLIVE archives and Weverse live archives for all five members. Do this
+even when the requested code change is unrelated to the catalog. Check the
+trusted channels in `scripts/catalog-sources.json` and compare candidates with
+the current catalog; distinguish upload dates from original broadcast dates.
+
+- If `YOUTUBE_API_KEY` is available, run `npm.cmd run update-catalog` in its
+  default dry-run mode and inspect `build/catalog-update/report.md`.
+- Without the key, check recent uploads on the trusted channels through public
+  YouTube feeds/pages, targeted web searches, or `scripts/research-catalog.mjs`.
+  Do not ask for the key in chat or claim a complete scan from a limited feed.
+- Reuse a successful scan within the same coding task instead of repeating it
+  after every edit/test. A new coding task requires a fresh check.
+- Report when/how the check ran, any eligible or uncertain candidates, and
+  coverage limits. If credentials, network or browser access prevent a check,
+  state the blocker honestly and continue the requested coding work.
+- Review findings against the existing member, duration, multipart and duplicate
+  rules before proposing additions. Keep unrelated catalog changes separate;
+  never hand-edit generated snapshots, guess members/broadcast dates, or publish
+  findings automatically. Use the documented curation/refresh workflow for
+  reviewed additions. See [catalog updates](docs/CATALOG_UPDATES.md).
+
 ## What this is
 
 A LifeAt-style Pomodoro study app whose video background is drawn from the
@@ -158,7 +182,17 @@ deliberately no tsconfig.app/node split.
     durations, Pomodoro cycles and focus stats).
   - `Sidebar` is the Videos & sound tab, containing `VideoPicker`,
     `VolumeControl`, `MusicPanel`, `AmbiencePanel`, and theme controls.
-  - `TasksCard` is the Study plan tab, containing editable tasks and estimates.
+  - `TasksCard` is the Tasks tab, also reachable from the toolbar. Its quick-add
+    form supports Enter; estimates and priority are optional refinements.
+    Checkboxes move items into a collapsible Completed section; unchecking
+    reopens them. Inline editors change name/estimate/priority. My order exposes
+    up/down controls for unfinished work; other modes sort automatically.
+    Focus explicitly loads an estimate into the timer. Deletion and Clear
+    completed offer Undo, which restores removed ids without reverting later
+    additions, edits, check-offs or ordering of surviving tasks.
+    `lib/taskPlanning.ts` owns the pure movement and restoration logic.
+    The original saved checklist schema is still migrated, and task data,
+    ordering and the active id persist through guarded storage effects.
   - **Managed layout:** tools share one dock with a scrollable body. Inactive
     tabs and hidden tools use `hidden`, keeping their components mounted so
     audio, timer and task state survive tab switches. A timer footer remains
@@ -170,6 +204,25 @@ deliberately no tsconfig.app/node split.
   video state. Its pomodoro extension auto-advances focus → break → focus… and
   stops after the configured number of rounds. Setting any preset/custom duration
   exits pomodoro mode.
+- **Local profile progression:** `lib/progression.ts` owns pure eligibility,
+  validation, milestones and TaskNook's level curve (100 XP, then 150, 200...).
+  `useProgression` owns the persisted `sws.progression` marker at App level.
+  Available `sws.stats` history backfills 1 XP/minute; the profile retains per-day
+  high-water marks so pruning the 400-day stats log never removes lifetime XP
+  or prevents new sessions from earning credit. `useTimer` calls its optional
+  focus-completion callback immediately after writing ordinary stats, only for
+  completed focus blocks. `TasksCard` reports completion actions; each task id
+  earns 10 XP once, with claims retained through reopening/deletion/Undo.
+  Already completed startup snapshots establish claims without retroactive
+  bonus XP. Check-ins earn 10 XP + consecutive-day bonus capped at 20, once per
+  LOCAL date on open/return/gesture; idle midnight crossings never count.
+  Calendar arithmetic is independent of DST and a backward clock cannot reopen
+  a reward day. Name, avatar, XP, best streak and milestones remain local.
+  `ProfileCard` lives in a fourth dock tab and a start-screen disclosure;
+  `ProfileLevelButton` opens it from the toolbar. No XP work runs on timer ticks.
+  Storage writes return a success flag so failed profile writes preserve the
+  in-memory session and show an honest notice. Keep writes out of React updaters.
+  See `docs/LEVELS.md` for the public rules and maintenance boundaries.
 - `lib/musicLink.ts` (YouTube/Spotify URL → station descriptor) and
   `lib/ambience.ts` (the 7-channel procedural sound mixer, no audio files) are
   ports of TaskNook's `frontend/src/lib/{musicLink,youtube,spotify,audio}.js` —
@@ -207,6 +260,21 @@ lets them win over the stylesheet's `:root` / `:root.coffee` rules. Two conseque
   lightness isn't brightness, so a fixed ladder makes yellow/cyan accents wash out to
   near-white (white-on-accent measured 1.17:1 before this was fixed). The luminance
   anchors keep contrast identical to the light preset for every hue.
+
+**Appearance (TaskNook-inspired):** the light preset is neutral linen with a
+muted violet accent; coffee uses subdued warm browns; dark uses near-neutral
+plum surfaces with a rose accent. Keep the light preset's RGB values synchronized
+with the luminance anchors in `lib/theme.ts` and `lib/theme.test.ts`.
+`UIIcon` supplies shared stroke icons. `AppearancePanel` expands inline beneath
+the toolbar and controls themes plus persisted `sws.panelOpacity` (65–100%,
+default 88). Opacity applies to surface backgrounds through `--panel-opacity`,
+never to text. Semantic surface/text tokens in `index.css` adapt to each theme.
+`TimerPanel` keeps the countdown and transport visible, with presets, Pomodoro
+configuration and daily goals in a native **Session settings** disclosure.
+Preserve the managed dock placement; the user's UI preference is to improve
+appearance without introducing draggable panels. Native `<summary>` elements
+must own their activation keys so the global Space shortcut doesn't also play
+or pause the video.
 
 **Desktop app:** `desktop.py` (repo root) serves the built `dist/` with a stdlib
 `http.server` on a stable local port and opens it in a native window with `pywebview`

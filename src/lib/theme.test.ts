@@ -4,16 +4,16 @@ import { DEFAULT_CUSTOM_COLOR, deriveThemeVars, hexToHsl } from './theme'
 /** The light preset's anchors (src/index.css) — the luminance targets every
  *  derived palette must reproduce. */
 const LIGHT_PRESET: Record<string, [number, number, number]> = {
-  'cream-50': [253, 251, 247],
-  'cream-100': [248, 242, 233],
-  'cream-200': [241, 231, 214],
-  'cream-300': [232, 217, 190],
-  'clay-400': [227, 168, 107],
-  'clay-500': [217, 146, 79],
-  'clay-600': [199, 125, 60],
-  'ink-700': [74, 64, 56],
-  'ink-800': [51, 43, 37],
-  'ink-900': [34, 28, 23],
+  'cream-50': [246, 244, 241],
+  'cream-100': [253, 251, 248],
+  'cream-200': [236, 232, 226],
+  'cream-300': [216, 211, 204],
+  'clay-400': [163, 149, 187],
+  'clay-500': [115, 96, 145],
+  'clay-600': [93, 80, 120],
+  'ink-700': [104, 99, 108],
+  'ink-800': [65, 59, 68],
+  'ink-900': [43, 37, 48],
 }
 
 /** WCAG relative luminance, same formula the solver targets. */
@@ -77,4 +77,11 @@ describe('deriveThemeVars', () => {
       expect(Math.abs(contrast - presetContrast)).toBeLessThan(0.15)
     }
   })
+
+  it.each(['#ff0000', '#ffff00', '#00ffff', '#0000ff', '#808080', '#ffffff', '#000000'])(
+    'keeps primary button text readable for %s', pick => {
+      const accent = deriveThemeVars(pick).find(([name]) => name === '--clay-500')!
+      expect(1.05 / (luminance(parseTriplet(accent[1])) + 0.05)).toBeGreaterThanOrEqual(4.5)
+    },
+  )
 })

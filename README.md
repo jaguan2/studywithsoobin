@@ -20,7 +20,7 @@ an internet connection since the videos stream from YouTube.)
   "Change video" in the top right takes you back to it any time
 - Looping YouTube video that always stays fully in frame (autoplay, muted
   until you turn up the volume slider)
-- A responsive tools dock with Timer, Videos & sound, and Study plan tabs.
+- A responsive tools dock with Timer, Videos & sound, Tasks, and Profile tabs.
   It sits beside the video on wide windows and below it on narrow or short
   windows. Small windows scroll, and each section keeps its own space
 - Video controls sit below the video: pause/play, previous/next video,
@@ -49,11 +49,23 @@ an internet connection since the videos stream from YouTube.)
   snow, wind, fireplace crackle, café murmur, and page turns — each channel
   has its own volume slider, all procedurally generated (no audio files,
   works offline)
-- 📝 Study plan: add tasks with a time estimate and priority, arrange them by
-  your order / quick wins / priority, and click one to load its estimate into
-  the focus timer; planned time and completion stay on your device
+- 📝 Tasks: open the **Tasks** toolbar button or tools tab to write a checklist.
+  Press Enter to add tasks, check them off, and expand **Completed** to review
+  or reopen them. Edit names, estimates and priority; use up/down controls in
+  My order, or sort by quick wins / priority. **Focus** loads a task's estimate
+  into the timer. Deleting or clearing completed tasks offers **Undo**, which
+  preserves any other work you do afterward. Tasks save automatically on your device.
 - 📊 Focus stats under the timer: minutes studied today, a configurable 1–3h
   daily goal with progress, and a 🔥 day streak, all kept on your device
+- Profile progression inspired by TaskNook: a saved name and avatar, levels,
+  XP toward the next level, a prominent **Total hours studied** lifetime counter
+  shown in hours and minutes, task totals, daily check-in streaks,
+  and eight milestones. Use the toolbar's **Level** button, the **Profile** tab,
+  or **Your profile** on the start screen. Earn 1 XP per recorded focus minute,
+  10 XP the first time you complete each task, and 10–20 XP for daily check-ins.
+  The first level-up takes 100 XP, then 150, 200, and so on. Available study
+  history counts; rechecking a task never awards it twice. Read the full
+  [progression rules](docs/LEVELS.md).
 - ⌨️ Keyboard shortcuts: space play/pause · ←/→ skip 10s · F fullscreen ·
   M mute · T start/pause the timer · Z zen mode
 - 🧘 Zen mode (Z or the Zen button): tools and playback controls disappear; an Exit zen button stays accessible —
@@ -78,6 +90,12 @@ an internet connection since the videos stream from YouTube.)
   colour you pick yourself — all remembered between visits, along with your
   volumes, ambience mix, pomodoro settings, and last video
   (the start screen offers to continue where you left off)
+- TaskNook-inspired appearance: a soft linen light theme, plum-night dark
+  theme, muted coffee colors, frosted surfaces, and consistent stroke icons.
+  **Appearance** in the toolbar offers labeled palettes and a saved panel-opacity
+  slider (65–100%). Only the surfaces become translucent; text stays fully visible.
+  The timer keeps its main controls visible and groups presets, Pomodoro setup,
+  and daily goals under **Session settings**. Tools keep their existing placement.
 - Auto-advances to a random video when the current one ends; videos that
   refuse to play embedded are skipped automatically
 - No backend, no API key, no login — everything runs client-side
@@ -85,12 +103,12 @@ an internet connection since the videos stream from YouTube.)
 ### 🎨 Custom colour
 
 Pick any colour and the whole app re-skins to match. You choose one colour;
-the app derives the entire palette from it — panel backgrounds, accents,
-borders, and text — by taking your colour's hue and saturation and walking
-them down the same lightness ladder the built-in themes use. Text contrast is
-fixed by that ladder rather than by your pick, so no colour can make the app
-unreadable. Pick a grey and you get a clean neutral theme; pick something
-vivid and you get a bold one.
+the app derives panel backgrounds, accents, borders, and text from it.
+Surfaces stay subdued while the accent carries your chosen hue. A luminance
+solver preserves the linen theme's brightness at every palette stop, including
+at least 4.5:1 contrast for white text on primary buttons. Pick a grey for a
+neutral theme, or choose a colour for a restrained tint. The Appearance panel
+also accepts a six-digit hex code when a native colour picker is unavailable.
 
 ## Getting started
 

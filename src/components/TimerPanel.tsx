@@ -1,13 +1,9 @@
 import { useState } from 'react'
 import { parseTimeInput, type TimerApi } from '../hooks/useTimer'
-import {
-  formatFocusMinutes,
-  getFocusGoal,
-  getStreakDays,
-  getTodayMinutes,
-  saveFocusGoal,
-} from '../lib/stats'
+import { formatFocusMinutes, getFocusGoal, getStreakDays, getTodayMinutes, saveFocusGoal } from '../lib/stats'
 import { storageGetJson, storageSetJson } from '../lib/storage'
+import { PauseIcon, PlayIcon } from './icons'
+import { UIIcon } from './UIIcon'
 
 const PRESETS = [
   { label: '15 min', seconds: 15 * 60 },
@@ -15,25 +11,15 @@ const PRESETS = [
   { label: '1 hour', seconds: 60 * 60 },
 ]
 
-/** The last-used pomodoro settings, so the form doesn't reset to 25/5/4
- *  every session. */
 function loadPomodoroConfig(): { focus: number; break: number; rounds: number } {
-  const stored = storageGetJson<{ focus?: unknown; break?: unknown; rounds?: unknown }>(
-    'sws.pomodoro',
-    {},
-  )
-  const num = (v: unknown, fallback: number, max: number) =>
-    typeof v === 'number' && Number.isFinite(v) && v >= 1 && v <= max ? Math.round(v) : fallback
-  return {
-    focus: num(stored.focus, 25, 180),
-    break: num(stored.break, 5, 60),
-    rounds: num(stored.rounds, 4, 12),
-  }
+  const stored = storageGetJson<{ focus?: unknown; break?: unknown; rounds?: unknown }>('sws.pomodoro', {})
+  const num = (value: unknown, fallback: number, max: number) =>
+    typeof value === 'number' && Number.isFinite(value) && value >= 1 && value <= max ? Math.round(value) : fallback
+  return { focus: num(stored.focus, 25, 180), break: num(stored.break, 5, 60), rounds: num(stored.rounds, 4, 12) }
 }
 
 interface TimerPanelProps {
   timer: TimerApi
-  /** Pause the background video during pomodoro breaks (App owns the state). */
   pauseOnBreak: boolean
   onSetPauseOnBreak: (value: boolean) => void
 }
@@ -47,275 +33,101 @@ export function TimerPanel({ timer, pauseOnBreak, onSetPauseOnBreak }: TimerPane
   const [breakMin, setBreakMin] = useState(initialConfig.break)
   const [rounds, setRounds] = useState(initialConfig.rounds)
   const [focusGoal, setFocusGoal] = useState(getFocusGoal)
+  const pomo = timer.pomodoro
+  const todayMinutes = getTodayMinutes()
+  const streak = getStreakDays()
+  const goalProgress = Math.min(100, (todayMinutes / focusGoal) * 100)
 
   const startEdit = () => {
     timer.pause()
     setDraft(timer.label)
     setEditing(true)
   }
-
   const commit = () => {
     const seconds = parseTimeInput(draft)
     if (seconds !== null) timer.setDurationSeconds(seconds)
     setEditing(false)
   }
 
-  const pomo = timer.pomodoro
-  // Cheap enough to read per render: the panel re-renders once a second while
-  // the timer runs anyway, and the log is one small object.
-  const todayMinutes = getTodayMinutes()
-  const streak = getStreakDays()
-  const goalProgress = Math.min(100, (todayMinutes / focusGoal) * 100)
-
-  const chooseFocusGoal = (minutes: number) => {
-    setFocusGoal(minutes)
-    saveFocusGoal(minutes)
-  }
-
   return (
-    <div>
-      <div className="flex items-center gap-3">
-        {editing ? (
-          <input
-            autoFocus
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onBlur={commit}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') commit()
-              if (e.key === 'Escape') setEditing(false)
-            }}
-            placeholder="25 or 25:00"
-            aria-label="Custom timer duration"
-            className="w-36 border-b-2 border-clay-500 bg-transparent text-[2rem] font-semibold leading-none tabular-nums text-ink-900 focus:outline-none dark:text-cream-100"
-          />
-        ) : (
-          <button
-            onClick={startEdit}
-            title="Click to type a custom time"
-            className="text-[2.6rem] font-semibold leading-none tabular-nums text-ink-900 transition hover:text-clay-600 dark:text-cream-100 dark:hover:text-clay-400"
-          >
-            {timer.label}
-          </button>
-        )}
-        <button
-          onClick={timer.toggle}
-          className="rounded-full bg-clay-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-clay-600"
-        >
-          {timer.isRunning ? 'Pause' : 'Start'}
-        </button>
-        <button
-          onClick={timer.reset}
-          aria-label="Reset timer"
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-ink-700 transition hover:bg-cream-200 dark:text-cream-300 dark:hover:bg-ink-800"
-        >
-          <RefreshIcon />
-        </button>
+    <div className="focus-panel">
+      <div className="focus-session">
+        <p className="focus-eyebrow">{pomo?.completed ? 'Session complete' : pomo?.phase === 'break' ? 'Take a breath' : 'Time to focus'}</p>
+        {editing ? <input autoFocus value={draft} onChange={event => setDraft(event.target.value)} onBlur={commit}
+          onKeyDown={event => {
+            if (event.key === 'Enter') commit()
+            if (event.key === 'Escape') setEditing(false)
+          }} placeholder="25 or 25:00" aria-label="Custom timer duration" className="focus-time focus-time-input" />
+          : <button onClick={startEdit} title="Click to type a custom time" aria-label={`Timer ${timer.label}. Click to change duration`} className="focus-time">{timer.label}</button>}
+        <p className="focus-caption">{pomo && !pomo.completed ? `${pomo.phase === 'focus' ? 'Focus' : 'Break'} · round ${pomo.round} of ${pomo.rounds}` : 'A little focus goes a long way.'}</p>
+        {pomo && !pomo.completed && <div className="focus-rounds" aria-hidden="true">
+          {Array.from({ length: pomo.rounds }, (_, index) => <span key={index} className={index < pomo.round ? 'complete' : ''} />)}
+        </div>}
+        <div className="focus-actions">
+          <button onClick={timer.reset} aria-label="Reset timer" title="Reset timer" className="quiet-icon"><RefreshIcon /></button>
+          <button onClick={timer.toggle} className="primary-button focus-start">{timer.isRunning ? <PauseIcon size={16} /> : <PlayIcon size={16} />}{timer.isRunning ? 'Pause' : pomo?.phase === 'break' && !pomo.completed ? 'Start break' : 'Start focus'}</button>
+          <button onClick={startEdit} aria-label="Edit timer duration" title="Edit duration" className="quiet-icon"><UIIcon name="timer" /></button>
+        </div>
+        {timer.isRunning && <div className="focus-nudges">
+          <button onClick={() => timer.nudge(-60)}>−1:00</button>
+          <button onClick={() => timer.nudge(60)}>+1:00</button>
+        </div>}
+        {pomo && <div className="focus-pomodoro-status">
+          {pomo.completed && <p>All {pomo.rounds} rounds done. Well done!</p>}
+          {!pomo.completed && pomo.phase === 'break' && <button onClick={timer.skipBreak} className="text-action">Skip break</button>}
+          <button onClick={timer.stopPomodoro} className="text-action">Exit Pomodoro</button>
+        </div>}
       </div>
 
-      {timer.isRunning && (
-        <div className="mt-1.5 flex items-center gap-1.5">
-          <NudgeButton label="−1:00" onClick={() => timer.nudge(-60)} />
-          <NudgeButton label="+1:00" onClick={() => timer.nudge(60)} />
-        </div>
-      )}
-
-      <div className="mt-2 rounded-lg bg-white/45 px-2.5 py-2 dark:bg-ink-700/35">
-        <div className="flex items-center justify-between gap-2 text-[11px] text-ink-700/70 dark:text-cream-300/65">
-          <span>
-            today <strong className="font-semibold text-ink-900 dark:text-cream-100">{formatFocusMinutes(todayMinutes)}</strong>
-            {streak > 1 && <> · 🔥 {streak} days</>}
-          </span>
-          <span>{Math.round(goalProgress)}%</span>
-        </div>
-        <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-cream-300 dark:bg-ink-800">
-          <div
-            className="h-full rounded-full bg-clay-500 transition-[width] duration-500 motion-reduce:transition-none"
-            style={{ width: `${goalProgress}%` }}
-          />
-        </div>
-        <div className="mt-1.5 flex items-center justify-between gap-2">
-          <span className="text-[10px] text-ink-700/55 dark:text-cream-300/50">daily focus goal</span>
-          <div className="flex gap-1">
-            {[60, 120, 180].map((minutes) => (
-              <button
-                key={minutes}
-                onClick={() => chooseFocusGoal(minutes)}
-                className={
-                  'rounded-full px-1.5 py-0.5 text-[9px] font-medium transition ' +
-                  (focusGoal === minutes
-                    ? 'bg-clay-500 text-white'
-                    : 'bg-white/75 text-ink-700 dark:bg-ink-800/70 dark:text-cream-300')
-                }
-              >
-                {minutes / 60}h
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {pomo ? (
-        <div className="mt-3">
-          {pomo.completed ? (
-            <p className="text-sm font-medium text-clay-600 dark:text-clay-400">
-              All {pomo.rounds} rounds done — great work! 🎉
-            </p>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span
-                className={
-                  'rounded-full px-2.5 py-1 text-xs font-medium ' +
-                  (pomo.phase === 'focus'
-                    ? 'bg-clay-500 text-white'
-                    : 'bg-white/80 text-ink-700 dark:bg-ink-800/80 dark:text-cream-300')
-                }
-              >
-                {pomo.phase === 'focus' ? '📖 Focus' : '☕ Break'}
-              </span>
-              <span className="text-xs text-ink-700 dark:text-cream-300">
-                round {pomo.round}/{pomo.rounds}
-              </span>
-              <span className="flex gap-1" aria-hidden="true">
-                {Array.from({ length: pomo.rounds }, (_, i) => (
-                  <span
-                    key={i}
-                    className={
-                      'h-1.5 w-1.5 rounded-full ' +
-                      (i < pomo.round ? 'bg-clay-500' : 'bg-cream-300 dark:bg-ink-800')
-                    }
-                  />
-                ))}
-              </span>
+      <details className="timer-settings">
+        <summary><span><UIIcon name="timer" size={16} />Session settings</span><UIIcon name="chevron" size={16} /></summary>
+        <div className="timer-settings-body">
+          {!pomo && <>
+            <p className="surface-label">Choose a duration</p>
+            <div className="timer-presets">
+              {PRESETS.map(preset => <button key={preset.label} onClick={() => timer.setDurationSeconds(preset.seconds)} aria-pressed={timer.durationSeconds === preset.seconds}>{preset.label}</button>)}
+              <button onClick={startEdit}>Custom</button>
             </div>
-          )}
-          <div className="mt-2 flex items-center gap-3">
-            {!pomo.completed && pomo.phase === 'break' && (
-              <button
-                onClick={timer.skipBreak}
-                className="text-[11px] text-clay-600 underline-offset-2 hover:underline dark:text-clay-400"
-              >
-                skip break →
-              </button>
-            )}
-            <button
-              onClick={timer.stopPomodoro}
-              className="text-[11px] text-ink-700/60 underline-offset-2 hover:underline dark:text-cream-300/60"
-            >
-              exit pomodoro
-            </button>
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className="mt-3 flex items-center gap-2">
-            {PRESETS.map((preset) => (
-              <button
-                key={preset.label}
-                onClick={() => timer.setDurationSeconds(preset.seconds)}
-                className={
-                  'rounded-full px-2.5 py-1 text-xs font-medium transition ' +
-                  (timer.durationSeconds === preset.seconds
-                    ? 'bg-clay-500 text-white'
-                    : 'bg-white/80 text-ink-700 hover:bg-white dark:bg-ink-800/80 dark:text-cream-300 dark:hover:bg-ink-800')
-                }
-              >
-                {preset.label}
-              </button>
-            ))}
-            <button
-              onClick={() => setShowPomodoroForm((s) => !s)}
-              className={
-                'rounded-full px-2.5 py-1 text-xs font-medium transition ' +
-                (showPomodoroForm
-                  ? 'bg-clay-400/60 text-ink-900 dark:text-cream-100'
-                  : 'bg-white/80 text-ink-700 hover:bg-white dark:bg-ink-800/80 dark:text-cream-300 dark:hover:bg-ink-800')
-              }
-            >
-              🍅 Pomodoro
-            </button>
-          </div>
-
-          {showPomodoroForm && (
-            <div className="mt-3 space-y-2">
-              <div className="flex items-center gap-2 text-xs text-ink-700 dark:text-cream-300">
+            <button onClick={() => setShowPomodoroForm(value => !value)} aria-expanded={showPomodoroForm} aria-controls="pomodoro-settings" className="pomodoro-toggle"><span>Pomodoro rounds</span><UIIcon name="chevron" size={15} /></button>
+            {showPomodoroForm && <div id="pomodoro-settings" className="pomodoro-settings">
+              <div className="pomodoro-fields">
                 <NumberField label="Focus" value={focusMin} min={1} max={180} onChange={setFocusMin} suffix="min" />
                 <NumberField label="Break" value={breakMin} min={1} max={60} onChange={setBreakMin} suffix="min" />
                 <NumberField label="Rounds" value={rounds} min={1} max={12} onChange={setRounds} />
               </div>
-              <label className="flex cursor-pointer items-center gap-2 text-[11px] text-ink-700 dark:text-cream-300">
-                <input
-                  type="checkbox"
-                  checked={pauseOnBreak}
-                  onChange={(e) => onSetPauseOnBreak(e.target.checked)}
-                  className="h-3.5 w-3.5 accent-clay-500"
-                />
-                pause the video during breaks
-              </label>
-              <button
-                onClick={() => {
-                  storageSetJson('sws.pomodoro', { focus: focusMin, break: breakMin, rounds })
-                  timer.startPomodoro({ focusMinutes: focusMin, breakMinutes: breakMin, rounds })
-                  setShowPomodoroForm(false)
-                }}
-                className="w-full rounded-full bg-clay-500 py-1.5 text-xs font-medium text-white transition hover:bg-clay-600"
-              >
-                Start {rounds} × {focusMin} min with {breakMin} min breaks
-              </button>
+              <label className="pause-break"><input type="checkbox" checked={pauseOnBreak} onChange={event => onSetPauseOnBreak(event.target.checked)} />Pause video during breaks</label>
+              <button onClick={() => {
+                storageSetJson('sws.pomodoro', { focus: focusMin, break: breakMin, rounds })
+                timer.startPomodoro({ focusMinutes: focusMin, breakMinutes: breakMin, rounds })
+                setShowPomodoroForm(false)
+              }} className="primary-button pomodoro-start">Start {rounds} × {focusMin} min</button>
+            </div>}
+          </>}
+          {pomo && <p className="focus-caption">{pomo.focusMinutes} min focus · {pomo.breakMinutes} min break · {pomo.rounds} rounds</p>}
+          <div className="focus-goal-settings">
+            <p className="surface-label">Daily focus goal</p>
+            <div className="timer-presets">
+              {[60, 120, 180].map(minutes => <button key={minutes} onClick={() => { setFocusGoal(minutes); saveFocusGoal(minutes) }} aria-pressed={focusGoal === minutes}>{minutes / 60} hour{minutes > 60 ? 's' : ''}</button>)}
             </div>
-          )}
-        </>
-      )}
+          </div>
+        </div>
+      </details>
+
+      <div className="focus-stats">
+        <div className="focus-stats-heading"><span className="surface-label">Today's focus</span><span>{Math.round(goalProgress)}%</span></div>
+        <p className="focus-stats-value">{formatFocusMinutes(todayMinutes)}<span> / {formatFocusMinutes(focusGoal)}</span></p>
+        <div className="focus-goal-track" role="progressbar" aria-label="Daily focus goal" aria-valuenow={Math.round(goalProgress)} aria-valuemin={0} aria-valuemax={100}><div style={{ width: `${goalProgress}%` }} /></div>
+        <p className="focus-stats-note">{streak > 1 ? `${streak} day streak. Keep your rhythm.` : 'Small sessions add up.'}</p>
+      </div>
     </div>
   )
 }
 
-interface NumberFieldProps {
-  label: string
-  value: number
-  min: number
-  max: number
-  onChange: (value: number) => void
-  suffix?: string
-}
-
+interface NumberFieldProps { label: string; value: number; min: number; max: number; onChange: (value: number) => void; suffix?: string }
 function NumberField({ label, value, min, max, onChange, suffix }: NumberFieldProps) {
-  return (
-    <label className="flex flex-1 flex-col gap-0.5">
-      <span className="text-[10px] opacity-70">{label}</span>
-      <span className="flex items-baseline gap-1">
-        <input
-          type="number"
-          value={value}
-          min={min}
-          max={max}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="w-full rounded-md bg-white/80 px-1.5 py-1 text-center tabular-nums text-ink-900 focus:outline-none focus:ring-1 focus:ring-clay-500 dark:bg-ink-800/80 dark:text-cream-100"
-        />
-        {suffix && <span className="text-[10px] opacity-60">{suffix}</span>}
-      </span>
-    </label>
-  )
-}
-
-function NudgeButton({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-medium tabular-nums text-ink-700 transition hover:bg-white dark:bg-ink-800/80 dark:text-cream-300 dark:hover:bg-ink-800"
-    >
-      {label}
-    </button>
-  )
+  return <label className="pomodoro-field"><span>{label}{suffix ? ` (${suffix})` : ''}</span><input type="number" value={value} min={min} max={max} onChange={event => onChange(Number(event.target.value))} /></label>
 }
 
 function RefreshIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M3 12a9 9 0 0 1 15.3-6.4L21 8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M21 3v5h-5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M21 12a9 9 0 0 1-15.3 6.4L3 16" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M3 21v-5h5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.3 6.4L3 16M3 21v-5h5" /></svg>
 }

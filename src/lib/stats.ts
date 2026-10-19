@@ -27,6 +27,11 @@ function loadDays(): DayLog {
   return days
 }
 
+/** A snapshot for progression backfill; progression keeps its own lifetime ledger. */
+export function getFocusDays(): DayLog {
+  return loadDays()
+}
+
 export function recordFocusMinutes(minutes: number, now = new Date()) {
   if (!Number.isFinite(minutes) || minutes <= 0) return
   const days = loadDays()
