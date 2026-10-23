@@ -10,8 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest run",
-    "fetch-playlist": "node scripts/fetch-playlist.mjs",
-    "update-catalog": "node scripts/update-catalog.mjs"
+    "fetch-playlist": "node scripts/fetch-playlist.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",

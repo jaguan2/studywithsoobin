@@ -1,9 +1,7 @@
 import sources from './catalog-sources.json' with { type: 'json' }
 import { membersFromTitle, broadcastDateFromTitle, kindFromTitle, sameBroadcast } from './catalog-metadata.mjs'
 
-export { sources }
-
-/** Shared eligibility policy for manual research and scheduled discovery. */
+/** Eligibility policy for reviewed manual research results. */
 export function assessCandidate(row, seen) {
   const source = sources.find(source => source.id === row.channelId)
   if (!source) return { reason: 'Channel is not on the trusted source list' }

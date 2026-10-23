@@ -6,8 +6,8 @@ engineering workflow and verification requirements.
 
 For **every coding task**, perform the required TXT discovery check described
 in AGENTS.md, including new Soobin and other TXT members' vlogs and live archives.
-Use the API updater in dry-run mode when credentials are available, or the
-public-source fallback otherwise. Report the findings or access limitation;
+Use public YouTube feeds/pages, targeted searches or the research script;
+no YouTube API key is required. Report the findings or access limitation;
 never treat an unsuccessful check as evidence that no new videos exist.
 
 Keep project-wide instructions in AGENTS.md so Claude and Codex do not follow

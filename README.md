@@ -131,11 +131,10 @@ npm run lint       # eslint
 
 ## Refreshing the playlist
 
-For daily discovery of new TXT uploads and startup catalog updates in the app,
-see [automatic catalog updates](docs/CATALOG_UPDATES.md). The scheduled job uses
-a server-side YouTube API key and proposes reviewed catalog pull requests;
-the app itself needs no API key. Existing EXEs need one upgrade to gain the
-startup catalog loader.
+For public-source TXT discovery, reviewed manual catalog updates and startup
+catalog downloads in the app, see [catalog updates](docs/CATALOG_UPDATES.md).
+No YouTube API key or scheduled workflow is required. Existing EXEs need one
+upgrade to gain the startup catalog loader.
 
 The video list lives in `src/data/playlist.json`, a static snapshot of the
 original Study w/ Soobin playlist plus curated TXT vlogs and live archives for
