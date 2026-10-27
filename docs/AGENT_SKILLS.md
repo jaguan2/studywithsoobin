@@ -1,71 +1,32 @@
-# Study with Soobin agent skills
+# Shared agent skills
 
-Repository skills now load complete, pinned GitHub source instructions instead
-of relying only on the earlier shortened adaptations. These are project
-adapters around selected pstack workflows and the full Thermos quality rubric,
-not the entire pstack orchestration plugin. No model weights are trained.
+The reusable workflows live in the private
+[agent-toolkit repository](https://github.com/jaguan2/agent-toolkit).
+The tested revision is recorded in `../.agents/toolkit.json`. Clone the toolkit, check out that
+revision, and run `python scripts/install.py` followed by
+`python scripts/install.py --check`. Restart your agent session.
 
-| Skill | Role |
-| --- | --- |
-| [soobin-engineering](../.agents/skills/soobin-engineering/SKILL.md) | Trace the affected behavior, implement, structurally review, refine and verify |
-| [soobin-thermonuclear-review](../.agents/skills/soobin-thermonuclear-review/SKILL.md) | Read and apply the full upstream rubric to the current diff; standalone reviews report findings |
-| [soobin-verify](../.agents/skills/soobin-verify/SKILL.md) | Prove the relevant behavior with this repository's checks and real artifacts |
+Use the installed `toolkit-engineering`, `toolkit-structural-review` and
+`toolkit-verify` skills. Codex installs to `~/.agents/skills/`; Claude Code
+installs to `~/.claude/skills/`. Older Codex runtimes can use the installer's
+`codex-legacy` target (`$CODEX_HOME/skills`, default `~/.codex/skills`).
+The toolkit README covers additional machines, isolated environments,
+updates and rollback. Installation is per device/environment, not per repo.
 
-All three permit implicit invocation. The engineering workflow is also linked
-from AGENTS.md so an agent reading that file can load the instructions directly.
-Explicit examples remain available: `Use $soobin-engineering for this fix`
-and `Use $soobin-thermonuclear-review on my uncommitted changes`.
-New skills should be available on the next turn; restart Codex if discovery does
-not update. Other agents must support this skill format or follow AGENTS.md;
-these files cannot force every possible AI tool to load them.
-See [official discovery and invocation guidance](https://learn.chatgpt.com/docs/build-skills).
+If discovery is unavailable, read the skill from its installed directory or
+from `skills/<skill-name>/SKILL.md` in a toolkit checkout explicitly provided
+by the user. If neither is available, report that limitation and follow the
+local project instructions; do not invent shared-skill results or fetch/install
+anything merely because this document mentions it.
 
-## What comes from GitHub
+Project architecture, build/test commands and delivery rules stay here.
+The shared toolkit does not authorize commits, deployments, provider changes,
+unrelated refactors or additional agents. Update the tested revision only
+after reviewing the toolkit change. Pinned upstream copies, licenses and their
+sync script are now maintained once in the toolkit.
 
-- [pstack standalone mirror](https://github.com/backnotprop/pstack/tree/3a604672c46cd8187d2b19980eae0a34f9f91138): `how` with both prompt references,
-  `correct`, and six principles covering subtraction, root causes, evidence,
-  behavior tests, context discipline and verifiable units.
-- [Thermos in Cursor plugins](https://github.com/cursor/plugins/tree/ccb5507cec1546dc88135c1139c811e6c59115ba/thermos): the complete
-  `thermo-nuclear-code-quality-review` skill. This is the verified source used
-  here; a different similarly named repository is not silently substituted.
+## Project adapters
 
-[upstream.lock.json](agent-skills/upstream.lock.json) records repositories,
-full commit SHAs, source/local paths and SHA-256 hashes. Complete selected
-directories are retained under `docs/agent-skills/upstream/`, with their
-[pstack license](agent-skills/upstream/pstack/LICENSE) and
-[Thermos license](agent-skills/upstream/thermos/LICENSE). No downloaded scripts
-or instructions are executed during synchronization. Upstream `SKILL.md` files
-stay outside `.agents/skills/` to avoid registering duplicate skills.
-
-## Review and update
-
-Run `python scripts/sync-agent-skills.py --verify` from this repository to check
-the local source hashes offline. Run `python scripts/sync-agent-skills.py --fetch`
-to fetch the exact pinned files from GitHub. To adopt a newer upstream version,
-inspect its changes, update the full commit SHA and file list in the lock, fetch,
-then review the sources and local adapters together. Review the Git diff before
-using changed instructions. Synchronization downloads every file before writing
-any source, and never rebases, commits, pushes or runs downloaded programs.
-
-There is no live GitHub fetch on each agent turn and no automatic moving-branch
-update. That avoids network overhead and unexplained workflow changes while
-keeping the actual upstream instructions available offline. A directory-local
-`.gitattributes` preserves their exact bytes on Windows checkouts.
-
-## Local adaptations and intended behavior
-
-The earlier explicit-only, abbreviated setup did not provide the expected
-default engineering loop. Substantive coding tasks now run:
-inspect/reproduce → implement → structural review → scoped refinement → verify.
-Failed checks return to investigation; design fixes return to review. Finish
-when the requested behavior and required checks pass, not after an arbitrary
-number of iterations. Reuse passing checks when their inputs are unchanged.
-
-User and repository instructions still govern scope, delivery and tools. The
-adapters use the current agent rather than pstack's provider-specific spawns,
-do not automatically rebase/commit, and retain justified persistence, async
-and platform guards. Strict file-size/design standards are applied to the diff
-with explicit structural reasons for exceptions, rather than forcing unrelated
-rewrites. Full audits remain scoped to a user request; normal changes get a
-focused self-review. Installation/schema checks prove discoverability and
-source integrity, not a measured improvement in speed or review judgment.
+- `soobin-engineering`: project-specific engineering guidance.
+- `soobin-thermonuclear-review`: project-specific thermonuclear-review guidance.
+- `soobin-verify`: project-specific verify guidance.

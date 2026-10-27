@@ -37,17 +37,8 @@ desktop checks. The self-test proves server startup, not a rendered window or
 working stream. Runtime changes require rebuilding the committed EXE under
 the project rules; skill/documentation-only changes do not.
 
-## Upstream verification and the feedback loop
+## Shared verification method
 
-Read [prove-it-works](../../../docs/agent-skills/upstream/pstack/principle-prove-it-works/SKILL.md).
-When selecting or changing tests, also read
-[test-behavior-not-implementation](../../../docs/agent-skills/upstream/pstack/principle-test-behavior-not-implementation/SKILL.md).
-Assert the user's observable result, not only mock calls, constants or a build's
-exit status. Preserve evidence for the artifact and checkout actually tested.
-
-If a check fails, investigate and repair within the coding task's scope, then
-rerun the affected check. If verification is requested without authorization to
-fix, report the failure and cause. Reuse valid evidence for unchanged code;
-later source changes require repeating the affected checks. Name what was
-tested and what remains unverified, and never describe format validation as a
-demonstrated improvement in agent judgment.
+Use `toolkit-verify`, resolved through [toolkit setup](../../../docs/AGENT_SKILLS.md), for
+evidence standards and the failure/recheck loop. The commands and artifact
+requirements above remain this project's verification contract.
