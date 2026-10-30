@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import type { Theme } from '../App'
+import type { Theme } from '../lib/theme'
 import type { Video } from '../types/playlist'
 import { VideoPicker } from './VideoPicker'
 import { VolumeControl } from './VolumeControl'

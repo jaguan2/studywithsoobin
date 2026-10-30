@@ -11,6 +11,8 @@
 // preset's matching stop, and we solve for whatever lightness hits it. Contrast
 // is then identical to the shipped preset for every hue the user can pick.
 
+export type Theme = 'light' | 'coffee' | 'dark' | 'custom'
+
 /** Each stop's hue offset from the picked colour, its saturation, and the
  *  light-preset colour whose luminance it must match. The creams sit on the
  *  base hue; accents and text run a few degrees off it, as the hand-tuned

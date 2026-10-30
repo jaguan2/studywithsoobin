@@ -1,4 +1,4 @@
-import type { Theme } from '../App'
+import type { Theme } from '../lib/theme'
 import { ThemeSwitcher } from './ThemeSwitcher'
 
 interface Props {

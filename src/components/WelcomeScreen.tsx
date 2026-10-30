@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import type { Theme } from '../App'
+import type { Theme } from '../lib/theme'
 import type { Video } from '../types/playlist'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { VideoTile } from './VideoTile'

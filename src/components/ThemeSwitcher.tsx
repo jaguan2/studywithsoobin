@@ -1,4 +1,4 @@
-import type { Theme } from '../App'
+import type { Theme } from '../lib/theme'
 import { UIIcon, type UIIconName } from './UIIcon'
 
 const THEMES: { value: Theme; label: string; icon: UIIconName }[] = [

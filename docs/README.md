@@ -14,6 +14,8 @@
 
 ## Repository guidance
 
+- [Structure and scalability review](architecture-review.md): module boundaries,
+  regression coverage, and prioritized next refactors.
 - [Agent instructions](AGENTS.md): current architecture and maintenance rules.
 - [Earlier Claude guide](CLAUDE.md): retained reference; use the current agent instructions above.
 

@@ -48,6 +48,16 @@ document. These tests do not verify live playback or interactive browser behavio
 
 ## Architecture
 
+`App.tsx` composes feature hooks and views. `useAppearance` owns saved theme,
+custom color, panel opacity, and root styles; the shared `Theme` type lives in
+`lib/theme.ts`, never in `App`. `useVideoCatalog` owns catalog filters, favorites,
+selection, blocked videos, last-video persistence, and URL synchronization. It
+receives the catalog and callbacks for failed embeds and replay; it does not
+create or control iframe lifecycles. `lib/workspace.ts` defines `STUDY_TOOLS` and
+derives `StudyToolId`; `StudyTools` renders tabs and all mounted panel views
+from a complete typed record provided by `App`. Add tools through that registry.
+See `docs/architecture-review.md` for the review and next refactoring boundaries.
+
 **Data flow is one-directional and all client-side:**
 
 - `src/data/playlist.json` is a static, checked-in snapshot of the YouTube playlist
@@ -83,7 +93,7 @@ document. These tests do not verify live playback or interactive browser behavio
   failures. Research candidates with `scripts/research-catalog.mjs`, review the
   ignored research JSON, then run `scripts/curate-research.mjs` and inspect its
   diff before refreshing.
-  `App.tsx` owns shared search/member/type/solo/favorites/date/sort state;
+  `useVideoCatalog` owns shared search/member/type/solo/favorites/date/sort state;
   `lib/catalog.ts` applies it to both video pickers, random selection and
   ordered previous/next controls. `VideoTile` supplies readable video cards. Changing filters
   does not interrupt current playback. Clearing them restores the full catalog.
@@ -93,10 +103,11 @@ document. These tests do not verify live playback or interactive browser behavio
   the panel. Its CSS container queries adapt to the dock width, not the viewport.
   Light/dark discovery controls use neutral colours; coffee/custom retain their
   palette. `VideoTile` uses thumbnail-led cards without surrounding borders.
-- `App.tsx` loads `playlist.json` and owns all top-level state: current `videoId`
-  (**starts `null`** — a `WelcomeScreen` video-selection grid renders until the user
-  picks one; only then does the main UI mount), `volume`, `dockCollapsed`,
-  `favorites`, `theme`, and the active tools tab (`topPanel`). The main UI
+- `App.tsx` loads `playlist.json` and connects `useVideoCatalog` (selection,
+  filters, favorites) and `useAppearance` (theme and panel opacity). Selection
+  starts at the welcome grid unless a valid `?v=` deep link selects a video.
+  App owns playback state such as `volume` and layout state such as
+  `dockCollapsed` and the active tools tab (`topPanel`). The main UI
   uses a responsive CSS grid with a toolbar, reserved video stage, controls
   below the video, and a tools dock. At 1000px wide and 600px tall or larger,
   the dock sits on the right; otherwise it sits below and the page can scroll.
@@ -249,14 +260,14 @@ values are CSS variables (`src/index.css`), not hex literals in `config/tailwind
 that's what makes the **coffee theme** work: `:root.coffee` swaps the variable values
 (palette borrowed from the personal-portfolio repo) without any per-component classes.
 Dark mode is separate and class-based (`dark:` variants, `.dark` on `<html>`). Theme
-selection (`light`/`coffee`/`dark`/`custom`) lives in `App.tsx` and persists to
+selection (`light`/`coffee`/`dark`/`custom`) lives in `useAppearance` and persists to
 localStorage.
 
 The **custom theme** (`lib/theme.ts`) derives all ten palette variables from one
 user-picked colour and applies them as **inline styles on `:root`**, which is what
 lets them win over the stylesheet's `:root` / `:root.coffee` rules. Two consequences:
 - Leaving the custom theme *must* call `clearCustomTheme()`, or the inline vars keep
-  overriding whichever preset was selected. `App.tsx`'s theme effect does this.
+  overriding whichever preset was selected. `useAppearance`'s theme effect does this.
 - Only hue and saturation come from the picked colour. Lightness is solved per stop
   (bisection) so each variable keeps the **relative luminance** of the light preset's
   matching colour. Do not "simplify" this back to a fixed HSL lightness ladder: HSL
